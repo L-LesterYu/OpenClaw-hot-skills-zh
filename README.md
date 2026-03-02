@@ -251,6 +251,68 @@ bash ~/.openclaw/skills/proactive-agent-zh/scripts/security-audit.sh
 
 [查看详细文档](./skills/proactive-agent-zh/SKILL.md) | [入门流程](./skills/proactive-agent-zh/references/onboarding-flow.md) | [安全模式](./skills/proactive-agent-zh/references/security-patterns.md)
 
+---
+
+### 6. tavily-search-zh - Tavily 网页搜索
+
+**版本**: v1.0.0
+**状态**: ✅ 已发布
+**来源**: [GitHub - tavily-search-skill](https://github.com/jrr996shujin-png/tavily-search-skill)
+
+**功能**：
+- 🔍 **AI 优化搜索**：专为 AI 智能体设计的网页搜索 API
+- 🌐 **中文友好**：完美支持中文搜索查询和结果展示
+- 📊 **结构化输出**：返回标题、链接、内容摘要的 JSON 格式
+- 💰 **免费使用**：Tavily 提供免费套餐，无需信用卡
+- 🔄 **Brave API 替代**：解决内置 web_search 需要 Brave API 的问题
+
+**安装**：
+```bash
+cd ~/.openclaw/skills/
+git clone https://github.com/L-LesterYu/OpenClaw-hot-skills-zh.git temp-repo
+cp -r temp-repo/skills/tavily-search-zh ./
+rm -rf temp-repo
+```
+
+**配置 API Key**：
+```json
+// 编辑 ~/.openclaw/openclaw.json
+{
+  "skills": {
+    "entries": {
+      "web-search": {
+        "apiKey": "你的_Tavily_API_密钥"
+      }
+    }
+  }
+}
+```
+
+**快速开始**：
+```bash
+# 执行搜索
+python3 ~/.openclaw/skills/tavily-search-zh/scripts/search.py "今天的热点新闻"
+
+# 输出示例：
+# 🔍 正在搜索: 今天的热点新闻
+# 🔍 找到 5 条结果：
+# 【1】标题...
+#     链接: https://...
+#     摘要: ...
+```
+
+**使用场景**：
+- "帮我搜索一下最新的 AI 新闻"
+- "查找关于 Python 异步编程的资料"
+- "今天有什么热点新闻？"
+- "搜索 OpenClaw 的使用教程"
+
+**获取 API Key**：
+1. 访问 [Tavily 官网](https://tavily.com) 注册账号
+2. 在控制台获取 API 密钥（免费套餐无需信用卡）
+
+[查看详细文档](./skills/tavily-search-zh/SKILL.md)
+
 ## 🚀 快速开始
 
 ### 前置要求
