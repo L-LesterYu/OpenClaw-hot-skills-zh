@@ -604,6 +604,64 @@ rm -rf temp-repo
 
 [查看详细文档](./skills/clawddocs-zh/SKILL.md)
 
+---
+
+### 12. youtube-watcher-zh - YouTube 视频字幕提取
+
+**版本**: v1.0.0
+**状态**: ✅ 已发布
+**来源**: [ClawHub - YouTube Watcher](https://clawhub.ai)
+
+**功能**：
+- 📺 **字幕提取**：从 YouTube 视频获取字幕文本
+- 📝 **内容摘要**：用于视频总结和内容分析
+- ❓ **问答支持**：基于字幕内容回答用户问题
+- 🔍 **信息提取**：从视频中提取特定信息
+- 🌐 **中文优化**：完整的中文文档和使用说明
+
+**核心能力**：
+- 支持隐藏字幕（CC）和自动生成字幕
+- 快速获取视频文本内容
+- 适用于有字幕的 YouTube 视频
+- 简单易用的命令行接口
+
+**安装**：
+```bash
+# 1. 安装 yt-dlp 工具
+brew install yt-dlp  # macOS
+# 或
+pip install yt-dlp   # Linux/Windows
+
+# 2. 安装 Skill
+cd ~/.openclaw/skills/
+git clone https://github.com/L-LesterYu/OpenClaw-hot-skills-zh.git temp-repo
+cp -r temp-repo/skills/youtube-watcher-zh ./
+rm -rf temp-repo
+```
+
+**快速开始**：
+```bash
+# 获取视频字幕
+python3 ~/.openclaw/skills/youtube-watcher-zh/scripts/get_transcript.py "https://www.youtube.com/watch?v=VIDEO_ID"
+
+# 输出示例：
+# [字幕文本内容]
+```
+
+**使用场景**：
+- "总结这个 YouTube 视频"
+- "这个视频讲了什么？"
+- "从视频中提取关于 X 的信息"
+- "观看 youtube"
+- "视频字幕"
+
+**注意事项**：
+- 需要安装 `yt-dlp` 并在 PATH 中可用
+- 仅适用于有字幕的视频
+- 如果视频没有字幕，脚本将返回错误
+
+[查看详细文档](./skills/youtube-watcher-zh/SKILL.md)
+
 ## 🚀 快速开始
 
 ### 前置要求
