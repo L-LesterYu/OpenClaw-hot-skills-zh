@@ -1,0 +1,6 @@
+{
+  "name": "weather-zh",
+  "description": "获取当前天气和天气预报（无需 API 密钥）",
+  "language": "zh-CN",
+  "translated_from": "weather"
+}

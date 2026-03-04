@@ -743,6 +743,79 @@ freeride-watcher --status    # 检查轮换历史
 
 [查看详细文档](./skills/freeride-zh/SKILL.md)
 
+---
+
+### 14. weather-zh - 天气查询
+
+**版本**: v1.0.0
+**状态**: ✅ 已发布
+**来源**: [ClawHub - Weather](https://clawhub.ai)
+**首页**: https://wttr.in/:help
+
+**功能**：
+- 🌤️ **实时天气**：获取任意城市的当前天气状况
+- 📅 **天气预报**：查看未来几天的天气预报
+- 🌐 **多服务支持**：使用 wttr.in（主要）和 Open-Meteo（备用）两大免费服务
+- 🔒 **无需密钥**：完全免费，无需 API 密钥
+- 🇨🇳 **中文支持**：支持中文城市名和天气描述
+
+**核心命令**：
+```bash
+# 快速查询（简洁格式）
+curl -s "wttr.in/Beijing?format=3"
+# 输出: Beijing: ⛅️ +8°C
+
+# 详细预报
+curl -s "wttr.in/Shanghai?T&lang=zh"
+
+# 带湿度、风速
+curl -s "wttr.in/Guangzhou?format=%l:+%c+%t+%h+%w"
+
+# JSON 格式（程序化调用）
+curl -s "https://api.open-meteo.com/v1/forecast?latitude=31.2&longitude=121.5&current_weather=true"
+```
+
+**格式代码说明**：
+- `%c` - 天气状况图标
+- `%t` - 温度
+- `%h` - 湿度
+- `%w` - 风速风向
+- `%l` - 地点名称
+- `%m` - 月相
+
+**安装**：
+```bash
+cd ~/.openclaw/skills/
+git clone https://github.com/L-LesterYu/OpenClaw-hot-skills-zh.git temp-repo
+cp -r temp-repo/skills/weather-zh ./
+rm -rf temp-repo
+```
+
+**快速开始**：
+```bash
+# 查询北京天气
+curl -s "wttr.in/Beijing?format=3&lang=zh"
+
+# 查询上海三天预报
+curl -s "wttr.in/Shanghai?lang=zh"
+
+# 查询广州完整信息
+curl -s "wttr.in/Guangzhou?T&lang=zh"
+```
+
+**使用场景**：
+- "今天天气怎么样？"
+- "北京现在的温度"
+- "明天会下雨吗？"
+- "查询上海的天气预报"
+
+**注意事项**：
+- wttr.in 支持中文字符，但建议使用英文城市名或拼音
+- 服务免费但可能有访问频率限制
+- 如需更稳定的服务，可使用 Open-Meteo API
+
+[查看详细文档](./skills/weather-zh/SKILL.md)
+
 ## 🚀 快速开始
 
 ### 前置要求
