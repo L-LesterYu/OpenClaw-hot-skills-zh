@@ -816,6 +816,74 @@ curl -s "wttr.in/Guangzhou?T&lang=zh"
 
 [查看详细文档](./skills/weather-zh/SKILL.md)
 
+---
+
+### 15. auto-updater-zh - 自动更新技能
+
+**版本**: v1.0.0
+**状态**: ✅ 已发布
+**来源**: [ClawHub - Auto-Updater](https://clawhub.ai)
+
+**功能**：
+- 🔄 **自动更新**：每日自动检查更新
+- 📦 **全面覆盖**：同时更新 Clawdbot 核心和所有已安装技能
+- 📢 **用户通知**：发送包含所有更改的摘要消息
+- 🔒 **安全更新**：使用 ClawHub 的版本控制确保安全
+
+**核心能力**：
+- 通过 cron 作业每日运行一次
+- 检查 ClawHub 上已安装技能的可用更新
+- 如果有新版本可用，更新 Clawdbot 核心
+- 应用所有待处理的更新
+- 向用户发送摘要消息
+
+**安装**：
+```bash
+cd ~/.openclaw/skills/
+git clone https://github.com/L-LesterYu/OpenClaw-hot-skills-zh.git temp-repo
+cp -r temp-repo/skills/auto-updater-zh ./
+rm -rf temp-repo
+```
+
+**快速开始**：
+```bash
+# 安装后，技能会自动设置 cron 作业
+# 每日在预定时间自动运行更新检查
+
+# 手动触发更新检查
+clawhub update --all --no-input
+```
+
+**使用场景**：
+- 自动保持 Clawdbot 和所有技能为最新版本
+- 无需手动检查更新
+- 接收每日更新摘要通知
+
+**更新摘要包含**：
+- 更新的技能数量
+- 每个技能的版本变更
+- 遇到的任何错误或警告
+
+**故障排除**：
+如果更新失败：
+1. 检查互联网连接
+2. 验证 ClawHub API 是否可访问
+3. 查看更新摘要中的错误消息
+4. 尝试手动更新：`clawhub update --all --force`
+
+**注意事项**：
+- 更新会自动但安全地应用
+- 主要版本更新可能需要手动审核
+- 该技能遵守 ClawHub 的速率限制
+- 失败的更新会被记录以供故障排除
+
+**要求**：
+- 已安装 ClawHub CLI
+- 互联网连接
+- ClawHub API 访问权限
+
+[查看详细文档](./skills/auto-updater-zh/SKILL.md)
+
 ## 🚀 快速开始
 
 ### 前置要求
