@@ -1,0 +1,8 @@
+{
+  "name": "brave-web-search",
+  "version": "1.0.0",
+  "description": "OpenClaw 的 Brave 网页搜索和摘要(AI 答案)API 技能",
+  "main": "index.js",
+  "type": "module",
+  "dependencies": {}
+}
