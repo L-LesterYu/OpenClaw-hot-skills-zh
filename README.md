@@ -1532,6 +1532,329 @@ Agent 会：
 
 [查看详细文档](./skills/content-ideas-generator-zh/SKILL.md)
 
+---
+
+### 23. brave-search-zh - Brave 搜索
+
+**版本**: v1.0.1
+**状态**: ✅ 已发布
+**来源**: [ClawHub - Brave Search](https://clawhub.ai)
+
+**功能**：
+- 🔍 **无头网页搜索**：使用 Brave Search API 进行高质量搜索
+- 📄 **内容提取**：从 URL 提取 Markdown 格式内容
+- 🌐 **无需浏览器**：轻量级 CLI 工具，无需浏览器启动
+- 📊 **结构化输出**：返回标题、链接、摘要和内容
+
+**安装**：
+```bash
+cd ~/.openclaw/skills/
+git clone https://github.com/L-LesterYu/OpenClaw-hot-skills-zh.git temp-repo
+cp -r temp-repo/skills/brave-search-zh ./
+rm -rf temp-repo
+cd brave-search-zh && npm ci
+```
+
+**快速开始**：
+```bash
+# 设置环境变量
+export BRAVE_API_KEY="your-api-key"
+
+# 基础搜索
+./search.js "OpenClaw 教程"
+
+# 包含页面内容
+./search.js "机器学习" -n 3 --content
+
+# 提取特定页面内容
+./content.js https://example.com/article
+```
+
+**使用场景**：
+- 搜索文档、事实或当前信息
+- 从特定 URL 获取内容
+- 需要网页搜索但无需交互式浏览
+
+[查看详细文档](./skills/brave-search-zh/SKILL.md)
+
+---
+
+### 24. caldav-calendar-zh - CalDAV 日历同步
+
+**版本**: v1.0.1
+**状态**: ✅ 已发布
+**来源**: [ClawHub - Caldav Calendar](https://clawhub.ai)
+
+**功能**：
+- 📅 **日历同步**：支持 iCloud、Google、Fastmail、Nextcloud 等 CalDAV 服务
+- 🔍 **事件查询**：查看今天、明天或任意日期范围的事件
+- ➕ **事件创建**：通过命令行快速创建日历事件
+- ✏️ **事件编辑**：交互式编辑或删除事件
+- 🔎 **搜索功能**：在日历中搜索特定事件
+
+**安装**：
+```bash
+# 安装依赖（Linux）
+sudo apt install vdirsyncer khal
+
+# 安装 Skill
+cd ~/.openclaw/skills/
+git clone https://github.com/L-LesterYu/OpenClaw-hot-skills-zh.git temp-repo
+cp -r temp-repo/skills/caldav-calendar-zh ./
+rm -rf temp-repo
+```
+
+**快速开始**：
+```bash
+# 同步日历
+vdirsyncer sync
+
+# 查看今天的事件
+khal list
+
+# 查看未来7天
+khal list today 7d
+
+# 创建事件
+khal new 2026-03-08 10:00 11:00 "团队会议"
+
+# 搜索事件
+khal search "会议"
+```
+
+**支持的服务**：
+- iCloud Calendar
+- Google Calendar
+- Fastmail
+- Nextcloud
+- 任何 CalDAV 兼容服务
+
+[查看详细文档](./skills/caldav-calendar-zh/SKILL.md)
+
+---
+
+### 25. clawhub-zh - ClawHub CLI 工具
+
+**版本**: v1.0.0
+**状态**: ✅ 已发布
+**来源**: [ClawHub](https://clawhub.com)
+
+**功能**：
+- 🔍 **技能搜索**：从 ClawHub 市场搜索智能体技能
+- 📦 **技能安装**：一键安装技能到 OpenClaw
+- 🔄 **技能更新**：更新到最新版本或指定版本
+- 📋 **技能列表**：查看已安装的技能
+- 🚀 **技能发布**：将本地技能发布到 ClawHub
+
+**安装**：
+```bash
+# 安装 CLI
+npm i -g clawhub
+
+# 认证（发布用）
+clawhub login
+```
+
+**快速开始**：
+```bash
+# 搜索技能
+clawhub search "postgres backups"
+
+# 安装技能
+clawhub install my-skill
+
+# 更新技能
+clawhub update my-skill
+clawhub update --all
+
+# 列出已安装技能
+clawhub list
+
+# 发布技能
+clawhub publish ./my-skill --slug my-skill --name "My Skill" --version 1.0.0
+```
+
+**使用场景**：
+- 发现新技能扩展智能体能力
+- 管理已安装的技能版本
+- 发布自己的技能到市场
+
+[查看详细文档](./skills/clawhub-zh/SKILL.md)
+
+---
+
+### 26. multi-search-engine-zh - 多搜索引擎集成
+
+**版本**: v2.0.1
+**状态**: ✅ 已发布
+**来源**: [ClawHub - Multi Search Engine](https://clawhub.ai)
+
+**功能**：
+- 🌐 **17 个搜索引擎**：8 个国内 + 9 个国际搜索引擎
+- 🔒 **无需 API 密钥**：完全免费使用
+- 🎯 **高级搜索**：支持站内搜索、文件类型、时间筛选
+- 🔐 **隐私搜索**：支持 DuckDuckGo、Startpage 等隐私引擎
+- 🧮 **知识计算**：集成 WolframAlpha 知识查询
+
+**支持的搜索引擎**：
+
+国内（8 个）：
+- 百度、必应中国、必应国际、360搜索
+- 搜狗、微信、头条、集思录
+
+国际（9 个）：
+- Google、Google 香港、DuckDuckGo、Yahoo
+- Startpage、Brave、Ecosia、Qwant、WolframAlpha
+
+**安装**：
+```bash
+cd ~/.openclaw/skills/
+git clone https://github.com/L-LesterYu/OpenClaw-hot-skills-zh.git temp-repo
+cp -r temp-repo/skills/multi-search-engine-zh ./
+rm -rf temp-repo
+```
+
+**快速开始**：
+```bash
+# 基础搜索
+web_fetch({"url": "https://www.google.com/search?q=python+tutorial"})
+
+# 站内搜索
+web_fetch({"url": "https://www.google.com/search?q=site:github.com+react"})
+
+# 时间筛选（过去一周）
+web_fetch({"url": "https://www.google.com/search?q=ai+news&tbs=qdr:w"})
+
+# WolframAlpha 知识查询
+web_fetch({"url": "https://www.wolframalpha.com/input?i=100+USD+to+CNY"})
+```
+
+**高级操作符**：
+- `site:` - 站内搜索
+- `filetype:` - 指定文件类型
+- `""` - 精确匹配
+- `-` - 排除关键词
+- `OR` - 或运算
+
+[查看详细文档](./skills/multi-search-engine-zh/SKILL.md)
+
+---
+
+### 27. obsidian-zh - Obsidian 笔记管理
+
+**版本**: v1.0.0
+**状态**: ✅ 已发布
+**来源**: [ClawHub - Obsidian](https://clawhub.ai)
+
+**功能**：
+- 📝 **日常笔记**：快速创建和管理每日笔记
+- ✅ **任务追踪**：集中管理任务和待办事项
+- 🗂️ **内容组织**：通过分区自动组织内容
+- 🏷️ **优先级标签**：艾森豪威尔矩阵优先级管理
+- 🔗 **反向链接**：任务自动记录并包含反向链接
+
+**安装**：
+```bash
+# 安装 CLI
+npm install -g obsidian-cli-manager
+
+# 安装 Skill
+cd ~/.openclaw/skills/
+git clone https://github.com/L-LesterYu/OpenClaw-hot-skills-zh.git temp-repo
+cp -r temp-repo/skills/obsidian-zh ./
+rm -rf temp-repo
+```
+
+**快速开始**：
+```bash
+# 初始化配置
+obsidian init --vault /path/to/your/vault
+
+# 打开今天的日常笔记
+obsidian daily
+
+# 查看所有文件
+obsidian files
+
+# 管理任务
+obsidian tasks
+```
+
+**分区组织**：
+- `[] 任务` → 任务分区（复选框格式）
+- `- 想法` → 想法分区（列表格式）
+- `? 问题` → 问题分区（列表格式）
+- `! 洞察` → 洞察分区（列表格式）
+
+**优先级标签**：
+- `#do`（红色）- 紧急且重要
+- `#delegate`（橙色）- 紧急但不重要
+- `#schedule`（蓝色）- 重要但不紧急
+- `#eliminate`（灰色）- 不紧急也不重要
+
+[查看详细文档](./skills/obsidian-zh/SKILL.md)
+
+---
+
+### 28. stock-analysis-zh - 股票分析
+
+**版本**: v1.0.0
+**状态**: ✅ 已发布
+**来源**: [ClawHub - Stock Analysis](https://clawhub.ai)
+
+**功能**：
+- 📊 **公司研究**：获取公司简介、业务信息、高管团队
+- 📈 **技术分析**：查看价格走势图、技术指标、市场展望
+- 💰 **基本面分析**：分析估值、分析师评级
+- 👥 **内部人士活动**：追踪内部人士持股和交易记录
+- 📄 **监管文件**：访问 SEC 文件历史和文档
+
+**安装**：
+```bash
+cd ~/.openclaw/skills/
+git clone https://github.com/L-LesterYu/OpenClaw-hot-skills-zh.git temp-repo
+cp -r temp-repo/skills/stock-analysis-zh ./
+rm -rf temp-repo
+```
+
+**快速开始**：
+```bash
+# 公司概览
+# 调用 Yahoo/get_stock_profile 获取业务摘要、行业、员工数
+# 调用 Yahoo/get_stock_insights 获取技术展望、估值、评级
+
+# 技术分析
+# 调用 Yahoo/get_stock_chart 查看价格趋势、支撑位/阻力位
+
+# 内部人士活动
+# 调用 Yahoo/get_stock_holders 查看内部交易记录
+```
+
+**常用工作流程**：
+
+1. **公司概览**：
+   - 简介 → 洞察 → 图表
+
+2. **投资决策**：
+   - 图表 → 洞察 → 简介 → 持股
+
+3. **多股对比**：
+   - 使用图表 API 的 comparisons 参数
+
+**支持的股票市场**：
+- 美股（US）
+- 港股（HK）
+- 国际股票（设置 region 参数）
+
+**使用场景**：
+- "介绍一下 AAPL"
+- "TSLA 值得买吗？"
+- "显示 NVDA 的内部交易情况"
+- "对比 AAPL、MSFT 和 GOOGL"
+- "MSFT 全面分析"
+
+[查看详细文档](./skills/stock-analysis-zh/SKILL.md)
+
 ## 🚀 快速开始
 
 ### 前置要求
