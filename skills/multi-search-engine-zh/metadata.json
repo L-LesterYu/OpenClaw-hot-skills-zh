@@ -1,0 +1,7 @@
+{
+  "name": "multi-search-engine",
+  "version": "2.0.1",
+  "description": "多搜索引擎集成，支持 17 个搜索引擎（8 个国内 + 9 个国际）。支持高级搜索操作符、时间筛选、隐私搜索引擎和 WolframAlpha 知识查询。",
+  "engines": 17,
+  "requires_api_key": false
+}
