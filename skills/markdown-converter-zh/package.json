@@ -1,0 +1,23 @@
+{
+  "name": "markdown-converter-zh",
+  "version": "1.0.0",
+  "description": "使用 markitdown 将文档和文件转换为 Markdown 格式",
+  "main": "convert.js",
+  "scripts": {
+    "test": "node convert.js --help"
+  },
+  "keywords": [
+    "markdown",
+    "converter",
+    "pdf",
+    "docx",
+    "pptx",
+    "xlsx",
+    "ocr",
+    "transcription",
+    "转换器"
+  ],
+  "author": "ClawHub",
+  "license": "MIT",
+  "dependencies": {}
+}

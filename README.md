@@ -2102,6 +2102,92 @@ rm -rf temp-repo
 
 [查看详细文档](./skills/humanize-ai-text-zh/SKILL.md)
 
+---
+
+### 32. markdown-converter-zh - Markdown 转换器
+
+**版本**: v1.0.0
+**状态**: ✅ 已发布
+**来源**: 基于 Microsoft markitdown 工具
+
+**功能**：
+- 📄 **多格式转换**：支持 PDF、Word、Excel、PPT、HTML、JSON、XML 等 15+ 种格式
+- 🖼️ **图片处理**：支持图片 EXIF 元数据提取和 OCR 文字识别
+- 🎵 **音频转录**：支持音频文件转录为文本
+- 📦 **压缩包处理**：自动解压 ZIP 并转换内容
+- 📺 **视频字幕提取**：支持 YouTube 链接字幕提取
+- 📚 **电子书转换**：支持 EPUB 电子书格式
+
+**核心能力**：
+- 使用 Microsoft markitdown 工具进行高质量转换
+- 保留文档结构和格式
+- 支持批量文件处理
+- 完整的中文提示和错误处理
+- 适用于 LLM 处理和文本分析
+
+**安装**：
+```bash
+# 1. 安装 markitdown Python 包
+pip install markitdown
+
+# 2. 安装 Skill
+cd ~/.openclaw/skills/
+git clone https://github.com/L-LesterYu/OpenClaw-hot-skills-zh.git temp-repo
+cp -r temp-repo/skills/markdown-converter-zh ./
+rm -rf temp-repo
+```
+
+**快速开始**：
+```bash
+# 转换 PDF 文档
+./convert.js report.pdf
+
+# 转换 Word 文档
+./convert.js contract.docx
+
+# 转换网页
+./convert.js https://example.com/article
+
+# 转换 YouTube 视频（提取字幕）
+./convert.js https://youtube.com/watch?v=VIDEO_ID
+
+# 转换 Excel 电子表格
+./convert.js data.xlsx
+```
+
+**支持的格式**：
+- **文档**: PDF (.pdf), Word (.docx), RTF (.rtf)
+- **电子表格**: Excel (.xlsx, .xls), CSV (.csv)
+- **演示文稿**: PowerPoint (.pptx)
+- **网页**: HTML (.html, .htm), URL 链接
+- **数据**: JSON (.json), XML (.xml)
+- **图片**: PNG, JPG（带 EXIF 元数据和 OCR）
+- **音频**: MP3, WAV（带转录）
+- **压缩包**: ZIP (.zip)
+- **电子书**: EPUB (.epub)
+- **视频链接**: YouTube 链接（提取字幕）
+
+**使用场景**：
+- "将这个 PDF 转换为 Markdown"
+- "提取这个 Word 文档的内容"
+- "从这个网页提取文本"
+- "转换 Excel 表格为 Markdown"
+- "提取 YouTube 视频的字幕"
+- "为 LLM 分析准备文档"
+
+**注意事项**：
+- 首次使用需要安装 markitdown Python 包
+- 图片 OCR 功能需要额外的依赖
+- YouTube 字幕提取需要视频有可用字幕
+- 大文件转换可能需要较长时间
+
+**技术细节**：
+- 依赖项：markitdown (Python 包)
+- 文件权限：convert.js 需要可执行权限 (755)
+- 输出格式：标准 Markdown 格式
+
+[查看详细文档](./skills/markdown-converter-zh/SKILL.md)
+
 ## 🚀 快速开始
 
 ### 前置要求
