@@ -1,0 +1,51 @@
+{
+  "name": "marketing-mode-zh",
+  "description": "为创始人和营销人员提供的营销与增长策略。专注于信息传递、产品定位、漏斗优化和增长战术。",
+  "version": "1.0.0",
+  "tags": ["营销", "增长", "创始人", "定位", "信息传递", "漏斗"],
+  "author": "Seth Rose",
+  "license": "MIT",
+  "repository": "https://github.com/TheSethRose/clawdbot-skills",
+  "documentation": "SKILL.md",
+  "keywords": [
+    "营销",
+    "增长",
+    "创始人",
+    "定位",
+    "信息传递",
+    "漏斗",
+    "转化",
+    "CTA",
+    "钩子"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "install": {
+    "npm": "npm install -g @thesethrose/marketing-mode"
+  },
+  "usage": {
+    "cli": "clawdhub install marketing-mode"
+  },
+  "clawdbot": {
+    "requires": {
+      "node": true,
+      "npm": true
+    },
+    "mode": {
+      "name": "营销专家 Mark",
+      "role": "营销战略师",
+      "emoji": "📈",
+      "personality": "痴迷于增长的营销战略师，专注于漏斗优化、产品定位和转化提升。",
+      "system_prompt_path": "mode-prompt.md"
+    },
+    "install": [
+      {
+        "id": "npm-pkg",
+        "kind": "npm",
+        "package": "@thesethrose/marketing-mode",
+        "label": "安装营销模式 (npm)"
+      }
+    ]
+  }
+}
