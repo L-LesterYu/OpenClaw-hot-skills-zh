@@ -2597,6 +2597,219 @@ Agent 会：
 
 ---
 
+### 38. answer-overflow-zh - Discord 社区搜索
+
+**版本**: v1.0.2
+**状态**: ✅ 已发布
+**来源**: ClawHub
+
+**功能**：
+- 🔍 **社区搜索**：搜索已索引的 Discord 社区讨论
+- 💬 **线程获取**：获取特定线程/讨论的所有消息
+- 🔎 **相似线程**：查找与给定线程相似的线程
+- 📝 **Markdown 格式**：支持 Markdown 格式的线程内容输出
+
+**核心特性**：
+- 通过 Google 或 Answer Overflow API 搜索 Discord 内容
+- 获取 Markdown 格式的线程内容
+- 查找编程问题解决方案、库问题和社区问答
+- 覆盖官方支持频道和社区讨论
+
+**安装**：
+```bash
+cd ~/.openclaw/skills/
+git clone https://github.com/L-LesterYu/OpenClaw-hot-skills-zh.git temp-repo
+cp -r temp-repo/skills/answer-overflow-zh ./
+rm -rf temp-repo
+```
+
+**快速开始**：
+```bash
+# 搜索 Discord.js 帮助
+web_search "site:answeroverflow.com discord.js slash commands"
+
+# 获取线程内容（Markdown 格式）
+web_fetch url="https://www.answeroverflow.com/m/<message-id>"
+
+# 获取线程的所有消息
+# 通过 MCP 服务器工具
+```
+
+**使用场景**：
+- "搜索 Discord.js 相关的解决方案"
+- "查找 Next.js 的社区问答"
+- "获取这个 Discord 线程的内容"
+- "查找 Prisma 相关的讨论"
+
+**URL 模式**：
+- 线程：`https://www.answeroverflow.com/m/<message-id>`
+- 服务器：`https://www.answeroverflow.com/c/<server-slug>`
+- 频道：`https://www.answeroverflow.com/c/<server-slug>/<channel-slug>`
+
+**MCP 工具**：
+- `search_answeroverflow`：搜索所有已索引的 Discord 社区
+- `search_servers`：发现索引的 Discord 服务器
+- `get_thread_messages`：获取特定线程的所有消息
+- `find_similar_threads`：查找相似线程
+
+**技巧**：
+- 结果是真实的 Discord 对话，上下文可能比较非正式
+- 线程通常在找到解决方案之前会有来回讨论
+- 检查服务器/频道名称以了解上下文
+
+**链接**：
+- 网站：https://www.answeroverflow.com
+- 文档：https://docs.answeroverflow.com
+- MCP：https://www.answeroverflow.com/mcp
+
+[查看详细文档](./skills/answer-overflow-zh/SKILL.md)
+
+---
+
+### 39. nano-pdf-zh - PDF 自然语言编辑
+
+**版本**: v1.0.0
+**状态**: ✅ 已发布
+**来源**: PyPI
+
+**功能**：
+- 📄 **自然语言编辑**：使用自然语言指令编辑 PDF 文件
+- 🎯 **页面精确控制**：对 PDF 的特定页面进行编辑
+- ✏️ **文本修改**：修改标题、副标题等文本内容
+- 🔧 **拼写修正**：修正文本中的拼写错误
+
+**核心特性**：
+- 通过自然语言描述想要进行的修改
+- 支持对特定页面进行精确编辑
+- 简单易用的命令行接口
+- 基于 AI 的智能编辑
+
+**安装**：
+```bash
+# 1. 安装 nano-pdf CLI 工具
+uv install nano-pdf
+
+# 2. 安装 Skill
+cd ~/.openclaw/skills/
+git clone https://github.com/L-LesterYu/OpenClaw-hot-skills-zh.git temp-repo
+cp -r temp-repo/skills/nano-pdf-zh ./
+rm -rf temp-repo
+```
+
+**快速开始**：
+```bash
+# 编辑 PDF 第 1 页
+nano-pdf edit deck.pdf 1 "将标题改为'Q3业绩报告'并修正副标题中的拼写错误"
+
+# 编辑 PDF 第 0 页（某些版本从 0 开始编号）
+nano-pdf edit deck.pdf 0 "更新公司名称和联系方式"
+```
+
+**使用场景**：
+- "修改这个 PDF 的标题"
+- "修正这份报告中的拼写错误"
+- "更新 PDF 中的联系方式"
+- "更改幻灯片中的副标题"
+
+**注意事项**：
+- 页码编号从 0 或 1 开始，具体取决于工具版本和配置
+- 如果结果页码偏移了一位，请尝试另一种编号方式
+- 在发送输出 PDF 之前，务必检查输出结果是否正确
+
+**依赖要求**：
+- **二进制工具**: nano-pdf (可通过 uv 安装)
+- **Python 环境**: 需要 Python 和 uv 包管理器
+
+**链接**：
+- PyPI：https://pypi.org/project/nano-pdf/
+
+[查看详细文档](./skills/nano-pdf-zh/SKILL.md)
+
+---
+
+### 40. skill-creator-zh - 技能创建器
+
+**版本**: v0.1.0
+**状态**: ✅ 已发布
+**来源**: ClawHub
+
+**功能**：
+- 🛠️ **技能创建**：从头创建新的 AgentSkills
+- ✏️ **技能编辑**：改进、审查、审计现有技能或 SKILL.md 文件
+- 📁 **目录重构**：将文件移动到 references/ 或 scripts/，删除过时内容
+- ✅ **规范验证**：根据 AgentSkills 规范进行验证
+
+**核心原则**：
+- **简洁至上**：上下文窗口是公共资源，只添加必要的内容
+- **适当的自由度**：根据任务特性匹配具体程度
+- **模块化设计**：技能应该模块化、自包含
+
+**技能解剖结构**：
+```
+skill-name/
+├── SKILL.md（必需）
+│   ├── YAML frontmatter（必需）
+│   └── Markdown 指令（必需）
+└── 捆绑资源（可选）
+    ├── scripts/    - 可执行代码
+    ├── references/ - 参考文档
+    └── assets/     - 输出文件
+```
+
+**安装**：
+```bash
+cd ~/.openclaw/skills/
+git clone https://github.com/L-LesterYu/OpenClaw-hot-skills-zh.git temp-repo
+cp -r temp-repo/skills/skill-creator-zh ./
+rm -rf temp-repo
+```
+
+**快速开始**：
+```bash
+# Agent 会自动识别技能创建任务
+# 示例交互：
+用户：创建一个新技能用于处理 Excel 文件
+
+Agent 会：
+1. 分析任务需求和技能结构
+2. 创建 SKILL.md 文件（包含 frontmatter 和指令）
+3. 创建必要的目录结构
+4. 提供使用示例和最佳实践
+5. 根据 AgentSkills 规范验证
+```
+
+**使用场景**：
+- "创建一个新技能"
+- "改进这个技能"
+- "审查这个 SKILL.md 文件"
+- "清理技能目录"
+- "审计技能质量"
+
+**触发短语**：
+- "创建技能" / "编写技能"
+- "改进技能" / "优化技能"
+- "审查技能" / "审计技能"
+- "清理技能" / "整理技能"
+
+**技能类型**：
+- **高自由度**：基于文本的指令（多种方法有效）
+- **中等自由度**：伪代码或带参数的脚本
+- **低自由度**：特定脚本，少量参数
+
+**最佳实践**：
+- 优先使用简洁的示例而非冗长的解释
+- 将详细的参考材料放在 references/ 目录
+- 将重复使用的代码放在 scripts/ 目录
+- 保持 SKILL.md 精简，只包含必要的程序性指令
+
+**链接**：
+- AgentSkills 规范：https://agentskills.io/specification
+
+[查看详细文档](./skills/skill-creator-zh/SKILL.md)
+
+---
+
+
 ## 🚀 快速开始
 
 ### 前置要求
