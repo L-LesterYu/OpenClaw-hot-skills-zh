@@ -1,0 +1,11 @@
+{
+  "owner": "steipete",
+  "slug": "nano-pdf-zh",
+  "displayName": "Nano Pdf 中文版",
+  "latest": {
+    "version": "1.0.0",
+    "publishedAt": 1767545359433,
+    "commit": "https://github.com/bot/skills/commit/d3c8b36bf70bb6c5c14465e49a35908e716154fe"
+  },
+  "history": []
+}
