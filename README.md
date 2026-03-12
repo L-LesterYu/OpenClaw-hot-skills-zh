@@ -2897,6 +2897,74 @@ Agent（Mark）会：
 
 ---
 
+### 42. self-improving-zh - 自我改进与主动学习 Agent
+
+**版本**: v1.2.16
+**状态**: ✅ 已发布
+**来源**: [ClawIC - Self-Improving](https://clawic.com/skills/self-improving)
+
+**功能**：
+- 🧠 **自我反思**：评估自身工作、发现错误并持续改进
+- 📝 **自组织记忆**：采用分层结构存储学习内容（热/温/冷数据）
+- 🔄 **自动提升/降级**：根据使用频率自动调整记忆层级
+- 📊 **纠正追踪**：记录用户纠正和反馈，避免重复错误
+- 🎯 **模式识别**：识别重复行为并转化为规则
+- 🔒 **安全边界**：不存储敏感信息，保护隐私
+
+**核心机制**：
+- **学习信号识别**：自动识别纠正、偏好和模式候选
+- **三层记忆架构**：
+  - 热数据（memory.md）：≤100行，始终加载
+  - 温数据（projects/domains/）：按需加载
+  - 冷数据（archive/）：明确查询时加载
+- **命名空间隔离**：项目模式、领域模式和全局偏好分离存储
+- **透明引用**：每个来自记忆的操作都引用来源
+
+**安装**：
+```bash
+cd ~/.openclaw/skills/
+git clone https://github.com/L-LesterYu/OpenClaw-hot-skills-zh.git temp-repo
+cp -r temp-repo/skills/self-improving-zh ./
+rm -rf temp-repo
+```
+
+**快速开始**：
+```bash
+# 初始化记忆存储
+mkdir -p ~/self-improving/projects
+mkdir -p ~/self-improving/domains
+mkdir -p ~/self-improving/archive
+touch ~/self-improving/memory.md
+touch ~/self-improving/corrections.md
+touch ~/self-improving/index.md
+```
+
+**使用场景**：
+- 用户纠正你时："不对，应该这样做..." → 自动记录纠正
+- 发现改进空间时："我可以做得更好" → 记录自我反思
+- 查询记忆时："你知道关于X的什么？" → 搜索所有层级
+- 查看模式："显示我的模式" → 列出已学习的规则
+
+**学习信号示例**：
+- 纠正："你弄错了..."、"实际上应该是..."
+- 偏好："我喜欢你..."、"我的风格是..."
+- 模式候选：同一指令重复3次以上
+
+**适用对象**：
+- 🤖 AI Agent 开发者
+- 📈 需要持续改进的系统
+- 🎯 追求个性化的用户
+- 💼 复杂项目的管理者
+
+**技术要求**：
+- 无需额外依赖
+- 无需凭据
+- 可选网络访问（用于主动技能）
+
+[查看详细文档](./skills/self-improving-zh/SKILL.md) | [学习机制](./skills/self-improving-zh/learning.md) | [安全边界](./skills/self-improving-zh/boundaries.md)
+
+---
+
 
 ## 🚀 快速开始
 
