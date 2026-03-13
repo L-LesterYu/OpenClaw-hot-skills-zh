@@ -2965,6 +2965,69 @@ touch ~/self-improving/index.md
 
 ---
 
+### 43. marketing-skills-zh - 23个营销实战手册
+
+**版本**: v0.1.2
+**状态**: ✅ 已发布
+**来源**: [ClawHub - Marketing Skills](https://clawhub.ai)
+
+**功能**：
+- 📚 **23 个营销模块**：涵盖 CRO、SEO、文案、分析、实验、定价、发布、广告、社交媒体等
+- ✅ **检查清单**：快速获取实用的检查清单和可复制粘贴的交付物
+- 🎯 **框架应用**：应用营销框架并输出实用成果（草稿 + 检查清单）
+- 📦 **整合内容**：整合 `coreyhaines31/marketingskills` 的完整内容
+
+**包含的模块**：
+- **转化优化（CRO）**：page-cro、signup-flow-cro、onboarding-cro、form-cro、popup-cro、paywall-upgrade-cro
+- **内容与文案**：copywriting、copy-editing、email-sequence、social-content
+- **SEO 优化**：seo-audit、programmatic-seo、schema-markup
+- **策略与定价**：pricing-strategy、launch-strategy、marketing-ideas、marketing-psychology
+- **付费广告**：paid-ads
+- **其他工具**：analytics-tracking、ab-test-setup、competitor-alternatives、referral-program、free-tool-strategy
+
+**安装**：
+```bash
+cd ~/.openclaw/skills/
+git clone https://github.com/L-LesterYu/OpenClaw-hot-skills-zh.git temp-repo
+cp -r temp-repo/skills/marketing-skills-zh ./
+rm -rf temp-repo
+```
+
+**快速开始**：
+```bash
+# 根据需求选择对应模块
+# 例如：优化落地页转化
+# 读取 references/page-cro/SKILL.md
+
+# 例如：设置 A/B 测试
+# 读取 references/ab-test-setup/SKILL.md
+
+# 例如：创建邮件序列
+# 读取 references/email-sequence/SKILL.md
+```
+
+**使用场景**：
+- "帮我优化落地页的转化率"
+- "设计一个 A/B 测试方案"
+- "创建邮件营销序列"
+- "制定产品发布策略"
+- "优化定价策略"
+
+**输出规则**：
+- 优先考虑 80/20 原则：先抓最大杠杆点
+- 不捏造指标或关键词量，缺失时标注为假设
+- 尽可能包含可复制粘贴的草稿和实施检查清单
+
+**适用对象**：
+- 🚀 创业者和营销人员
+- 📈 增长黑客
+- 💼 产品经理
+- 🎯 内容创作者
+
+[查看详细文档](./skills/marketing-skills-zh/SKILL.md)
+
+---
+
 
 ## 🚀 快速开始
 
