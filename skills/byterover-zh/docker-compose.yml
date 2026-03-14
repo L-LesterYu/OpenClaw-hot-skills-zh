@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  byterover:
+    build: .
+    container_name: byterover-cli
+    working_dir: /workspace
+    volumes:
+      # Mount current directory to /workspace
+      - .:/workspace
+      # Persist credentials
+      - byterover-data:/root/.local/share/brv
+    environment:
+      - BRV_API_KEY=${BRV_API_KEY:-3vkIgJ0NXwXknDTVnshAhCCocdAscVbdOqq3Vj7QKXc}
+      - BRV_TEAM=AI-Agency
+      - BRV_SPACE=punkrecords
+    stdin_open: true
+    tty: true
+
+volumes:
+  byterover-data:
