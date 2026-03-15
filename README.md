@@ -3385,6 +3385,110 @@ slack action="pinMessage" channelId="C123" messageId="1712023032.1234"
 
 ---
 
+### 49. n8n-workflow-automation-zh - n8n 工作流自动化
+
+**版本**: v1.0.0
+**状态**: ✅ 已发布
+**来源**: [ClawHub - n8n Workflow Automation](https://clawhub.ai)
+
+**功能**：
+- 🔧 **工作流设计**：设计并输出 n8n 工作流 JSON
+- 🔄 **健壮机制**：具备重试、日志记录、错误处理机制
+- 🎯 **幂等性保证**：确保重新运行时不会重复记录
+- 👥 **人机协作**：支持审核队列和人工审批步骤
+- 📊 **可审计性**：记录每次运行，不会静默失败
+
+**核心能力**：
+- 支持 Cron/webhook/手动触发器
+- 定义数据契约和验证规则
+- 设计去重键防止重复
+- 添加可观察性（run_id、状态日志）
+- 每节点错误分支和重试机制
+
+**安装**：
+```bash
+cd ~/.openclaw/skills/
+git clone https://github.com/L-LesterYu/OpenClaw-hot-skills-zh.git temp-repo
+cp -r temp-repo/skills/n8n-workflow-automation-zh ./
+rm -rf temp-repo
+```
+
+**使用场景**：
+- "构建一个每周一运行并发送合规摘要的 n8n 工作流"
+- "为此工作流添加错误处理和重试机制"
+- "创建一个记录每次运行的 webhook 工作流"
+- "使此流程具有幂等性"
+- "配备审计日志和人工审批步骤"
+
+**输出格式**：
+- 默认（只读）：工作流设计规范
+- 明确请求：`workflow.json` + `runbook.md`
+
+**注意事项**：
+- 不适用于纯代码自动化（请使用脚本/CI 技能）
+- 不用于绕过安全控制或隐藏审计轨迹
+- 需要明确触发器类型和成功标准
+
+[查看详细文档](./skills/n8n-workflow-automation-zh/SKILL.md)
+
+---
+
+### 50. model-usage-zh - 模型使用情况统计
+
+**版本**: v1.0.0
+**状态**: ✅ 已发布
+**来源**: [ClawHub - Model Usage](https://clawhub.ai)
+
+**功能**：
+- 📊 **成本统计**：从 CodexBar 本地成本日志获取按模型使用成本
+- 🎯 **当前模型**：获取最新模型使用情况
+- 📈 **完整细分**：支持所有模型的详细使用统计
+- 🔧 **多提供商**：支持 Codex 和 Claude 两大提供商
+- 📝 **灵活输出**：支持文本和 JSON 格式输出
+
+**核心能力**：
+- 汇总 Codex 或 Claude 的按模型使用情况
+- 获取当前（最新）模型或完整模型细分
+- 从 codexbar cost JSON 获取可脚本化摘要
+- 支持文件输入和标准输入
+- 提供文本或 JSON 格式输出
+
+**安装**：
+```bash
+cd ~/.openclaw/skills/
+git clone https://github.com/L-LesterYu/OpenClaw-hot-skills-zh.git temp-repo
+cp -r temp-repo/skills/model-usage-zh ./
+rm -rf temp-repo
+```
+
+**快速开始**：
+```bash
+# 获取当前模型使用情况
+python ~/.openclaw/skills/model-usage-zh/scripts/model_usage.py --provider codex --mode current
+
+# 获取所有模型统计
+python ~/.openclaw/skills/model-usage-zh/scripts/model_usage.py --provider codex --mode all
+
+# JSON 格式输出
+python ~/.openclaw/skills/model-usage-zh/scripts/model_usage.py --provider claude --mode all --format json --pretty
+```
+
+**使用场景**：
+- "查看当前使用的模型"
+- "统计所有模型的成本"
+- "获取 Codex 的使用情况"
+- "查看 Claude 的成本细分"
+
+**注意事项**：
+- 需要安装 CodexBar CLI
+- 目前主要支持 macOS（darwin）
+- Linux 支持待添加
+- 数值仅为每个模型的成本，未按模型拆分 token
+
+[查看详细文档](./skills/model-usage-zh/SKILL.md)
+
+---
+
 
 ## 🚀 快速开始
 
