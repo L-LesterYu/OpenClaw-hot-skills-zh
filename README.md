@@ -3673,6 +3673,65 @@ python3 src/ui-ux-pro-max/scripts/search.py "按钮组件" --stack react
 
 ---
 
+### 53. self-improving-proactive-agent-zh - 自我改进与主动学习智能体（增强版）
+
+**版本**: v1.2.16
+**状态**: ✅ 已发布
+**来源**: [ClawIC - Self-Improving](https://clawic.com/skills/self-improving)
+
+**功能**：
+- 🧠 **自我反思**：智能体评估自己的工作，捕捉错误并永久改进
+- 📝 **纠正记录**：自动记录用户纠正，评估是否形成规则
+- 🏗️ **分层记忆**：HOT/WARM/COLD 三层存储，按需加载
+- 🔄 **自动提升/降级**：频繁使用的模式自动提升，长期未用的自动降级
+- 📊 **记忆统计**：各层级记忆数量、最近活动一目了然
+- 💓 **心跳集成**：定期维护记忆，清理过期内容
+- 🔒 **安全边界**：不存储凭证、健康数据等敏感信息
+
+**记忆架构**：
+```
+~/self-improving/
+├── memory.md          # HOT: ≤100 行，始终加载
+├── index.md           # 主题索引及行数
+├── heartbeat-state.md # 心跳状态跟踪
+├── projects/          # 按项目的学习内容
+├── domains/           # 按领域（代码、写作、通信）
+├── archive/           # COLD: 衰退的模式
+└── corrections.md     # 最近 50 条纠正日志
+```
+
+**安装**：
+```bash
+cd ~/.openclaw/skills/
+git clone https://github.com/L-LesterYu/OpenClaw-hot-skills-zh.git temp-repo
+cp -r temp-repo/skills/self-improving-proactive-agent-zh ./
+rm -rf temp-repo
+```
+
+**快速开始**：
+```bash
+# 初始化记忆存储
+mkdir -p ~/self-improving/projects
+mkdir -p ~/self-improving/domains
+mkdir -p ~/self-improving/archive
+touch ~/self-improving/memory.md
+touch ~/self-improving/corrections.md
+touch ~/self-improving/index.md
+```
+
+**使用场景**：
+- 用户纠正你时 → 自动记录纠正，形成长期规则
+- 完成重要任务后 → 自我反思，识别改进点
+- 用户询问记忆 → "你学到了什么？" / "显示我的模式"
+- 记忆管理 → "记忆统计" / "导出记忆" / "忘记 X"
+
+**相关技能**：
+- `self-improving-zh`（基础版）和 `proactive-self-improving-agent-zh` 的功能增强合体版
+
+[查看详细文档](./skills/self-improving-proactive-agent-zh/SKILL.md) | [学习机制](./skills/self-improving-proactive-agent-zh/learning.md) | [安全边界](./skills/self-improving-proactive-agent-zh/boundaries.md) | [设置指南](./skills/self-improving-proactive-agent-zh/setup.md)
+
+---
+
 
 ## 🚀 快速开始
 
