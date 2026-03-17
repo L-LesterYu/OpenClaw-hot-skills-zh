@@ -1,10 +1,10 @@
-# 本体模式参考
+# Ontology Schema Reference
 
-本体图谱的完整类型定义和约束模式。
+Full type definitions and constraint patterns for the ontology graph.
 
-## 核心类型
+## Core Types
 
-### 智能体与人物
+### Agents & People
 
 ```yaml
 Person:
@@ -26,7 +26,7 @@ Organization:
     members: ref(Person)[]?
 ```
 
-### 工作管理
+### Work Management
 
 ```yaml
 Project:
@@ -66,7 +66,7 @@ Goal:
     key_results: string[]?
 ```
 
-### 时间与地点
+### Time & Location
 
 ```yaml
 Event:
@@ -78,7 +78,7 @@ Event:
     end: datetime?
     location: ref(Location)?
     attendees: ref(Person)[]?
-    recurrence: object?  # iCal RRULE 格式
+    recurrence: object?  # iCal RRULE format
     status: enum(confirmed, tentative, cancelled)?
     reminders: object[]?
 
@@ -93,15 +93,15 @@ Location:
     timezone: string?
 ```
 
-### 信息
+### Information
 
 ```yaml
 Document:
   required: [title]
   properties:
     title: string
-    path: string?  # 本地文件路径
-    url: url?      # 远程 URL
+    path: string?  # Local file path
+    url: url?      # Remote URL
     mime_type: string?
     summary: string?
     content_hash: string?
@@ -115,7 +115,7 @@ Message:
     recipients: ref(Person)[]
     thread: ref(Thread)?
     timestamp: datetime
-    platform: string?  # email, slack, whatsapp 等
+    platform: string?  # email, slack, whatsapp, etc.
     external_id: string?
 
 Thread:
@@ -133,17 +133,17 @@ Note:
     content: string
     title: string?
     tags: string[]?
-    refs: ref(Entity)[]?  # 链接到任意实体
+    refs: ref(Entity)[]?  # Links to any entity
     created: datetime
 ```
 
-### 资源
+### Resources
 
 ```yaml
 Account:
   required: [service, username]
   properties:
-    service: string  # github, gmail, aws 等
+    service: string  # github, gmail, aws, etc.
     username: string
     url: url?
     credential_ref: ref(Credential)?
@@ -154,7 +154,7 @@ Device:
     name: string
     type: enum(computer, phone, tablet, server, iot, other)
     os: string?
-    identifiers: object?  # {mac, serial 等}
+    identifiers: object?  # {mac, serial, etc.}
     owner: ref(Person)?
 
 Credential:
@@ -162,18 +162,18 @@ Credential:
   forbidden_properties: [password, secret, token, key, api_key]
   properties:
     service: string
-    secret_ref: string  # 引用密钥存储（如 "keychain:github-token"）
+    secret_ref: string  # Reference to secret store (e.g., "keychain:github-token")
     expires: datetime?
     scope: string[]?
 ```
 
-### 元数据
+### Meta
 
 ```yaml
 Action:
   required: [type, target, timestamp]
   properties:
-    type: string  # create, update, delete, send 等
+    type: string  # create, update, delete, send, etc.
     target: ref(Entity)
     timestamp: datetime
     actor: ref(Person|Agent)?
@@ -183,15 +183,15 @@ Action:
 Policy:
   required: [scope, rule]
   properties:
-    scope: string  # 此策略适用的范围
-    rule: string   # 自然语言或代码形式的约束条件
+    scope: string  # What this policy applies to
+    rule: string   # The constraint in natural language or code
     enforcement: enum(block, warn, log)
     enabled: boolean
 ```
 
-## 关系类型
+## Relation Types
 
-### 所有权与分配
+### Ownership & Assignment
 
 ```yaml
 owns:
@@ -210,7 +210,7 @@ assigned_to:
   cardinality: many_to_one
 ```
 
-### 层级与包含
+### Hierarchy & Containment
 
 ```yaml
 has_task:
@@ -234,13 +234,13 @@ part_of:
   cardinality: many_to_one
 ```
 
-### 依赖关系
+### Dependencies
 
 ```yaml
 blocks:
   from_types: [Task]
   to_types: [Task]
-  acyclic: true  # 防止循环依赖
+  acyclic: true  # Prevents circular dependencies
   cardinality: many_to_many
 
 depends_on:
@@ -255,7 +255,7 @@ requires:
   cardinality: many_to_many
 ```
 
-### 引用
+### References
 
 ```yaml
 mentions:
@@ -274,7 +274,7 @@ follows_up:
   cardinality: many_to_one
 ```
 
-### 事件
+### Events
 
 ```yaml
 attendee_of:
@@ -290,33 +290,33 @@ located_at:
   cardinality: many_to_one
 ```
 
-## 全局约束
+## Global Constraints
 
 ```yaml
 constraints:
-  # 凭证绝不能直接存储密钥
+  # Credentials must never store secrets directly
   - type: Credential
     rule: "forbidden_properties: [password, secret, token]"
-    message: "凭证必须使用 secret_ref 引用外部密钥存储"
+    message: "Credentials must use secret_ref to reference external secret storage"
 
-  # 任务必须遵循有效的状态转换
+  # Tasks must have valid status transitions
   - type: Task
     rule: "status transitions: open -> in_progress -> (done|blocked) -> done"
     enforcement: warn
 
-  # 事件的结束时间必须不早于开始时间
+  # Events must have end >= start
   - type: Event
     rule: "if end exists: end >= start"
-    message: "事件结束时间必须晚于开始时间"
+    message: "Event end time must be after start time"
 
-  # 任务不应孤立（应属于某个项目或拥有明确负责人）
+  # No orphan tasks (should belong to a project or have explicit owner)
   - type: Task
     rule: "has_relation(part_of, Project) OR has_property(owner)"
     enforcement: warn
-    message: "任务应属于某个项目或拥有明确负责人"
+    message: "Task should belong to a project or have an explicit owner"
 
-  # 防止循环依赖
+  # Circular dependency prevention
   - relation: blocks
     rule: "acyclic"
-    message: "不允许循环任务依赖"
+    message: "Circular task dependencies are not allowed"
 ```

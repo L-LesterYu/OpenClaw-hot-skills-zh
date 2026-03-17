@@ -1,87 +1,87 @@
-# 查询参考
+# Query Reference
 
-查询模式和图谱遍历示例。
+Query patterns and graph traversal examples.
 
-## 基础查询
+## Basic Queries
 
-### 按 ID 获取
+### Get by ID
 
 ```bash
 python3 scripts/ontology.py get --id task_001
 ```
 
-### 按类型列出
+### List by Type
 
 ```bash
-# 所有任务
+# All tasks
 python3 scripts/ontology.py list --type Task
 
-# 所有人物
+# All people
 python3 scripts/ontology.py list --type Person
 ```
 
-### 按属性过滤
+### Filter by Properties
 
 ```bash
-# 待办任务
+# Open tasks
 python3 scripts/ontology.py query --type Task --where '{"status":"open"}'
 
-# 高优先级任务
+# High priority tasks
 python3 scripts/ontology.py query --type Task --where '{"priority":"high"}'
 
-# 分配给特定人物的任务（按属性）
+# Tasks assigned to specific person (by property)
 python3 scripts/ontology.py query --type Task --where '{"assignee":"p_001"}'
 ```
 
-## 关系查询
+## Relation Queries
 
-### 获取关联实体
+### Get Related Entities
 
 ```bash
-# 某项目下的任务（出方向）
+# Tasks belonging to a project (outgoing)
 python3 scripts/ontology.py related --id proj_001 --rel has_task
 
-# 该任务属于哪些项目（入方向）
+# What projects does this task belong to (incoming)
 python3 scripts/ontology.py related --id task_001 --rel part_of --dir incoming
 
-# 某实体的所有关系（双向）
+# All relations for an entity (both directions)
 python3 scripts/ontology.py related --id p_001 --dir both
 ```
 
-### 常用模式
+### Common Patterns
 
 ```bash
-# 谁负责这个项目？
+# Who owns this project?
 python3 scripts/ontology.py related --id proj_001 --rel has_owner
 
-# 这个人参加了哪些活动？
+# What events is this person attending?
 python3 scripts/ontology.py related --id p_001 --rel attendee_of --dir outgoing
 
-# 什么在阻塞这个任务？
+# What's blocking this task?
 python3 scripts/ontology.py related --id task_001 --rel blocked_by --dir incoming
 ```
 
-## 编程式查询
+## Programmatic Queries
 
 ### Python API
 
 ```python
 from scripts.ontology import load_graph, query_entities, get_related
 
-# 加载图谱
+# Load the graph
 entities, relations = load_graph("memory/ontology/graph.jsonl")
 
-# 查询实体
+# Query entities
 open_tasks = query_entities("Task", {"status": "open"}, "memory/ontology/graph.jsonl")
 
-# 获取关联
+# Get related
 project_tasks = get_related("proj_001", "has_task", "memory/ontology/graph.jsonl")
 ```
 
-### 复杂查询
+### Complex Queries
 
 ```python
-# 查找所有因未完成依赖而被阻塞的任务
+# Find all tasks blocked by incomplete dependencies
 def find_blocked_tasks(graph_path):
     entities, relations = load_graph(graph_path)
     blocked = []
@@ -90,7 +90,7 @@ def find_blocked_tasks(graph_path):
         if entity["type"] != "Task":
             continue
         if entity["properties"].get("status") == "blocked":
-            # 查找阻塞源
+            # Find what's blocking it
             blockers = get_related(entity["id"], "blocked_by", graph_path, "incoming")
             incomplete_blockers = [
                 b for b in blockers 
@@ -105,10 +105,10 @@ def find_blocked_tasks(graph_path):
     return blocked
 ```
 
-### 路径查询
+### Path Queries
 
 ```python
-# 查找两个实体之间的路径
+# Find path between two entities
 def find_path(from_id, to_id, graph_path, max_depth=5):
     entities, relations = load_graph(graph_path)
     
@@ -132,79 +132,79 @@ def find_path(from_id, to_id, graph_path, max_depth=5):
             if rel["to"] == current and rel["from"] not in visited:
                 queue.append((rel["from"], path + [{**rel, "direction": "incoming"}]))
     
-    return None  # 未找到路径
+    return None  # No path found
 ```
 
-## 按使用场景的查询模式
+## Query Patterns by Use Case
 
-### 任务管理
+### Task Management
 
 ```bash
-# 我的所有待办任务
+# All my open tasks
 python3 scripts/ontology.py query --type Task --where '{"status":"open","assignee":"p_me"}'
 
-# 逾期任务（需要自定义脚本进行日期比较）
-# 参见 references/schema.md 了解日期处理方式
+# Overdue tasks (requires custom script for date comparison)
+# See references/schema.md for date handling
 
-# 没有阻塞的任务
+# Tasks with no blockers
 python3 scripts/ontology.py query --type Task --where '{"status":"open"}'
-# 然后在代码中过滤掉有入方向 "blocks" 关系的任务
+# Then filter in code for those with no incoming "blocks" relations
 ```
 
-### 项目概览
+### Project Overview
 
 ```bash
-# 项目中的所有任务
+# All tasks in project
 python3 scripts/ontology.py related --id proj_001 --rel has_task
 
-# 项目团队成员
+# Project team members
 python3 scripts/ontology.py related --id proj_001 --rel has_member
 
-# 项目目标
+# Project goals
 python3 scripts/ontology.py related --id proj_001 --rel has_goal
 ```
 
-### 人员与联系人
+### People & Contacts
 
 ```bash
-# 所有人物
+# All people
 python3 scripts/ontology.py list --type Person
 
-# 组织中的成员
+# People in an organization
 python3 scripts/ontology.py related --id org_001 --rel has_member
 
-# 分配给此人的任务
+# What's assigned to this person
 python3 scripts/ontology.py related --id p_001 --rel assigned_to --dir incoming
 ```
 
-### 事件与日程
+### Events & Calendar
 
 ```bash
-# 所有事件
+# All events
 python3 scripts/ontology.py list --type Event
 
-# 某地点的事件
+# Events at a location
 python3 scripts/ontology.py related --id loc_001 --rel located_at --dir incoming
 
-# 活动参与者
+# Event attendees
 python3 scripts/ontology.py related --id event_001 --rel attendee_of --dir incoming
 ```
 
-## 聚合查询
+## Aggregations
 
-对于复杂聚合，使用 Python：
+For complex aggregations, use Python:
 
 ```python
 from collections import Counter
 
 def task_status_summary(project_id, graph_path):
-    """按状态统计项目任务数量。"""
+    """Count tasks by status for a project."""
     tasks = get_related(project_id, "has_task", graph_path)
     statuses = Counter(t["entity"]["properties"].get("status", "unknown") for t in tasks)
     return dict(statuses)
 
 def workload_by_person(graph_path):
-    """按人员统计待办任务数量。"""
+    """Count open tasks per person."""
     open_tasks = query_entities("Task", {"status": "open"}, graph_path)
     workload = Counter(t["properties"].get("assignee") for t in open_tasks)
     return dict(workload)
