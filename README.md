@@ -3783,6 +3783,81 @@ openclaw config set skills.entries.admapix-zh.apiKey "你的ADMAPIX_API_KEY"
 
 ---
 
+### 55. minara-zh - 加密货币交易与钱包
+
+**版本**: v2.5.2
+**状态**: ✅ 已发布
+**来源**: [Minara](https://minara.ai)
+
+**功能**：
+- 💱 **代币兑换**：支持 EVM + Solana 多链代币兑换
+- 📈 **永续合约**：永续合约交易（做多/做空）、限价单
+- 💸 **转账支付**：加密货币转账、x402 支付协议
+- 💳 **充值提现**：信用卡充值、加密货币充值、法币提现
+- 🤖 **AI 聊天**：内置 AI 聊天助手，支持市场研究和分析
+- 🔍 **市场发现**：热门代币、价格查询、DeFi 收益分析
+- 📊 **自动交易**：支持自动化交易策略
+- 👛 **内置钱包**：通过 Minara CLI 管理多链钱包
+
+**支持的链**：
+- Ethereum、Solana、Base、Arbitrum、Optimism
+- Polygon、BSC、Avalanche、Berachain、Hyperliquid
+
+**核心命令**：
+```bash
+# 代币兑换
+minara swap -s buy -t 'ETH' -a 100
+minara swap -s sell -t 'BONK' -a all
+
+# 查询余额
+minara balance
+
+# 转账
+minara transfer -t 'USDC' -a 50 -r <wallet_address>
+
+# 永续合约
+minara perps order -s long -t 'ETH' -a 100 -l 5
+
+# 市场发现
+minara discover
+```
+
+**安装**：
+```bash
+# 1. 安装 Minara CLI
+npm install -g minara@latest
+
+# 2. 登录
+minara login
+
+# 3. 安装 Skill
+cd ~/.openclaw/skills/
+git clone https://github.com/L-LesterYu/OpenClaw-hot-skills-zh.git temp-repo
+cp -r temp-repo/skills/minara-zh ./
+rm -rf temp-repo
+```
+
+**使用场景**：
+- "帮我把 0.1 ETH 兑换为 USDC"
+- "查询我的钱包余额"
+- "买入 100 USDC 的 SOL"
+- "热门代币有哪些？"
+- "开多 ETH，5 倍杠杆"
+
+**安全特性**：
+- 所有资金操作需用户明确确认
+- 绝不自动确认交易
+- 支持模拟交易（dry-run）
+
+**注意事项**：
+- 需要安装 Minara CLI（`npm install -g minara@latest`）
+- 需要登录 Minara 账户或设置 `MINARA_API_KEY` 环境变量
+- 交易操作会消耗 Gas 费用
+
+[查看详细文档](./skills/minara-zh/SKILL.md) | [安装指南](./skills/minara-zh/setup.md) | [使用示例](./skills/minara-zh/examples.md)
+
+---
+
 
 ## 🚀 快速开始
 
