@@ -3858,6 +3858,54 @@ rm -rf temp-repo
 
 ---
 
+### 56. memory-setup-zh - 记忆设置
+
+**版本**: v1.0.0
+**状态**: ✅ 已发布
+**来源**: ClawHub
+
+**功能**：
+- 🧠 **记忆配置**：启用并配置 Moltbot/Clawdbot 的持久化记忆搜索功能
+- 📝 **目录结构**：自动创建 MEMORY.md、每日日志和向量搜索的目录结构
+- 🔍 **搜索配置**：支持 Voyage、OpenAI、本地嵌入向量三种提供商
+- 🛠️ **故障排除**：完整的诊断和修复指南
+
+**核心配置**：
+```json
+{
+  "memorySearch": {
+    "enabled": true,
+    "provider": "voyage",
+    "sources": ["memory", "sessions"],
+    "indexMode": "hot",
+    "minScore": 0.3,
+    "maxResults": 20
+  }
+}
+```
+
+**安装**：
+```bash
+cd ~/.openclaw/skills/
+git clone https://github.com/L-LesterYu/OpenClaw-hot-skills-zh.git temp-repo
+cp -r temp-repo/skills/memory-setup-zh ./
+rm -rf temp-repo
+```
+
+**使用场景**：
+- "帮我开启记忆功能"
+- "Agent 每次都忘记，怎么修？"
+- "配置 memorySearch"
+- "从金鱼变成大象 🐘"
+
+**注意事项**：
+- 需要在配置中启用 `memorySearch.enabled: true`
+- Voyage 提供商需要设置 `VOYAGE_API_KEY` 环境变量
+- 配置更改后需重启网关
+
+[查看详细文档](./skills/memory-setup-zh/SKILL.md)
+
+---
 
 ## 🚀 快速开始
 
