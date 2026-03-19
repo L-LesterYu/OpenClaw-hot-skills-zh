@@ -4006,6 +4006,58 @@ rm -rf temp-repo
 
 ---
 
+### 59. ai-persona-os-zh - AI 人格操作系统
+
+**版本**: v1.0.0
+**状态**: ✅ 已发布
+**来源**: [ClawHub - AI Persona OS](https://clawhub.ai)
+
+**功能**：
+- 🎭 **人格设置向导**：首次运行向导，快速配置 AI 助手的个性化人格
+- 💬 **聊天指令系统**：统一的命令入口，根据意图自动路由到对应模块
+- 🛡️ **上下文保护**：检查点和心跳机制，确保上下文不丢失
+- 📊 **健康监控仪表盘**：实时查看系统运行状态和环境健康状况
+- 🧠 **学习记录系统**：自动记录学习内容和错误，支持后续回顾
+
+**核心命令**：
+```bash
+/persona setup       # 首次运行向导，配置 AI 助手人格
+/persona status      # 查看系统健康仪表盘
+/persona help        # 列出所有可用命令
+/persona checkpoint  # 立即保存当前上下文
+/persona heartbeat   # 运行环境健康检查
+/persona learn "记住在文件操作前检查权限"  # 记录学习或错误
+```
+
+**工作原理**：
+1. 读取意图映射配置
+2. 将用户输入与关键词模式匹配
+3. 路由到正确的技能模块
+4. 无匹配时显示回退帮助信息
+
+**安装**：
+```bash
+cd ~/.openclaw/skills/
+git clone https://github.com/L-LesterYu/OpenClaw-hot-skills-zh.git temp-repo
+cp -r temp-repo/skills/ai-persona-os-zh ./
+rm -rf temp-repo
+```
+
+**使用场景**：
+- 为 AI 助手配置独特的个性化人格
+- 查看和管理 AI 助手的运行状态
+- 保护上下文不因会话中断而丢失
+- 记录和回顾学习经验
+
+**注意事项**：
+- 首次使用建议运行 `persona setup` 进行初始化配置
+- 定期运行 `persona checkpoint` 保护重要上下文
+- 学习记录可用于持续改进 AI 助手的行为
+
+[查看详细文档](./skills/ai-persona-os-zh/SKILL.md)
+
+---
+
 ## 🚀 快速开始
 
 ### 前置要求

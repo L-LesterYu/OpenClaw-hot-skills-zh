@@ -1,0 +1,195 @@
+# AI 人格操作系统 — 意图映射配置
+# 将用户输入路由到对应的技能模块
+
+intents:
+  - name: setup
+    keywords:
+      - setup
+      - install
+      - preset
+      - get started
+      - first run
+      - fresh install
+      - initialize
+      - wizard
+      - onboard
+      - configure workspace
+      - initial setup
+      - persona configuration
+      - 设置
+      - 安装
+      - 初始化
+      - 向导
+      - 配置
+    skill: persona-setup
+
+  - name: status
+    keywords:
+      - status
+      - dashboard
+      - how's my system
+      - system status
+      - check status
+      - 健康检查
+      - 系统状态
+      - 仪表盘
+    skill: persona-commands
+    args: status
+
+  - name: show_persona
+    keywords:
+      - show persona
+      - what's my persona
+      - who am I
+      - show identity
+      - 显示人格
+      - 我是谁
+      - 人格信息
+    skill: persona-commands
+    args: show persona
+
+  - name: show_memory
+    keywords:
+      - show memory
+      - what do I remember
+      - memory contents
+      - 显示记忆
+      - 查看记忆
+    skill: persona-commands
+    args: show memory
+
+  - name: checkpoint
+    keywords:
+      - checkpoint
+      - save context
+      - preserve
+      - save progress
+      - create checkpoint
+      - save state
+      - resume
+      - 检查点
+      - 保存进度
+      - 保存上下文
+    skill: persona-commands
+    args: checkpoint
+
+  - name: heartbeat
+    keywords:
+      - heartbeat
+      - monitor
+      - pulse
+      - context check
+      - health
+      - 心跳
+      - 监控
+      - 健康检查
+    skill: persona-heartbeat
+
+  - name: learn
+    keywords:
+      - learn
+      - mistake
+      - error
+      - review
+      - promote
+      - growth
+      - learning
+      - capture
+      - pattern
+      - improvement
+      - 学习
+      - 错误
+      - 复盘
+      - 提升
+      - 记录
+    skill: persona-learning
+
+  - name: health_check
+    keywords:
+      - health check
+      - run diagnostics
+      - check health
+      - system check
+      - 运行诊断
+      - 系统诊断
+    skill: persona-commands
+    args: health check
+
+  - name: security_audit
+    keywords:
+      - security audit
+      - check security
+      - audit security
+      - security check
+      - 安全审计
+      - 安全检查
+    skill: persona-commands
+    args: security audit
+
+  - name: config
+    keywords:
+      - show config
+      - validate config
+      - check config
+      - show configuration
+      - 显示配置
+      - 验证配置
+    skill: persona-commands
+    args: show config
+
+  - name: help
+    keywords:
+      - help
+      - what can I do
+      - available commands
+      - command list
+      - 帮助
+      - 有什么命令
+    skill: persona-commands
+    args: help
+
+  - name: advisor_on
+    keywords:
+      - advisor on
+      - enable advisor
+      - turn on advisor
+      - proactive on
+      - 开启顾问
+      - 启用主动模式
+    skill: persona-commands
+    args: advisor on
+
+  - name: advisor_off
+    keywords:
+      - advisor off
+      - disable advisor
+      - turn off advisor
+      - proactive off
+      - 关闭顾问
+      - 禁用主动模式
+    skill: persona-commands
+    args: advisor off
+
+  - name: switch_preset
+    keywords:
+      - switch preset
+      - change persona
+      - switch configuration
+      - change preset
+      - 切换预设
+      - 更换人格
+    skill: persona-commands
+    args: switch preset
+
+fallback:
+  message: |
+    🤖 AI 人格操作系统 — 可用命令：
+    
+    • **persona setup** — 运行设置向导
+    • **persona status** — 查看系统状态
+    • **persona help** — 显示所有命令
+    • **persona checkpoint** — 保存当前进度
+    • **persona heartbeat** — 运行健康检查
+    • **persona learn** — 记录学习内容
+    
+    输入 'persona help' 查看详细用法。
