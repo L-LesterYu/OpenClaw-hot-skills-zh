@@ -1,0 +1,10 @@
+README.md
+main.py
+setup.py
+watcher.py
+freeride.egg-info/PKG-INFO
+freeride.egg-info/SOURCES.txt
+freeride.egg-info/dependency_links.txt
+freeride.egg-info/entry_points.txt
+freeride.egg-info/requires.txt
+freeride.egg-info/top_level.txt

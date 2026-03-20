@@ -1,0 +1,41 @@
+{
+  "name": "freeride-zh",
+  "displayName": "FreeRide - OpenClaw 免费AI",
+  "version": "1.0.1",
+  "description": "通过 OpenRouter 的免费模型为 OpenClaw 提供无限免费 AI 访问，支持自动故障切换",
+  "author": "Shaishav Pidadi",
+  "repository": "https://github.com/Shaivpidadi/FreeRide",
+  "license": "MIT",
+  "commands": [
+    "list",
+    "switch",
+    "auto",
+    "status",
+    "refresh",
+    "fallbacks"
+  ],
+  "binaries": {
+    "freeride": "main:main",
+    "freeride-watcher": "watcher:main"
+  },
+  "dependencies": {
+    "requests": ">=2.31.0"
+  },
+  "config": {
+    "OPENROUTER_API_KEY": {
+      "description": "您的 OpenRouter API 密钥（在 openrouter.ai/keys 免费获取）",
+      "required": true,
+      "env": true
+    }
+  },
+  "openclaw": {
+    "compatible": true,
+    "minVersion": "1.0.0",
+    "configPath": "~/.openclaw/openclaw.json",
+    "configKeys": [
+      "agents.defaults.model",
+      "agents.defaults.models"
+    ]
+  },
+  "install": "npx clawhub@latest install freeride && cd ~/.openclaw/workspace/skills/freeride-zh && pip install -e ."
+}

@@ -1,0 +1,14 @@
+Metadata-Version: 2.1
+Name: freeride
+Version: 1.0.0
+Summary: Free AI for OpenClaw - Automatic free model management via OpenRouter
+Home-page: https://github.com/Shaivpidadi/FreeRide
+Author: Shaishav Pidadi
+License: MIT
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.8
+
+UNKNOWN
+
