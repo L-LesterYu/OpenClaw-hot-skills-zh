@@ -1,0 +1,60 @@
+{
+  "name": "@openguardrails/moltguard",
+  "version": "6.0.2",
+  "description": "Local prompt sanitization and prompt injection detection for OpenClaw powered by MoltGuard",
+  "type": "module",
+  "main": "index.ts",
+  "bin": {
+    "moltguard-gateway": "./gateway/index.ts"
+  },
+  "openclaw": {
+    "extensions": ["./index.ts"]
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "typecheck:plugin": "tsc --noEmit -p tsconfig.plugin.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "gateway": "node --loader ts-node/esm gateway/index.ts"
+  },
+  "keywords": [
+    "openclaw",
+    "moltguard",
+    "prompt-injection",
+    "security",
+    "ai-safety",
+    "guard",
+    "pii-protection",
+    "data-sanitization"
+  ],
+  "author": "MoltGuard",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/openguardrails/moltguard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/openguardrails/moltguard/issues"
+  },
+  "homepage": "https://github.com/openguardrails/moltguard#readme",
+  "files": [
+    "index.ts",
+    "gateway-manager.ts",
+    "agent/",
+    "gateway/",
+    "memory/",
+    "dist/",
+    "openclaw.plugin.json",
+    "tsconfig.json",
+    "README.md"
+  ],
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.0.0"
+  },
+  "peerDependencies": {
+    "openclaw": "*"
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "id": "moltguard",
+  "name": "MoltGuard",
+  "description": "本地提示词净化与提示注入检测，由 MoltGuard 驱动",
+  "version": "6.0.0",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "enabled": {
+        "type": "boolean",
+        "description": "启用或禁用防护（默认：true）"
+      },
+      "sanitizePrompt": {
+        "type": "boolean",
+        "description": "启用本地提示词净化网关（默认：false）"
+      },
+      "gatewayPort": {
+        "type": "number",
+        "description": "本地净化网关端口（默认：8900）"
+      },
+      "gatewayAutoStart": {
+        "type": "boolean",
+        "description": "插件加载时自动启动网关（默认：true）"
+      },
+      "blockOnRisk": {
+        "type": "boolean",
+        "description": "检测到注入时拦截工具调用（默认：true）"
+      },
+      "apiKey": {
+        "type": "string",
+        "description": "MoltGuard API 密钥（可选 — 留空则自动注册）"
+      },
+      "timeoutMs": {
+        "type": "number",
+        "description": "分析超时时间（毫秒，默认：60000）"
+      },
+      "logPath": {
+        "type": "string",
+        "description": "JSONL 日志文件目录路径（默认：~/.openclaw/logs）"
+      },
+      "autoRegister": {
+        "type": "boolean",
+        "description": "当 apiKey 为空时自动注册 API 密钥（默认：true）"
+      },
+      "apiBaseUrl": {
+        "type": "string",
+        "description": "MoltGuard API 基础 URL（默认：https://api.moltguard.com）"
+      }
+    }
+  },
+  "uiHints": {
+    "enabled": {
+      "label": "启用防护",
+      "help": "启用或禁用提示注入检测"
+    },
+    "sanitizePrompt": {
+      "label": "净化提示词",
+      "help": "启用本地提示词净化，在发送到 LLM 前保护敏感数据（银行卡、密码等）。需要网关。"
+    },
+    "gatewayPort": {
+      "label": "网关端口",
+      "help": "本地净化网关端口",
+      "advanced": true
+    },
+    "gatewayAutoStart": {
+      "label": "自动启动网关",
+      "help": "OpenClaw 启动时自动启动网关进程",
+      "advanced": true
+    },
+    "blockOnRisk": {
+      "label": "风险时拦截",
+      "help": "检测到提示注入时拦截工具调用"
+    },
+    "apiKey": {
+      "label": "API 密钥",
+      "help": "你的 MoltGuard API 密钥。留空则首次使用时自动注册。",
+      "advanced": true
+    },
+    "timeoutMs": {
+      "label": "超时时间（毫秒）",
+      "help": "分析最大耗时",
+      "advanced": true
+    },
+    "logPath": {
+      "label": "日志目录",
+      "help": "JSONL 分析日志文件的自定义路径",
+      "advanced": true
+    },
+    "autoRegister": {
+      "label": "自动注册 API 密钥",
+      "help": "启用后，若 apiKey 为空，MoltGuard 将在首次使用时注册密钥。如需严格的禁止网络/受管理部署，请禁用此选项。",
+      "advanced": true
+    },
+    "apiBaseUrl": {
+      "label": "API 基础 URL",
+      "help": "覆盖 MoltGuard API 端点（如预发布或自托管环境）。",
+      "advanced": true
+    }
+  }
+}
