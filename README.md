@@ -4214,6 +4214,75 @@ sed 's/<[^>]*>//g' | head -30
 
 ---
 
+### 63. qmd-zh - 本地搜索/索引工具
+
+**版本**: v1.0.0
+**状态**: ✅ 已发布
+**来源**: [GitHub - tobi/qmd](https://github.com/tobi/qmd)
+**首页**: https://tobi.lutke.com
+
+**功能**：
+- 📝 **本地文件索引**：对本地 Markdown 等文件建立全文索引
+- 🔍 **BM25 关键词搜索**：经典的关键词匹配搜索
+- 🧠 **向量语义搜索**：基于 Ollama 的语义向量搜索
+- 🔄 **混合搜索**：结合 BM25 + 向量 + 重排序的混合搜索（推荐）
+- 📄 **文档获取**：获取指定文件的内容片段
+- 🔌 **MCP 模式**：支持以 MCP 服务器方式运行
+
+**核心命令**：
+```bash
+# 添加集合
+qmd collection add /path --name docs --mask "**/*.md"
+
+# 更新索引
+qmd update
+
+# 查看状态
+qmd status
+
+# BM25 搜索
+qmd search "查询内容"
+
+# 向量语义搜索
+qmd vsearch "查询内容"
+
+# 混合搜索（推荐）
+qmd query "查询内容"
+
+# 获取文档内容
+qmd get docs/path.md:10 -l 40
+
+# MCP 模式
+qmd mcp
+```
+
+**安装**：
+```bash
+# 1. 安装 qmd CLI
+npm install -g https://github.com/tobi/qmd
+
+# 2. 安装 Skill
+cd ~/.openclaw/skills/
+git clone https://github.com/L-LesterYu/OpenClaw-hot-skills-zh.git temp-repo
+cp -r temp-repo/skills/qmd-zh ./
+rm -rf temp-repo
+```
+
+**使用场景**：
+- "在本地文档中搜索关于 X 的内容"
+- "索引我的笔记目录"
+- "用混合搜索查找相关文档"
+- "获取某个文档的指定片段"
+
+**注意事项**：
+- 向量搜索和重排序功能使用 Ollama，需设置 `OLLAMA_URL`（默认 `http://localhost:11434`）
+- 索引数据默认存储在 `~/.cache/qmd` 目录下
+- 需要安装 Node.js 和 Ollama（用于向量搜索）
+
+[查看详细文档](./skills/qmd-zh/SKILL.md) | [GitHub](https://github.com/tobi/qmd)
+
+---
+
 ## 🚀 快速开始
 
 ### 前置要求
