@@ -166,7 +166,7 @@
 | **轻量改进** | `self-improving-zh` | 简洁的自我反思和学习循环 |
 | **长期记忆** | `elite-longterm-memory-zh` | WAL 协议 + 向量搜索，适合大量上下文持久化 |
 
-> 💡 `self-improvement-zh` 和 `self-improving-zh` 功能高度重叠，选其一即可。`self-improving-proactive-agent-zh` 是改进 + 主动的组合版。
+> 💡 `self-improvement-zh` 和 `self-improving-zh` `self-improving-proactive-agent-zh`功能高度重叠，选其一即可。`self-improving-proactive-agent-zh` 是改进 + 主动的组合版。
 
 ### 📈 股票分析怎么选？
 
