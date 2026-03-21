@@ -30,7 +30,6 @@
 | [tavily-search-zh](skills/tavily-search-zh/SKILL.md) | 轻量网页搜索首选，结果精准，API Key 免费申请即用 |
 | [proactive-self-improving-agent-zh](skills/proactive-self-improving-agent-zh/SKILL.md) | **让 Agent 越用越聪明**——自动捕获经验、纠正错误、积累知识 |
 | [frontend-design-zh](skills/frontend-design-zh/SKILL.md) | 纯文本描述即可生成生产级 React 网站，设计师的最强辅助 |
-| [gongwen-zh](skills/gongwen-zh/SKILL.md) | **中文用户刚需**——按党政机关公文标准自动排版，格式零失误 |
 | [word-docx-zh](skills/word-docx-zh/SKILL.md) | 一句话创建/编辑 Word 文档，支持样式、表格、修订，日常办公必备 |
 | [markdown-converter-zh](skills/markdown-converter-zh/SKILL.md) | PDF/Word/PPT/Excel → Markdown 一键转换，喂给 AI 的万能适配器 |
 | [skill-vetter-zh](skills/skill-vetter-zh/SKILL.md) | 安装任何技能前先过一遍安全扫描，保护你的系统 |
