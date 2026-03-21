@@ -204,7 +204,7 @@ cd OpenClaw-hot-skills-zh/
 cp -r skills/<skill-name> ~/.openclaw/skills/
 ```
 
-**方式二：通过 ClawHub 安装**（部分技能支持）
+**方式二：通过 ClawHub 安装**（安装英文原版，部分技能支持）
 ```bash
 openclaw skill install <skill-name>
 ```
