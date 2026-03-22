@@ -128,6 +128,7 @@
 | [markdown-converter-zh](skills/markdown-converter-zh/SKILL.md) | PDF/Word/PPT/Excel/HTML 等转 Markdown，支持 OCR 和音频转录 | 📦 |
 | [video-frames-zh](skills/video-frames-zh/SKILL.md) | 使用 ffmpeg 从视频中提取帧或短片段 | 📦 |
 | [openai-whisper-zh](skills/openai-whisper-zh/SKILL.md) | 本地语音转文字，无需 API Key | 📦 |
+| [humanizer-zh](skills/humanizer-zh/SKILL.md) | 检测并移除 AI 写作痕迹，基于 Wikipedia 指南修复 24 种 AI 文本模式（过度夸大、促销语言、模糊归因等），让文本更自然 | ✅ |
 
 ### 📊 数据分析
 
@@ -186,7 +187,10 @@
 
 ### ✍️ 文本人性化怎么选？
 
-`humanizer-zh` 和 `humanize-ai-text-zh` 功能相同（均为移除 AI 写作痕迹），任选其一即可。
+| 场景 | 推荐 | 理由 |
+|------|------|------|
+| **首选** | `humanizer-zh` | 基于 Wikipedia 指南，覆盖 24 种 AI 写作模式，修复更全面 |
+| **轻量替代** | `humanize-ai-text-zh` | 功能相同，结构更简洁，任选其一即可 |
 
 ---
 
