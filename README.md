@@ -127,7 +127,7 @@
 | [nano-pdf-zh](skills/nano-pdf-zh/SKILL.md) | 通过 nano-pdf CLI 用自然语言指令编辑 PDF 特定页面，支持标题修改、内容更正等精准操作 | 📦 |
 | [excel-xlsx-zh](skills/excel-xlsx-zh/SKILL.md) | 创建、检查和编辑 Excel 工作簿，支持公式、日期、格式化和模板保留 | 📦 |
 | [markdown-converter-zh](skills/markdown-converter-zh/SKILL.md) | 基于 markitdown 将 15+ 种文档格式转为 Markdown，支持图片 OCR、音频转录、YouTube 字幕提取及 ZIP 解包 | 📦 |
-| [video-frames-zh](skills/video-frames-zh/SKILL.md) | 使用 ffmpeg 从视频中提取帧或短片段 | 📦 |
+| [video-frames-zh](skills/video-frames-zh/SKILL.md) | 基于 ffmpeg 提取视频帧——支持指定时间点截取单帧画面，JPG/PNG 双格式输出，用于视频预览与截图 | 📦 |
 | [openai-whisper-zh](skills/openai-whisper-zh/SKILL.md) | 本地运行 OpenAI Whisper 模型进行语音转录与翻译，支持多音频格式、多模型尺寸选择，数据不出本地 | 📦 |
 | [humanizer-zh](skills/humanizer-zh/SKILL.md) | 检测并移除 AI 写作痕迹，基于 Wikipedia 指南修复 24 种 AI 文本模式（过度夸大、促销语言、模糊归因等），让文本更自然 | ✅ |
 | [humanize-ai-text-zh](skills/humanize-ai-text-zh/SKILL.md) | AI 文本人性化——基于 Wikipedia 指南检测修复 24 种 AI 写作模式，三阶段工作流（草稿→反 AI 自检→最终修订），附"注入灵魂"个性写作指导 | ✅ |
