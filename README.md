@@ -92,7 +92,7 @@
 | [ui-ux-pro-max-zh](skills/ui-ux-pro-max-zh/README.md) | AI 设计智能工具包——UI 风格、配色、字体、UX 指南数据库 | 📦 |
 | [nano-banana-pro-zh](skills/nano-banana-pro-zh/SKILL.md) | 通过 Gemini 3 Pro Image API 生成与编辑图像——支持文生图、图生图及 1K/2K/4K 分辨率，内置草稿→迭代→最终渐进工作流 | 💰📦 |
 | [content-ideas-generator-zh](skills/content-ideas-generator-zh/SKILL.md) | 从新闻通讯/笔记/脚本等素材中提炼反直觉洞察，生成 5 个高互动社交媒体帖子大纲——包含悖论框架、转变弧线、异议预判与语言技巧应用，仅输出大纲不写全文 | ✅ |
-| [marketing-mode-zh](skills/marketing-mode-zh/SKILL.md) | 23 个营销技能整合——战略、心理学、SEO、转化优化、付费增长 | ✅ |
+| [marketing-mode-zh](skills/marketing-mode-zh/SKILL.md) | 营销战略知识库——以专家人"Mark"提供 140+ 实战营销方法，覆盖 SEO、付费广告、社交媒体、邮件营销、PR、产品驱动增长等 23 个子领域，含 5 阶段发布框架与转化优化体系 | 📦 |
 | [marketing-skills-zh](skills/marketing-skills-zh/SKILL.md) | 23 个营销实战手册——CRO、SEO、文案、分析、实验、定价等 | ✅ |
 | [admapix-zh](skills/admapix-zh/SKILL.md) | 广告创意素材搜索，查找竞品广告视频和创意素材 | 💰 |
 | [xiaohongshu-mcp-zh](skills/xiaohongshu-mcp-zh/SKILL.md) | 小红书内容运营自动化——发布、搜索、趋势分析 | 📦 |
