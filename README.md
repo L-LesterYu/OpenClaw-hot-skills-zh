@@ -143,7 +143,7 @@
 
 | 技能 | 描述 | 标记 |
 |------|------|------|
-| [moltguard-zh](skills/moltguard-zh/openclaw.plugin.json) | 本地提示词净化与提示注入检测，保护 Agent 安全 | ✅ |
+| [moltguard-zh](skills/moltguard-zh/openclaw.plugin.json) | OpenClaw 原生安全插件——通过 MoltGuard API 检测工具结果与消息中的提示注入，可选本地净化网关在发送前脱敏 PII（银行卡/密码等），首次使用自动注册 API 密钥 | 💰付费API |
 | [skill-vetter-zh](skills/skill-vetter-zh/SKILL.md) | 技能安装前安全审查协议——来源验证、14项危险信号检测、权限范围评估与四级风险分类，输出结构化审查报告 | ✅ |
 | [edgeone-clawscan-zh](skills/edgeone-clawscan-zh/SKILL.md) | 由腾讯朱雀实验室 AI-Infra-Guard 驱动的全面安全扫描，支持 OpenClaw 环境体检和技能安全审查 | 📦 |
 
