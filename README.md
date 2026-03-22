@@ -7,7 +7,7 @@
 
 ## 📖 项目简介
 
-本项目为中文开发者提供 ClawHub 平台上优质技能（Skills）的中文版本，共收录 **67 个**中文技能，覆盖搜索、Agent 增强、工具集成、设计、开发、文档处理、数据分析和安全防护等领域。
+本项目为中文开发者提供 ClawHub 平台上优质技能（Skills）的中文版本，共收录 **68 个**中文技能，覆盖搜索、Agent 增强、工具集成、设计、开发、文档处理、数据分析和安全防护等领域。
 
 **每个 skill 的完整文档在其子目录的 `SKILL.md` 中，本 README 仅提供速览。**
 
@@ -142,6 +142,7 @@
 |------|------|------|
 | [moltguard-zh](skills/moltguard-zh/openclaw.plugin.json) | 本地提示词净化与提示注入检测，保护 Agent 安全 | ✅ |
 | [skill-vetter-zh](skills/skill-vetter-zh/SKILL.md) | 技能安全审查——安装前检查危险信号和权限范围 | ✅ |
+| [edgeone-clawscan-zh](skills/edgeone-clawscan-zh/SKILL.md) | 由腾讯朱雀实验室 AI-Infra-Guard 驱动的全面安全扫描，支持 OpenClaw 环境体检和技能安全审查 | 📦 |
 
 ---
 
