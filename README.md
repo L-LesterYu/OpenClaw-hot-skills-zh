@@ -57,7 +57,7 @@
 
 | 技能 | 描述 | 标记 |
 |------|------|------|
-| [proactive-self-improving-agent-zh](skills/proactive-self-improving-agent-zh/SKILL.md) | 自动捕获经验、纠正错误、积累学习，经验反复出现时自动晋升为永久规则 | ✅ |
+| [proactive-self-improving-agent-zh](skills/proactive-self-improving-agent-zh/SKILL.md) | Agent 自进化引擎——7 种触发条件自动捕获经验（错误/纠正/最佳实践/任务回顾等），结构化记录并去重，经验出现 ≥3 次自动晋升为永久规则，ADL 防漂移 + VFM 价值评分保障安全进化 | ✅ |
 | [proactive-agent-zh](skills/proactive-agent-zh/SKILL.md) | 主动式 Agent 架构——WAL 预写日志、工作缓冲区、压缩恢复、自主定时任务、反向提示与安全演进护栏，让 Agent 预测需求并在上下文丢失中存活 | ✅ |
 | [self-improving-zh](skills/self-improving-zh/SKILL.md) | 自我反思与持续改进引擎：自动捕获纠正和偏好信号，分层记忆存储（热/温/冷），模式出现3次后自动晋升为永久规则 | ✅ |
 | [self-improvement-zh](skills/self-improvement-zh/SKILL.md) | 捕获学习内容、错误和纠正以实现持续改进 | ✅ |
