@@ -89,7 +89,7 @@
 |------|------|------|
 | [frontend-design-zh](skills/frontend-design-zh/SKILL.md) | 从纯文本需求生成生产级网站，无需设计稿。React 18 + TypeScript + Tailwind + shadcn/ui + Framer Motion，反 AI 套路美学，支持 Vite 静态和 Next.js 双工作流 | 📦 |
 | [SuperDesign-zh](skills/SuperDesign-zh/SKILL.md) | 前端设计系统参考——结构化工作流（ASCII 线框→主题→动画→落地），暗色/野兽派/玻璃拟态三套视觉风格模板，oklch 配色 + Google Fonts + Tailwind 实现，内置无障碍与响应式规范 | ✅ |
-| [ui-ux-pro-max-zh](skills/ui-ux-pro-max-zh/README.md) | AI 设计智能工具包——UI 风格、配色、字体、UX 指南数据库 | 📦 |
+| [ui-ux-pro-max-zh](skills/ui-ux-pro-max-zh/README.md) | UI/UX 设计系统推理引擎——161 条行业规则自动生成完整设计系统（布局模式 + 风格 + 配色 + 排版 + 反模式检查），67 种风格、161 套配色、57 种字体搭配、25 种图表类型、13 种技术栈，自然语言触发 | 📦 |
 | [nano-banana-pro-zh](skills/nano-banana-pro-zh/SKILL.md) | 通过 Gemini 3 Pro Image API 生成与编辑图像——支持文生图、图生图及 1K/2K/4K 分辨率，内置草稿→迭代→最终渐进工作流 | 💰📦 |
 | [content-ideas-generator-zh](skills/content-ideas-generator-zh/SKILL.md) | 从新闻通讯/笔记/脚本等素材中提炼反直觉洞察，生成 5 个高互动社交媒体帖子大纲——包含悖论框架、转变弧线、异议预判与语言技巧应用，仅输出大纲不写全文 | ✅ |
 | [marketing-mode-zh](skills/marketing-mode-zh/SKILL.md) | 营销战略知识库——以专家人"Mark"提供 140+ 实战营销方法，覆盖 SEO、付费广告、社交媒体、邮件营销、PR、产品驱动增长等 23 个子领域，含 5 阶段发布框架与转化优化体系 | 📦 |
