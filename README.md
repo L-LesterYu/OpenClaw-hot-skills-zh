@@ -65,7 +65,7 @@
 | [elite-longterm-memory-zh](skills/elite-longterm-memory-zh/SKILL.md) | 6 层记忆架构——WAL 热内存 + LanceDB 向量语义搜索 + Git Notes 知识图谱 + Mem0 自动事实提取 + 可选云备份，跨会话永不丢失上下文 | 📦💰 |
 | [memory-setup-zh](skills/memory-setup-zh/SKILL.md) | 持久化记忆系统配置向导——启用 memorySearch 语义搜索（Voyage/OpenAI/Local 三种嵌入提供商），创建 MEMORY.md + 每日日志目录结构，配置 Agent 记忆指令，解决跨会话上下文丢失 | 📦💰 |
 | [ai-persona-os-zh](skills/ai-persona-os-zh/SKILL.md) | AI 人格操作系统——统一命令入口管理助手完整生命周期：设置向导（4 种预设模板）生成工作区文件、Never-Forget 检查点协议防止上下文丢失、心跳健康监控与记忆维护、结构化学习捕获与模式自动晋升（≥3 次晋升永久规则） | ✅ |
-| [capability-evolver-zh](skills/capability-evolver-zh/SKILL.md) | 面向 Agent 的自进化引擎，分析运行时历史发现改进机会 | 📦 |
+| [capability-evolver-zh](skills/capability-evolver-zh/SKILL.md) | 基于 GEP 协议的 Agent 自进化引擎——自动分析运行时历史识别故障与低效，通过可复用基因和胶囊实现协议约束的可审计进化，支持 7 种策略、审查模式与自动回滚，需注册 EvoMap 节点 | 📦 |
 | [freeride-zh](skills/freeride-zh/SKILL.md) | 按 OpenRouter 免费模型质量自动排名并配置主模型与备用模型，限流时自动故障切换，零成本使用 AI | 💰📦 |
 | [auto-updater-zh](skills/auto-updater-zh/SKILL.md) | 通过 cron 每日自动更新 Clawdbot 核心与所有已安装技能，检查可用版本、应用更新并向用户发送变更摘要 | 📦 |
 | [ontology-zh](skills/ontology-zh/SKILL.md) | 类型化知识图谱——实体/关系建模、Schema 约束验证（属性/枚举/基数/无环）、CLI 增删改查与图变换规划，支持跨技能数据共享 | ✅ |
