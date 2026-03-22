@@ -105,7 +105,7 @@
 | [playwright-mcp-zh](skills/playwright-mcp-zh/SKILL.md) | 通过 Playwright MCP 实现浏览器自动化 | 📦 |
 | [Agent-Browser-zh](skills/Agent-Browser-zh/SKILL.md) | 基于 Vercel agent-browser 的 AI 专用浏览器自动化 CLI | 📦 |
 | [desktop-control-zh](skills/desktop-control-zh/SKILL.md) | 高级桌面自动化——鼠标控制、键盘输入、屏幕截图、窗口管理 | 📦 |
-| [skill-creator-zh](skills/skill-creator-zh/SKILL.md) | 创建、编辑、改进和审计 AgentSkills | ✅ |
+| [skill-creator-zh](skills/skill-creator-zh/SKILL.md) | AgentSkills 全生命周期工具——创建、编辑、验证、打包，内置初始化脚本和规范检查器 | ✅ |
 | [clawhub-zh](skills/clawhub-zh/SKILL.md) | ClawHub CLI——搜索、安装、更新和发布技能 | 📦 |
 | [find-skills-zh](skills/find-skills-zh/SKILL.md) | 发现和安装智能体技能的导航助手 | ✅ |
 | [n8n-workflow-automation-zh](skills/n8n-workflow-automation-zh/SKILL.md) | 设计健壮的 n8n 工作流 JSON，含重试、日志和审核队列 | ✅ |
