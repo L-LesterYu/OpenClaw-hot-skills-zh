@@ -42,7 +42,7 @@
 
 | 技能 | 描述 | 标记 |
 |------|------|------|
-| [multi-search-engine-zh](skills/multi-search-engine-zh/SKILL.md) | 多搜索引擎集成，支持 17 个引擎（8 国内 + 9 国际），高级搜索操作符 | ✅ |
+| [multi-search-engine-zh](skills/multi-search-engine-zh/SKILL.md) | 零配置集成 17 个搜索引擎（百度/Google/DuckDuckGo 等），支持高级操作符、时间筛选、站内搜索、隐私搜索及 WolframAlpha 知识计算，DuckDuckGo Bangs 快捷跳转 | ✅ |
 | [tavily-search-zh](skills/tavily-search-zh/SKILL.md) | Tavily API 网页搜索，免费注册即用，返回精准结果与可选 AI 摘要，Brave 的零成本替代方案 | 💰📦 |
 | [baidu-search-zh](skills/baidu-search-zh/SKILL.md) | 百度 AI 搜索引擎，适合中文内容查询 | 💰📦 |
 | [brave-search-zh](skills/brave-search-zh/SKILL.md) | Brave Search API 网页搜索与内容提取，轻量无需浏览器 | 💰📦 |
