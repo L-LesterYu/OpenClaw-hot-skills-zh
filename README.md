@@ -110,7 +110,7 @@
 | [clawhub-zh](skills/clawhub-zh/SKILL.md) | 通过 ClawHub CLI 管理 clawhub.com 上的智能体技能——搜索发现、安装指定版本、哈希匹配增量更新（支持全量）、列出已装技能及发布新技能，支持自定义注册表与工作目录 | 📦 |
 | [find-skills-zh](skills/find-skills-zh/SKILL.md) | 通过 `npx skills` CLI 搜索 skills.sh 开放技能库，按关键词发现并安装智能体扩展能力 | 📦 |
 | [n8n-workflow-automation-zh](skills/n8n-workflow-automation-zh/SKILL.md) | 设计健壮的 n8n 工作流 JSON，含重试、日志和审核队列 | ✅ |
-| [automation-workflows-zh](skills/automation-workflows-zh/SKILL.md) | 自动化工作流设计——识别重复任务、选择工具、构建流程 | ✅ |
+| [automation-workflows-zh](skills/automation-workflows-zh/SKILL.md) | 独立创业者自动化运营指南——任务审计方法论、Zapier/Make/n8n 工具选型、工作流设计模板、构建测试清单与 ROI 计算 | ✅ |
 | [clawddocs-zh](skills/clawddocs-zh/SKILL.md) | Clawdbot 文档智能助手——决策树导航、多模式搜索（站点地图/关键词/全文索引）、文档获取与版本变更跟踪，内置各功能配置片段 | ✅ |
 | [byterover-zh](skills/byterover-zh/SKILL.md) | ByteRover CLI 上下文工程平台——管理项目知识和决策 | 💰📦 |
 | [qmd-zh](skills/qmd-zh/SKILL.md) | 本地搜索/索引 CLI（BM25 + 向量搜索 + 重排序），附带 MCP 模式 | 📦 |
