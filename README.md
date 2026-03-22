@@ -67,7 +67,7 @@
 | [capability-evolver-zh](skills/capability-evolver-zh/SKILL.md) | 面向 Agent 的自进化引擎，分析运行时历史发现改进机会 | 📦 |
 | [freeride-zh](skills/freeride-zh/SKILL.md) | 自动管理 OpenRouter 免费模型，降低 AI 使用成本 | 💰 |
 | [auto-updater-zh](skills/auto-updater-zh/SKILL.md) | 每日自动检查并更新所有已安装技能 | ✅ |
-| [ontology-zh](skills/ontology-zh/SKILL.md) | 类型化知识图谱，用于结构化记忆和跨技能数据共享 | ✅ |
+| [ontology-zh](skills/ontology-zh/SKILL.md) | 类型化知识图谱——实体/关系建模、Schema 约束验证（属性/枚举/基数/无环）、CLI 增删改查与图变换规划，支持跨技能数据共享 | ✅ |
 
 ### 📱 工具与服务集成
 
