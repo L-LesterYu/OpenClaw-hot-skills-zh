@@ -130,6 +130,7 @@
 | [video-frames-zh](skills/video-frames-zh/SKILL.md) | 使用 ffmpeg 从视频中提取帧或短片段 | 📦 |
 | [openai-whisper-zh](skills/openai-whisper-zh/SKILL.md) | 本地运行 OpenAI Whisper 模型进行语音转录与翻译，支持多音频格式、多模型尺寸选择，数据不出本地 | 📦 |
 | [humanizer-zh](skills/humanizer-zh/SKILL.md) | 检测并移除 AI 写作痕迹，基于 Wikipedia 指南修复 24 种 AI 文本模式（过度夸大、促销语言、模糊归因等），让文本更自然 | ✅ |
+| [humanize-ai-text-zh](skills/humanize-ai-text-zh/SKILL.md) | AI 文本人性化——基于 Wikipedia 指南检测修复 24 种 AI 写作模式，三阶段工作流（草稿→反 AI 自检→最终修订），附"注入灵魂"个性写作指导 | ✅ |
 
 ### 📊 数据分析
 
@@ -191,7 +192,7 @@
 | 场景 | 推荐 | 理由 |
 |------|------|------|
 | **首选** | `humanizer-zh` | 基于 Wikipedia 指南，覆盖 24 种 AI 写作模式，修复更全面 |
-| **轻量替代** | `humanize-ai-text-zh` | 功能相同，结构更简洁，任选其一即可 |
+| **轻量替代** | `humanize-ai-text-zh` | 结构更简洁，额外提供三阶段工作流和个性注入指导 |
 
 ---
 
