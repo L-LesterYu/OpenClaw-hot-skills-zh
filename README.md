@@ -77,7 +77,7 @@
 | [gog-zh](skills/gog-zh/SKILL.md) | Google Workspace 统一 CLI 工具，覆盖 Gmail 收发、日历事件查询、云盘搜索、联系人管理、表格读写与文档导出，需 OAuth 认证 | 📦 |
 | [notion-skill-zh](skills/notion-skill-zh/SKILL.md) | 通过官方 Notion API 读写页面、管理数据库、追加内容块，支持多配置文件和架构变更 | 💰📦 |
 | [slack-zh](skills/slack-zh/SKILL.md) | 控制 Slack 频道消息发送、置顶等操作 | ✅ |
-| [trello-zh](skills/trello-zh/SKILL.md) | 通过 REST API 管理 Trello 看板、列表和卡片 | 💰📦 |
+| [trello-zh](skills/trello-zh/SKILL.md) | Trello 看板完整管理——通过 curl 调用 REST API 实现看板/列表/卡片的查询、创建、移动、评论与归档，需 API Key + Token 认证 | 📦 |
 | [caldav-calendar-zh](skills/caldav-calendar-zh/SKILL.md) | CalDAV 日历本地同步与事件管理——基于 vdirsyncer + khal 实现 iCloud/Google/Fastmail/Nextcloud 等日历的双向同步、事件 CRUD、搜索与格式化输出，数据完全本地存储 | 📦 |
 | [obsidian-zh](skills/obsidian-zh/SKILL.md) | 基于 obsidian-cli 的 Obsidian 笔记库管理——日常笔记创建、前缀自动分区（任务/想法/问题/洞察）、集中式任务日志与艾森豪威尔优先级标签 | 📦 |
 | [weather-zh](skills/weather-zh/SKILL.md) | 通过 wttr.in + Open-Meteo 免费查询天气——紧凑/完整预报、中文输出、JSON API 程序化调用，仅需 curl | ✅ |
