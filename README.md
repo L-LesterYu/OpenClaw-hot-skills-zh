@@ -104,7 +104,7 @@
 | [mcporter-zh](skills/mcporter-zh/SKILL.md) | MCP 服务器管理——列出、配置、认证和调用 MCP 工具 | 📦 |
 | [playwright-mcp-zh](skills/playwright-mcp-zh/SKILL.md) | 通过 Playwright MCP 实现浏览器自动化 | 📦 |
 | [Agent-Browser-zh](skills/Agent-Browser-zh/SKILL.md) | 基于 Vercel agent-browser 的 AI 专用浏览器自动化 CLI | 📦 |
-| [desktop-control-zh](skills/desktop-control-zh/SKILL.md) | 高级桌面自动化——鼠标控制、键盘输入、屏幕截图、窗口管理 | 📦 |
+| [desktop-control-zh](skills/desktop-control-zh/SKILL.md) | 基于 PyAutoGUI 的桌面自动化——像素级鼠标/键盘控制、屏幕截图与图像识别、窗口管理、剪贴板操作，内置故障保护机制 | 📦 |
 | [skill-creator-zh](skills/skill-creator-zh/SKILL.md) | AgentSkills 全生命周期工具——创建、编辑、验证、打包，内置初始化脚本和规范检查器 | ✅ |
 | [clawhub-zh](skills/clawhub-zh/SKILL.md) | ClawHub CLI——搜索、安装、更新和发布技能 | 📦 |
 | [find-skills-zh](skills/find-skills-zh/SKILL.md) | 发现和安装智能体技能的导航助手 | ✅ |
