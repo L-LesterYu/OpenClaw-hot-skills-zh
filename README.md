@@ -86,7 +86,7 @@
 
 | 技能 | 描述 | 标记 |
 |------|------|------|
-| [frontend-design-zh](skills/frontend-design-zh/SKILL.md) | 纯文本生成生产级 React + Tailwind + shadcn/ui 静态网站 | 📦 |
+| [frontend-design-zh](skills/frontend-design-zh/SKILL.md) | 从纯文本需求生成生产级网站，无需设计稿。React 18 + TypeScript + Tailwind + shadcn/ui + Framer Motion，反 AI 套路美学，支持 Vite 静态和 Next.js 双工作流 | 📦 |
 | [SuperDesign-zh](skills/SuperDesign-zh/SKILL.md) | 前端设计指南，专精创建美观现代的 UI 界面 | ✅ |
 | [ui-ux-pro-max-zh](skills/ui-ux-pro-max-zh/README.md) | AI 设计智能工具包——UI 风格、配色、字体、UX 指南数据库 | 📦 |
 | [nano-banana-pro-zh](skills/nano-banana-pro-zh/SKILL.md) | 使用 Gemini 3 Pro Image API 生成/编辑图像，支持 1K-4K 分辨率 | 💰📦 |
