@@ -61,7 +61,7 @@
 | [proactive-agent-zh](skills/proactive-agent-zh/SKILL.md) | 主动式 Agent 架构——WAL 预写日志、工作缓冲区、压缩恢复、自主定时任务、反向提示与安全演进护栏，让 Agent 预测需求并在上下文丢失中存活 | ✅ |
 | [self-improving-zh](skills/self-improving-zh/SKILL.md) | 自我反思与持续改进引擎：自动捕获纠正和偏好信号，分层记忆存储（热/温/冷），模式出现3次后自动晋升为永久规则 | ✅ |
 | [self-improvement-zh](skills/self-improvement-zh/SKILL.md) | 捕获学习内容、错误和纠正以实现持续改进 | ✅ |
-| [self-improving-proactive-agent-zh](skills/self-improving-proactive-agent-zh/SKILL.md) | 自我改进 + 主动式 Agent 的组合版本 | ✅ |
+| [self-improving-proactive-agent-zh](skills/self-improving-proactive-agent-zh/SKILL.md) | 自我进化引擎——自动捕获纠正/偏好/经验，HOT/WARM/COLD 三层记忆按需加载，模式≥3次自动晋升规则，项目级命名空间隔离，心跳驱动维护，零外部依赖 | ✅ |
 | [elite-longterm-memory-zh](skills/elite-longterm-memory-zh/SKILL.md) | 6 层记忆架构——WAL 热内存 + LanceDB 向量语义搜索 + Git Notes 知识图谱 + Mem0 自动事实提取 + 可选云备份，跨会话永不丢失上下文 | 📦💰 |
 | [memory-setup-zh](skills/memory-setup-zh/SKILL.md) | 启用并配置持久化记忆搜索功能，解决"金鱼记忆"问题 | ✅ |
 | [ai-persona-os-zh](skills/ai-persona-os-zh/SKILL.md) | AI 人格操作系统，统一管理人格设置、聊天指令和监控 | ✅ |
