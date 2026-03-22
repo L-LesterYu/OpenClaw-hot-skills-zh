@@ -110,7 +110,7 @@
 | [find-skills-zh](skills/find-skills-zh/SKILL.md) | 通过 `npx skills` CLI 搜索 skills.sh 开放技能库，按关键词发现并安装智能体扩展能力 | 📦 |
 | [n8n-workflow-automation-zh](skills/n8n-workflow-automation-zh/SKILL.md) | 设计健壮的 n8n 工作流 JSON，含重试、日志和审核队列 | ✅ |
 | [automation-workflows-zh](skills/automation-workflows-zh/SKILL.md) | 自动化工作流设计——识别重复任务、选择工具、构建流程 | ✅ |
-| [clawddocs-zh](skills/clawddocs-zh/SKILL.md) | Clawdbot 文档专家——决策树导航、搜索和配置 | ✅ |
+| [clawddocs-zh](skills/clawddocs-zh/SKILL.md) | Clawdbot 文档智能助手——决策树导航、多模式搜索（站点地图/关键词/全文索引）、文档获取与版本变更跟踪，内置各功能配置片段 | ✅ |
 | [byterover-zh](skills/byterover-zh/SKILL.md) | ByteRover CLI 上下文工程平台——管理项目知识和决策 | 💰📦 |
 | [qmd-zh](skills/qmd-zh/SKILL.md) | 本地搜索/索引 CLI（BM25 + 向量搜索 + 重排序），附带 MCP 模式 | 📦 |
 | [qa-engineer-zh](skills/qa-engineer-zh/SKILL.md) | 软件测试与质量保证——发现 bug、执行测试、生成报告 | ✅ |
