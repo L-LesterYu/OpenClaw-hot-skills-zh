@@ -31,7 +31,7 @@
 | [proactive-self-improving-agent-zh](skills/proactive-self-improving-agent-zh/SKILL.md) | **让 Agent 越用越聪明**——自动捕获经验、纠正错误、积累知识 |
 | [frontend-design-zh](skills/frontend-design-zh/SKILL.md) | 纯文本描述即可生成生产级 React 网站，设计师的最强辅助 |
 | [word-docx-zh](skills/word-docx-zh/SKILL.md) | 一句话创建/编辑 Word 文档，支持样式、表格、修订，日常办公必备 |
-| [markdown-converter-zh](skills/markdown-converter-zh/SKILL.md) | PDF/Word/PPT/Excel → Markdown 一键转换，喂给 AI 的万能适配器 |
+| [markdown-converter-zh](skills/markdown-converter-zh/SKILL.md) | 15+ 格式一键转 Markdown——PDF/Office/图片(OCR)/音频转录/YouTube 字幕，喂给 AI 的万能适配器 |
 | [skill-vetter-zh](skills/skill-vetter-zh/SKILL.md) | 安装任何技能前先过一遍安全扫描，保护你的系统 |
 
 ---
@@ -126,7 +126,7 @@
 | [gongwen-zh](skills/gongwen-zh/SKILL.md) | 按党政机关公文格式标准自动排版 | ✅ |
 | [nano-pdf-zh](skills/nano-pdf-zh/SKILL.md) | 用自然语言指令编辑 PDF 文件 | 📦 |
 | [excel-xlsx-zh](skills/excel-xlsx-zh/SKILL.md) | 创建、检查和编辑 Excel 工作簿，支持公式、日期、格式化和模板保留 | 📦 |
-| [markdown-converter-zh](skills/markdown-converter-zh/SKILL.md) | PDF/Word/PPT/Excel/HTML 等转 Markdown，支持 OCR 和音频转录 | 📦 |
+| [markdown-converter-zh](skills/markdown-converter-zh/SKILL.md) | 基于 markitdown 将 15+ 种文档格式转为 Markdown，支持图片 OCR、音频转录、YouTube 字幕提取及 ZIP 解包 | 📦 |
 | [video-frames-zh](skills/video-frames-zh/SKILL.md) | 使用 ffmpeg 从视频中提取帧或短片段 | 📦 |
 | [openai-whisper-zh](skills/openai-whisper-zh/SKILL.md) | 本地运行 OpenAI Whisper 模型进行语音转录与翻译，支持多音频格式、多模型尺寸选择，数据不出本地 | 📦 |
 | [humanizer-zh](skills/humanizer-zh/SKILL.md) | 检测并移除 AI 写作痕迹，基于 Wikipedia 指南修复 24 种 AI 文本模式（过度夸大、促销语言、模糊归因等），让文本更自然 | ✅ |
