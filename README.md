@@ -109,7 +109,7 @@
 | [skill-creator-zh](skills/skill-creator-zh/SKILL.md) | AgentSkills 全生命周期工具——创建、编辑、验证、打包，内置初始化脚本和规范检查器 | ✅ |
 | [clawhub-zh](skills/clawhub-zh/SKILL.md) | 通过 ClawHub CLI 管理 clawhub.com 上的智能体技能——搜索发现、安装指定版本、哈希匹配增量更新（支持全量）、列出已装技能及发布新技能，支持自定义注册表与工作目录 | 📦 |
 | [find-skills-zh](skills/find-skills-zh/SKILL.md) | 通过 `npx skills` CLI 搜索 skills.sh 开放技能库，按关键词发现并安装智能体扩展能力 | 📦 |
-| [n8n-workflow-automation-zh](skills/n8n-workflow-automation-zh/SKILL.md) | 设计健壮的 n8n 工作流 JSON，含重试、日志和审核队列 | ✅ |
+| [n8n-workflow-automation-zh](skills/n8n-workflow-automation-zh/SKILL.md) | n8n 工作流设计与 JSON 输出——内置幂等性、重试退避、审计日志与人机协作审核队列，确保零静默失败 | ✅ |
 | [automation-workflows-zh](skills/automation-workflows-zh/SKILL.md) | 独立创业者自动化运营指南——任务审计方法论、Zapier/Make/n8n 工具选型、工作流设计模板、构建测试清单与 ROI 计算 | ✅ |
 | [clawddocs-zh](skills/clawddocs-zh/SKILL.md) | Clawdbot 文档智能助手——决策树导航、多模式搜索（站点地图/关键词/全文索引）、文档获取与版本变更跟踪，内置各功能配置片段 | ✅ |
 | [byterover-zh](skills/byterover-zh/SKILL.md) | 为 AI 编码助手管理项目知识的上下文工程平台——自动整理模式、决策与经验，Docker 隔离运行，团队间上下文自动同步 | 💰📦 |
