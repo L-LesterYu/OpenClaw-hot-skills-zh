@@ -44,7 +44,7 @@
 |------|------|------|
 | [multi-search-engine-zh](skills/multi-search-engine-zh/SKILL.md) | 零配置集成 17 个搜索引擎（百度/Google/DuckDuckGo 等），支持高级操作符、时间筛选、站内搜索、隐私搜索及 WolframAlpha 知识计算，DuckDuckGo Bangs 快捷跳转 | ✅ |
 | [tavily-search-zh](skills/tavily-search-zh/SKILL.md) | Tavily API 网页搜索，免费注册即用，返回精准结果与可选 AI 摘要，Brave 的零成本替代方案 | 💰📦 |
-| [baidu-search-zh](skills/baidu-search-zh/SKILL.md) | 百度 AI 搜索引擎，适合中文内容查询 | 💰📦 |
+| [baidu-search-zh](skills/baidu-search-zh/SKILL.md) | 百度 AI 搜索 API——网页搜索 + 时间范围筛选（天/周/月/年/自定义区间）+ 结果数量控制，中文生态精准结果 | 💰📦 |
 | [brave-search-zh](skills/brave-search-zh/SKILL.md) | Brave Search API 轻量搜索 CLI——网页搜索 + 可选页面内容提取（Markdown），无需浏览器 | 💰📦 |
 | [brave-web-search-zh](skills/brave-web-search-zh/SKILL.md) | Brave Search API 双模式搜索：排序网页结果 + AI 摘要答案，支持时间筛选 | 💰📦 |
 | [answer-overflow-zh](skills/answer-overflow-zh/SKILL.md) | 搜索已索引的 Discord 社区讨论，获取编程问题、库问题和社区问答的解决方案，支持 MCP 服务器搜索与线程内容 Markdown 抓取 | ✅ |
