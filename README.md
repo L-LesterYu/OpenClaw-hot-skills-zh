@@ -113,7 +113,7 @@
 | [automation-workflows-zh](skills/automation-workflows-zh/SKILL.md) | 独立创业者自动化运营指南——任务审计方法论、Zapier/Make/n8n 工具选型、工作流设计模板、构建测试清单与 ROI 计算 | ✅ |
 | [clawddocs-zh](skills/clawddocs-zh/SKILL.md) | Clawdbot 文档智能助手——决策树导航、多模式搜索（站点地图/关键词/全文索引）、文档获取与版本变更跟踪，内置各功能配置片段 | ✅ |
 | [byterover-zh](skills/byterover-zh/SKILL.md) | 为 AI 编码助手管理项目知识的上下文工程平台——自动整理模式、决策与经验，Docker 隔离运行，团队间上下文自动同步 | 💰📦 |
-| [qmd-zh](skills/qmd-zh/SKILL.md) | 本地搜索/索引 CLI（BM25 + 向量搜索 + 重排序），附带 MCP 模式 | 📦 |
+| [qmd-zh](skills/qmd-zh/SKILL.md) | 本地文件混合搜索引擎——集合级索引管理，支持 BM25 关键词搜索、Ollama 向量语义搜索及混合重排序，内置 MCP 服务器模式，需安装 qmd CLI 及 Ollama | 📦 |
 | [qa-engineer-zh](skills/qa-engineer-zh/SKILL.md) | 软件测试与质量保证——发现 bug、执行测试、生成报告 | ✅ |
 | [model-usage-zh](skills/model-usage-zh/SKILL.md) | 通过 CodexBar CLI 从本地成本日志汇总 Codex/Claude 按模型使用量与成本，支持当前模型快照或全量明细，文本/JSON 双输出 | 📦 |
 | [api-gateway-zh](skills/api-gateway-zh/SKILL.md) | 通过 Maton.ai 代理统一访问 100+ 第三方 API（Slack、HubSpot、Google Workspace、Notion、Stripe 等），托管 OAuth 自动注入令牌，支持原生端点透传与多连接管理 | 💰 |
