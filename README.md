@@ -50,7 +50,7 @@
 | [answer-overflow-zh](skills/answer-overflow-zh/SKILL.md) | 搜索已索引的 Discord 社区讨论，查找编程问题解决方案 | ✅ |
 | [news-summary-zh](skills/news-summary-zh/SKILL.md) | 新闻摘要聚合，快速了解最新资讯 | ✅ |
 | [youtube-zh](skills/youtube-zh/SKILL.md) | YouTube 视频/频道搜索、详情获取和字幕提取 | 💰📦 |
-| [youtube-watcher-zh](skills/youtube-watcher-zh/SKILL.md) | 获取并读取 YouTube 视频字幕文本，用于总结和内容提取 | ✅ |
+| [youtube-watcher-zh](skills/youtube-watcher-zh/SKILL.md) | 通过 yt-dlp 提取 YouTube 视频字幕，支持视频摘要、问答和内容提取，仅适用于有字幕的视频 | 📦 |
 
 ### 🧠 Agent 增强
 
