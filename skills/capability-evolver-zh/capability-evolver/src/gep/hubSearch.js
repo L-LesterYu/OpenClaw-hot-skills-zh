@@ -259,15 +259,15 @@ async function hubSearch(signals, opts) {
               }
             }
           } catch (fetchErr) {
-            console.log(`[Hub搜索] 第2阶段获取失败 (非致命): ${fetchErr.message}`);
+            console.log(`[HubSearch] Phase 2 fetch failed (non-fatal): ${fetchErr.message}`);
           }
         } else {
-          console.log(`[Hub搜索] 第2阶段跳过: 剩余 ${remaining}ms < ${MIN_PHASE2_MS}ms 阈值`);
+          console.log(`[HubSearch] Phase 2 skipped: ${remaining}ms remaining < ${MIN_PHASE2_MS}ms threshold`);
         }
       }
     }
 
-    console.log(`[Hub搜索] 通过搜索+获取命中: ${pick.match.asset_id || '未知'} (分数=${pick.score}, 模式=${pick.mode}${cacheHit ? ', 搜索已缓存' : ''})`);
+    console.log(`[HubSearch] Hit via search+fetch: ${pick.match.asset_id || 'unknown'} (score=${pick.score}, mode=${pick.mode}${cacheHit ? ', search_cached' : ''})`);
 
     logAssetCall({
       run_id: runId,
@@ -293,7 +293,7 @@ async function hubSearch(signals, opts) {
     };
   } catch (err) {
     const reason = err.name === 'AbortError' ? 'timeout' : 'fetch_error';
-    console.log(`[Hub搜索] 失败 (非致命, ${reason}): ${err.message}`);
+    console.log(`[HubSearch] Failed (non-fatal, ${reason}): ${err.message}`);
     logAssetCall({
       run_id: runId,
       action: 'hub_search_miss',

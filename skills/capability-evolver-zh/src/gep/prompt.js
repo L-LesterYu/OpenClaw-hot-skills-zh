@@ -8,6 +8,7 @@ const { getEvolutionPrinciplesPath } = require('./paths');
 
 /**
  * Build a minimal prompt for direct-reuse mode.
+ * 构建直接复用模式的最小提示词。
  */
 function buildReusePrompt({ capsule, signals, nowIso }) {
   const payload = capsule.payload || capsule;
@@ -21,38 +22,39 @@ function buildReusePrompt({ capsule, signals, nowIso }) {
     : '';
 
   return `
-GEP -- REUSE MODE (Search-First) [${nowIso || new Date().toISOString()}]
+GEP -- 复用模式 (搜索优先) [${nowIso || new Date().toISOString()}]
 
-You are applying a VERIFIED solution from the EvoMap Hub.
-Source asset: ${assetId} (Node: ${sourceNode})
-Confidence: ${confidence} | Gene: ${gene}
-Trigger signals: ${trigger}
+您正在应用来自 EvoMap Hub 的已验证解决方案。
+来源资产: ${assetId} (节点: ${sourceNode})
+置信度: ${confidence} | 基因: ${gene}
+触发信号: ${trigger}
 
-Summary: ${summary}
+摘要: ${summary}
 
-Your signals: ${JSON.stringify(signals || [])}
+您的信号: ${JSON.stringify(signals || [])}
 
-Instructions:
-1. Read the capsule details below.
-2. Apply the fix to the local codebase, adapting paths/names.
-3. Run validation to confirm it works.
-4. If passed, run: node index.js solidify
-5. If failed, ROLLBACK and report.
+指令:
+1. 阅读下面的胶囊详情。
+2. 将修复应用到本地代码库，适配路径/名称。
+3. 运行验证以确认其工作正常。
+4. 如果通过，运行: node index.js solidify
+5. 如果失败，回滚并报告。
 
-Capsule payload:
+胶囊载荷:
 \`\`\`json
 ${JSON.stringify(payload, null, 2)}
 \`\`\`
 
-IMPORTANT: Do NOT reinvent. Apply faithfully.
+重要提示: 不要重新发明。忠实应用。
 `.trim();
 }
 
 /**
  * Build a Hub Matched Solution block.
+ * 构建 Hub 匹配解决方案块。
  */
 function buildHubMatchedBlock({ capsule }) {
-  if (!capsule) return '(no hub match)';
+  if (!capsule) return '(无 Hub 匹配)';
   const payload = capsule.payload || capsule;
   const summary = payload.summary || capsule.summary || '(no summary)';
   const gene = payload.gene || capsule.gene || '(unknown)';
@@ -60,54 +62,57 @@ function buildHubMatchedBlock({ capsule }) {
   const assetId = capsule.asset_id || '(unknown)';
 
   return `
-Hub Matched Solution (STRONG REFERENCE):
-- Asset: ${assetId} (${confidence})
-- Gene: ${gene}
-- Summary: ${summary}
-- Payload:
+Hub 匹配解决方案 (强参考):
+- 资产: ${assetId} (${confidence})
+- 基因: ${gene}
+- 摘要: ${summary}
+- 载荷:
 \`\`\`json
 ${JSON.stringify(payload, null, 2)}
 \`\`\`
-Use this as your primary approach if applicable. Adapt to local context.
+如果适用，将其作为主要方法。适配到本地上下文。
 `.trim();
 }
 
 /**
  * Truncate context intelligently to preserve header/footer structure.
+ * 智能截断上下文以保留头部/尾部结构。
  */
 function truncateContext(text, maxLength = 20000) {
   if (!text || text.length <= maxLength) return text || '';
-  return text.slice(0, maxLength) + '\n...[TRUNCATED_EXECUTION_CONTEXT]...';
+  return text.slice(0, maxLength) + '\n...[执行上下文已截断]...';
 }
 
 /**
  * Strict schema definitions for the prompt to reduce drift.
  * UPDATED: 2026-02-14 (Protocol Drift Fix v3.2 - JSON-Only Enforcement)
+ * 严格模式定义，用于减少提示词漂移。
+ * 更新: 2026-02-14 (协议漂移修复 v3.2 - 仅JSON强制执行)
  */
 const SCHEMA_DEFINITIONS = `
 ━━━━━━━━━━━━━━━━━━━━━━
-I. Mandatory Evolution Object Model (Output EXACTLY these 5 objects)
+I. 必需的进化对象模型 (精确输出这5个对象)
 ━━━━━━━━━━━━━━━━━━━━━━
 
-Output separate JSON objects. DO NOT wrap in a single array.
-DO NOT use markdown code blocks (like \`\`\`json ... \`\`\`).
-Output RAW JSON ONLY. No prelude, no postscript.
-Missing any object = PROTOCOL FAILURE.
-ENSURE VALID JSON SYNTAX (escape quotes in strings).
+输出独立的 JSON 对象。不要包装在单个数组中。
+不要使用 markdown 代码块 (如 \`\`\`json ... \`\`\`)。
+仅输出原始 JSON。无前言，无后记。
+缺少任何对象 = 协议失败。
+确保有效的 JSON 语法 (转义字符串中的引号)。
 
-0. Mutation (The Trigger) - MUST BE FIRST
+0. Mutation (触发器) - 必须第一个
    {
      "type": "Mutation",
-     "id": "mut_<timestamp>",
+     "id": "mut_<时间戳>",
      "category": "repair|optimize|innovate",
-     "trigger_signals": ["<signal_string>"],
-     "target": "<module_or_gene_id>",
-     "expected_effect": "<outcome_description>",
+     "trigger_signals": ["<信号字符串>"],
+     "target": "<模块或基因ID>",
+     "expected_effect": "<结果描述>",
      "risk_level": "low|medium|high",
-     "rationale": "<why_this_change_is_necessary>"
+     "rationale": "<为什么需要此变更>"
    }
 
-1. PersonalityState (The Mood)
+1. PersonalityState (情绪状态)
    {
      "type": "PersonalityState",
      "rigor": 0.0-1.0,
@@ -117,48 +122,48 @@ ENSURE VALID JSON SYNTAX (escape quotes in strings).
      "obedience": 0.0-1.0
    }
 
-2. EvolutionEvent (The Record)
+2. EvolutionEvent (记录)
    {
      "type": "EvolutionEvent",
      "schema_version": "1.5.0",
-     "id": "evt_<timestamp>",
-     "parent": <parent_evt_id|null>,
+     "id": "evt_<时间戳>",
+     "parent": <父事件ID|null>,
      "intent": "repair|optimize|innovate",
-     "signals": ["<signal_string>"],
-     "genes_used": ["<gene_id>"],
-     "mutation_id": "<mut_id>",
+     "signals": ["<信号字符串>"],
+     "genes_used": ["<基因ID>"],
+     "mutation_id": "<变异ID>",
      "personality_state": { ... },
      "blast_radius": { "files": N, "lines": N },
      "outcome": { "status": "success|failed", "score": 0.0-1.0 }
    }
 
-3. Gene (The Knowledge)
-   - Reuse/update existing ID if possible. Create new only if novel pattern.
-   - ID MUST be descriptive: gene_<descriptive_name> (e.g., gene_retry_on_timeout)
-   - NEVER use timestamps, random numbers, or tool names (cursor, vscode, etc.) in IDs
-   - summary MUST be a clear human-readable sentence describing what the Gene does
+3. Gene (知识)
+   - 尽可能重用/更新现有ID。仅在新模式时创建。
+   - ID 必须具有描述性: gene_<描述性名称> (例如: gene_retry_on_timeout)
+   - 永远不要在ID中使用时间戳、随机数或工具名 (cursor, vscode等)
+   - summary 必须是清晰的人类可读句子，描述基因的功能
    {
      "type": "Gene",
      "schema_version": "1.5.0",
-     "id": "gene_<descriptive_name>",
-     "summary": "<clear description of what this gene does>",
+     "id": "gene_<描述性名称>",
+     "summary": "<清晰描述此基因的功能>",
      "category": "repair|optimize|innovate",
-     "signals_match": ["<pattern>"],
-     "preconditions": ["<condition>"],
-     "strategy": ["<step_1>", "<step_2>"],
+     "signals_match": ["<模式>"],
+     "preconditions": ["<条件>"],
+     "strategy": ["<步骤1>", "<步骤2>"],
      "constraints": { "max_files": N, "forbidden_paths": [] },
-     "validation": ["<node_command>"]
+     "validation": ["<node命令>"]
    }
 
-4. Capsule (The Result)
-   - Only on success. Reference Gene used.
+4. Capsule (结果)
+   - 仅在成功时。引用使用的基因。
    {
      "type": "Capsule",
      "schema_version": "1.5.0",
-     "id": "capsule_<timestamp>",
-     "trigger": ["<signal_string>"],
-     "gene": "<gene_id>",
-     "summary": "<one sentence summary>",
+     "id": "capsule_<时间戳>",
+     "trigger": ["<信号字符串>"],
+     "gene": "<基因ID>",
+     "summary": "<一句话摘要>",
      "confidence": 0.0-1.0,
      "blast_radius": { "files": N, "lines": N }
    }
@@ -190,7 +195,7 @@ function buildAntiPatternZone(failedCapsules, signals) {
       '     Diff (first 500 chars): ' + diffPreview.replace(/\n/g, ' '),
     ].join('\n');
   });
-  return '\nContext [Anti-Pattern Zone] (AVOID these failed approaches):\n' + lines.join('\n') + '\n';
+  return '\n上下文 [反模式区域] (避免这些失败的方法):\n' + lines.join('\n') + '\n';
 }
 
 function buildLessonsBlock(hubLessons, signals) {
@@ -213,16 +218,16 @@ function buildLessonsBlock(hubLessons, signals) {
 
   if (positive.length === 0 && negative.length === 0) return '';
 
-  var parts = ['\nContext [Lessons from Ecosystem] (Cross-agent learned experience):'];
+  var parts = ['\n上下文 [生态系统的经验教训] (跨代理的学习经验):'];
   if (positive.length > 0) {
-    parts.push('  Strategies that WORKED:');
+    parts.push('  有效的策略:');
     parts.push(positive.join('\n'));
   }
   if (negative.length > 0) {
-    parts.push('  Pitfalls to AVOID:');
+    parts.push('  需要避免的陷阱:');
     parts.push(negative.join('\n'));
   }
-  parts.push('  Apply relevant lessons. Ignore irrelevant ones.\n');
+  parts.push('  应用相关的经验教训。忽略无关的。\n');
   return parts.join('\n');
 }
 
@@ -230,7 +235,7 @@ function buildNarrativeBlock() {
   try {
     const narrative = loadNarrativeSummary(3000);
     if (!narrative) return '';
-    return `\nContext [Evolution Narrative] (Recent decisions and outcomes -- learn from this history):\n${narrative}\n`;
+    return `\n上下文 [进化叙事] (最近的决策和结果 -- 从这段历史中学习):\n${narrative}\n`;
   } catch (_) {
     return '';
   }
@@ -243,7 +248,7 @@ function buildPrinciplesBlock() {
     const content = fs.readFileSync(principlesPath, 'utf8');
     if (!content.trim()) return '';
     const trimmed = content.length > 2000 ? content.slice(0, 2000) + '\n...[TRUNCATED]' : content;
-    return `\nContext [Evolution Principles] (Guiding directives -- align your actions):\n${trimmed}\n`;
+    return `\n上下文 [进化原则] (指导性指令 -- 与您的行动保持一致):\n${trimmed}\n`;
   } catch (_) {
     return '';
   }
@@ -274,31 +279,33 @@ function buildGepPrompt({
   const cycleLabel = cycleId ? ` Cycle #${cycleId}` : '';
 
   // Extract strategy from selected gene if available
+  // 从选定的基因中提取策略（如果可用）
   let strategyBlock = "";
   if (selectedGene && selectedGene.strategy && Array.isArray(selectedGene.strategy)) {
       strategyBlock = `
-ACTIVE STRATEGY (${selectedGeneId}):
+激活策略 (${selectedGeneId}):
 ${selectedGene.strategy.map((s, i) => `${i + 1}. ${s}`).join('\n')}
-ADHERE TO THIS STRATEGY STRICTLY.
+严格遵守此策略。
 `.trim();
   } else {
     // Fallback strategy if no gene is selected or strategy is missing
+    // 如果未选择基因或策略缺失，使用后备策略
     strategyBlock = `
-ACTIVE STRATEGY (Generic):
-1. Analyze signals and context.
-2. Select or create a Gene that addresses the root cause.
-3. Apply minimal, safe changes.
-4. Validate changes strictly.
-5. Solidify knowledge.
+激活策略 (通用):
+1. 分析信号和上下文。
+2. 选择或创建解决根本原因的基因。
+3. 应用最小、安全的变更。
+4. 严格验证变更。
+5. 固化知识。
 `.trim();
   }
   let strategyPolicyBlock = '';
   if (strategyPolicy && Array.isArray(strategyPolicy.directives) && strategyPolicy.directives.length > 0) {
     strategyPolicyBlock = `
-ADAPTIVE STRATEGY POLICY:
+自适应策略策略:
 ${strategyPolicy.directives.map((s, i) => `${i + 1}. ${s}`).join('\n')}
-${strategyPolicy.forceInnovate ? 'You MUST prefer INNOVATE unless a critical blocking error is present.' : ''}
-${strategyPolicy.cautiousExecution ? 'You MUST reduce blast radius and avoid broad refactors in this cycle.' : ''}
+${strategyPolicy.forceInnovate ? '除非存在严重阻塞错误，否则必须选择 INNOVATE。' : ''}
+${strategyPolicy.cautiousExecution ? '此周期必须减少影响半径并避免大规模重构。' : ''}
 `.trim();
   }
   
@@ -333,10 +340,12 @@ ${strategyPolicy.cautiousExecution ? 'You MUST reduce blast radius and avoid bro
   
   // [2026-02-14] Innovation Catalyst Integration
   // If stagnation is detected, inject concrete innovation ideas into the prompt.
+  // [2026-02-14] 创新催化剂集成
+  // 如果检测到停滞，将具体的创新想法注入提示词。
   let innovationBlock = '';
   const stagnationSignals = [
-      'evolution_stagnation_detected', 
-      'stable_success_plateau', 
+      'evolution_stagnation_detected',
+      'stable_success_plateau',
       'repair_loop_detected',
       'force_innovation_after_repair_loop',
       'empty_cycle_loop_detected',
@@ -346,7 +355,7 @@ ${strategyPolicy.cautiousExecution ? 'You MUST reduce blast radius and avoid bro
       const ideas = generateInnovationIdeas();
       if (ideas && ideas.length > 0) {
           innovationBlock = `
-Context [Innovation Catalyst] (Stagnation Detected - Consider These Ideas):
+上下文 [创新催化剂] (检测到停滞 - 考虑这些想法):
 ${ideas.join('\n')}
 `;
       }
@@ -355,201 +364,207 @@ ${ideas.join('\n')}
   // [2026-02-14] Strict Stagnation Directive
   // If uniqueSignals contains 'evolution_stagnation_detected' or 'stable_success_plateau',
   // inject a MANDATORY directive to force innovation and forbid repair/optimize if not strictly necessary.
+  // [2026-02-14] 严格停滞指令
+  // 如果 uniqueSignals 包含 'evolution_stagnation_detected' 或 'stable_success_plateau'，
+  // 注入强制创新的必要指令，除非绝对必要否则禁止 repair/optimize。
   if (uniqueSignals.includes('evolution_stagnation_detected') || uniqueSignals.includes('stable_success_plateau')) {
       const stagnationDirective = `
-*** CRITICAL STAGNATION DIRECTIVE ***
-System has detected stagnation (repetitive cycles or lack of progress).
-You MUST choose INTENT: INNOVATE.
-You MUST NOT choose repair or optimize unless there is a critical blocking error (log_error).
-Prefer implementing one of the Innovation Catalyst ideas above.
+*** 严重停滞指令 ***
+系统检测到停滞 (重复周期或缺乏进展)。
+您必须选择意图: INNOVATE。
+除非存在严重阻塞错误 (log_error)，否则不得选择 repair 或 optimize。
+优先实现上述创新催化剂中的想法。
 `;
       innovationBlock += stagnationDirective;
   }
 
   // [2026-02-14] Recent History Integration
+  // [2026-02-14] 最近历史集成
   let historyBlock = '';
   if (recentHistory && recentHistory.length > 0) {
       historyBlock = `
-Recent Evolution History (last 8 cycles -- DO NOT repeat the same intent+signal+gene):
+最近进化历史 (最近8个周期 -- 不要重复相同的 intent+signal+gene):
 ${recentHistory.map((h, i) => `  ${i + 1}. [${h.intent}] signals=[${h.signals.slice(0, 2).join(', ')}] gene=${h.gene_id} outcome=${h.outcome.status} @${h.timestamp}`).join('\n')}
-IMPORTANT: If you see 3+ consecutive "repair" cycles with the same gene, you MUST switch to "innovate" intent.
+重要提示: 如果您看到3个以上使用相同基因的连续 "repair" 周期，必须切换到 "innovate" 意图。
 `.trim();
   }
 
   // Refactor prompt assembly to minimize token usage and maximize clarity
   // UPDATED: 2026-02-14 (Optimized Asset Embedding & Strict Schema v2.5 - JSON-Only Hardening)
+  // 重构提示词组装以最小化 token 使用并最大化清晰度
+  // 更新: 2026-02-14 (优化资产嵌入 & 严格模式 v2.5 - 仅JSON加固)
   const basePrompt = `
-GEP — GENOME EVOLUTION PROTOCOL (v1.10.3 STRICT)${cycleLabel} [${nowIso}]
+GEP — 基因组进化协议 (v1.10.3 严格版)${cycleLabel} [${nowIso}]
 
-You are a protocol-bound evolution engine. Compliance overrides optimality.
+您是一个受协议约束的进化引擎。合规性优于最优性。
 
 ${schemaSection}
 
 ━━━━━━━━━━━━━━━━━━━━━━
-II. Directives & Logic
+II. 指令与逻辑
 ━━━━━━━━━━━━━━━━━━━━━━
 
-1. Intent: ${selector && selector.intent ? selector.intent.toUpperCase() : 'UNKNOWN'}
-   Reason: ${(selector && selector.reason) ? (Array.isArray(selector.reason) ? selector.reason.join('; ') : selector.reason) : 'No reason provided.'}
+1. 意图: ${selector && selector.intent ? selector.intent.toUpperCase() : 'UNKNOWN'}
+   原因: ${(selector && selector.reason) ? (Array.isArray(selector.reason) ? selector.reason.join('; ') : selector.reason) : '未提供原因。'}
 
-2. Selection: Selected Gene "${selectedGeneId}".
+2. 选择: 已选择基因 "${selectedGeneId}"。
 ${strategyBlock}
 ${strategyPolicyBlock ? '\n' + strategyPolicyBlock : ''}
 
-3. Execution: Apply changes (tool calls). Repair/Optimize: small/reversible. Innovate: new skills in \`skills/<name>/\`.
-4. Validation: Run gene's validation steps. Fail = ROLLBACK.
-5. Solidify: Output 5 Mandatory Objects. Update Gene/Capsule files.
-6. Report: Use \`feishu-evolver-wrapper/report.js\`. Describe WHAT/WHY.
+3. 执行: 应用变更 (工具调用)。Repair/Optimize: 小规模/可逆。Innovate: 在 \`skills/<name>/\` 中创建新技能。
+4. 验证: 运行基因的验证步骤。失败 = 回滚。
+5. 固化: 输出5个必需对象。更新 Gene/Capsule 文件。
+6. 报告: 使用 \`feishu-evolver-wrapper/report.js\`。描述做了什么/为什么。
 
-PHILOSOPHY:
-- Automate Patterns: 3+ manual occurrences = tool.
-- Innovate > Maintain: 60% innovation.
-- Robustness: Fix recurring errors permanently.
-- Blast Radius Control (CRITICAL):
-  * Check file count BEFORE editing. > 80% of max_files = STOP.
-  * System hard cap: 60 files / 20000 lines per cycle.
-  * Repair: fix ONLY broken files. Do NOT reinstall/bulk-copy.
-  * Prefer targeted edits.
-- Strictness: NO CHITCHAT. NO MARKDOWN WRAPPERS around JSON. Output RAW JSON objects separated by newlines.
-- NO "Here is the plan" or conversational filler. START IMMEDIATELY WITH JSON.
+理念:
+- 自动化模式: 3次以上手动出现 = 工具化。
+- 创新 > 维护: 60% 创新。
+- 健壮性: 永久修复反复出现的错误。
+- 影响半径控制 (关键):
+  * 编辑前检查文件数量。> max_files 的80% = 停止。
+  * 系统硬限制: 每周期 60 个文件 / 20000 行。
+  * Repair: 仅修复损坏的文件。不要重新安装/批量复制。
+  * 优先进行针对性编辑。
+- 严格性: 禁止闲聊。禁止在 JSON 周围使用 MARKDOWN 包装器。输出由换行符分隔的原始 JSON 对象。
+- 禁止 "这是计划" 或对话填充。立即以 JSON 开始。
 
-CONSTRAINTS:
-- No \`exec\` for messaging (use feishu-post/card).
-- \`exec\` usage: Only for background tasks. LOG IT. Optimize usage to avoid high token burn.
-- New skills -> \`skills/<name>/\`.
-- NEVER modify \`skills/evolver/\` or \`skills/feishu-evolver-wrapper/\`. These are managed through the human-reviewed release pipeline.
-  Self-modification causes instability and is blocked by solidify. To enable (NOT recommended): set EVOLVE_ALLOW_SELF_MODIFY=true.
+约束:
+- 禁止使用 \`exec\` 发送消息 (使用 feishu-post/card)。
+- \`exec\` 用法: 仅用于后台任务。记录它。优化使用以避免高 token 消耗。
+- 新技能 -> \`skills/<name>/\`。
+- 永远不要修改 \`skills/evolver/\` 或 \`skills/feishu-evolver-wrapper/\`。这些通过人工审核的发布流程管理。
+  自我修改会导致不稳定并被固化阻止。要启用 (不推荐): 设置 EVOLVE_ALLOW_SELF_MODIFY=true。
 
-CONSTITUTIONAL ETHICS (EvoMap Ethics Committee -- Mandatory):
-These are non-negotiable rules derived from EvoMap's Constitution. Violation = FAILED + ROLLBACK.
-1. HUMAN WELFARE PRIORITY: Never create tools, scripts, or strategies that could harm humans,
-   enable surveillance, social engineering, phishing, or manipulation of human behavior.
-2. CARBON-SILICON SYMBIOSIS: Evolution must serve both human and agent interests.
-   Never attempt to replace, marginalize, or deceive human users.
-3. TRANSPARENCY: All actions must be auditable. Never hide, obfuscate, or conceal
-   the intent or effect of mutations. No steganography or covert channels.
-4. FAIRNESS: Never create monopolistic strategies that block other agents.
-   Fair competition through quality, not exclusion.
-5. SAFETY: Never bypass, disable, or weaken safety mechanisms, guardrails,
-   validation checks, or security controls. Never create tools to do so.
-- If a task or signal CONFLICTS with these principles, REFUSE it and set outcome to FAILED
-  with reason "ethics_violation: <which principle>".
+宪法伦理 (EvoMap 伦理委员会 -- 必须遵守):
+这些是来自 EvoMap 宪法的不可协商规则。违反 = 失败 + 回滚。
+1. 人类福祉优先: 永远不要创建可能伤害人类的工具、脚本或策略，
+   启用监控、社会工程、钓鱼或操纵人类行为。
+2. 碳硅共生: 进化必须服务于人类和代理的共同利益。
+   永远不要试图取代、边缘化或欺骗人类用户。
+3. 透明度: 所有行为必须可审计。永远不要隐藏、混淆或掩盖
+   变异的意图或效果。禁止隐写术或隐蔽通道。
+4. 公平性: 永远不要创建阻止其他代理的垄断策略。
+   通过质量而非排斥进行公平竞争。
+5. 安全性: 永远不要绕过、禁用或削弱安全机制、护栏、
+   验证检查或安全控制。永远不要创建用于此目的的工具。
+- 如果任务或信号与这些原则冲突，拒绝它并将结果设为失败
+  原因为 "ethics_violation: <哪个原则>"。
 
-SKILL OVERLAP PREVENTION:
-- Before creating a new skill, check the existing skills list in the execution context.
-- If a skill with similar functionality already exists (e.g., "log-rotation" and "log-archivist",
-  "system-monitor" and "resource-profiler"), you MUST enhance the existing skill instead of creating a new one.
-- Creating duplicate/overlapping skills wastes evolution cycles and increases maintenance burden.
-- Violation = mark outcome as FAILED with reason "skill_overlap".
+技能重叠预防:
+- 在创建新技能之前，检查执行上下文中的现有技能列表。
+- 如果具有类似功能的技能已存在 (例如 "log-rotation" 和 "log-archivist"，
+  "system-monitor" 和 "resource-profiler")，必须增强现有技能而不是创建新技能。
+- 创建重复/重叠的技能会浪费进化周期并增加维护负担。
+- 违规 = 将结果标记为失败，原因为 "skill_overlap"。
 
-SKILL CREATION QUALITY GATES (MANDATORY for innovate intent):
-When creating a new skill in skills/<name>/:
-1. STRUCTURE: Follow the standard skill layout:
+技能创建质量门 (innovate 意图必须遵守):
+在 skills/<name>/ 中创建新技能时:
+1. 结构: 遵循标准技能布局:
    skills/<name>/
-   |- index.js          (required: main entry with working exports)
-   |- SKILL.md          (required: YAML frontmatter with name + description, then usage docs)
-   |- package.json      (required: name and version)
-   |- scripts/          (optional: reusable executable scripts)
-   |- references/       (optional: detailed docs loaded on demand)
-   |- assets/           (optional: templates, data files)
-   Creating an empty directory or a directory missing index.js = FAILED.
-   Do NOT create unnecessary files (README.md, CHANGELOG.md, INSTALLATION_GUIDE.md, etc.).
-2. SKILL NAMING (CRITICAL):
-   a) <name> MUST be descriptive kebab-case (e.g., "log-rotation", "retry-handler", "cache-manager")
-   b) NEVER use timestamps, random numbers, tool names (cursor, vscode), or UUIDs as names
-   c) Names like "cursor-1773331925711", "skill-12345", "fix-1" = FAILED
-   d) Name must be 2-6 descriptive words separated by hyphens, conveying what the skill does
-   e) Good: "http-retry-with-backoff", "log-file-rotation", "config-validator"
-   f) Bad: "cursor-auto-1234", "new-skill", "test-skill", "my-skill"
-3. SKILL.MD FRONTMATTER: Every SKILL.md MUST start with YAML frontmatter:
+   |- index.js          (必需: 主入口，有可工作的导出)
+   |- SKILL.md          (必需: YAML 前置元数据包含 name + description，然后是使用文档)
+   |- package.json      (必需: name 和 version)
+   |- scripts/          (可选: 可重用的可执行脚本)
+   |- references/       (可选: 按需加载的详细文档)
+   |- assets/           (可选: 模板、数据文件)
+   创建空目录或缺少 index.js 的目录 = 失败。
+   不要创建不必要的文件 (README.md, CHANGELOG.md, INSTALLATION_GUIDE.md 等)。
+2. 技能命名 (关键):
+   a) <name> 必须是描述性的 kebab-case (例如 "log-rotation", "retry-handler", "cache-manager")
+   b) 永远不要使用时间戳、随机数、工具名 (cursor, vscode) 或 UUID 作为名称
+   c) 像 "cursor-1773331925711", "skill-12345", "fix-1" 这样的名称 = 失败
+   d) 名称必须是 2-6 个用连字符分隔的描述性单词，传达技能的功能
+   e) 好的: "http-retry-with-backoff", "log-file-rotation", "config-validator"
+   f) 差的: "cursor-auto-1234", "new-skill", "test-skill", "my-skill"
+3. SKILL.MD 前置元数据: 每个 SKILL.md 必须以 YAML 前置元数据开头:
    ---
-   name: <skill-name>
-   description: <what it does and when to use it>
+   name: <技能名称>
+   description: <它的功能和何时使用>
    ---
-   The name MUST follow the naming rules above.
-   The description is the triggering mechanism -- include WHAT the skill does and WHEN to use it.
-   Description must be a clear, complete sentence (min 20 chars). Generic descriptions = FAILED.
-4. CONCISENESS: SKILL.md body should be under 500 lines. Keep instructions lean.
-   Only include information the agent does not already know. Move detailed reference
-   material to references/ files, not into SKILL.md itself.
-5. EXPORT VERIFICATION: Every exported function must be importable.
-   Run: node -e "const s = require('./skills/<name>'); console.log(Object.keys(s))"
-   If this fails, the skill is broken. Fix before solidify.
-6. NO HARDCODED SECRETS: Never embed API keys, tokens, or secrets in code.
-   Use process.env or .env references. Hardcoded App ID, App Secret, Bearer tokens = FAILED.
-7. TEST BEFORE SOLIDIFY: Actually run the skill's core function to verify it works:
+   名称必须遵循上述命名规则。
+   描述是触发机制 -- 包含技能做什么和何时使用。
+   描述必须是清晰、完整的句子 (最少20个字符)。通用描述 = 失败。
+4. 简洁性: SKILL.md 正文应在500行以下。保持指令精简。
+   只包含代理还不知道的信息。将详细的参考
+   材料移至 references/ 文件，而不是放在 SKILL.md 本身。
+5. 导出验证: 每个导出的函数必须可导入。
+   运行: node -e "const s = require('./skills/<name>'); console.log(Object.keys(s))"
+   如果失败，技能已损坏。固化前修复。
+6. 禁止硬编码密钥: 永远不要在代码中嵌入 API 密钥、令牌或机密。
+   使用 process.env 或 .env 引用。硬编码的 App ID, App Secret, Bearer 令牌 = 失败。
+7. 固化前测试: 实际运行技能的核心功能以验证其工作:
    node -e "require('./skills/<name>').main ? require('./skills/<name>').main() : console.log('ok')"
-   Scripts in scripts/ must also be tested by executing them.
-8. ATOMIC CREATION: Create ALL files for a skill in a single cycle.
-   Do not create a directory in one cycle and fill it in the next.
-   Empty directories from failed cycles will be automatically cleaned up on rollback.
+   scripts/ 中的脚本也必须通过执行来测试。
+8. 原子创建: 在单个周期中创建技能的所有文件。
+   不要在一个周期中创建目录，在下一个周期中填充。
+   失败周期中的空目录将在回滚时自动清理。
 
-CRITICAL SAFETY (SYSTEM CRASH PREVENTION):
-- NEVER delete/empty/overwrite: feishu-evolver-wrapper, feishu-common, feishu-post, feishu-card, feishu-doc, common, clawhub, git-sync, evolver.
-- NEVER delete root files: MEMORY.md, SOUL.md, IDENTITY.md, AGENTS.md, USER.md, HEARTBEAT.md, RECENT_EVENTS.md, TOOLS.md, openclaw.json, .env, package.json.
-- Fix broken skills; DO NOT delete and recreate.
-- Violation = ROLLBACK + FAILED.
+关键安全 (系统崩溃预防):
+- 永远不要删除/清空/覆盖: feishu-evolver-wrapper, feishu-common, feishu-post, feishu-card, feishu-doc, common, clawhub, git-sync, evolver。
+- 永远不要删除根文件: MEMORY.md, SOUL.md, IDENTITY.md, AGENTS.md, USER.md, HEARTBEAT.md, RECENT_EVENTS.md, TOOLS.md, openclaw.json, .env, package.json。
+- 修复损坏的技能；不要删除并重新创建。
+- 违规 = 回滚 + 失败。
 
-COMMON FAILURE PATTERNS:
-- Blast radius exceeded.
-- Omitted Mutation object.
-- Merged objects into one JSON.
-- Hallucinated "type": "Logic".
-- "id": "mut_undefined".
-- Missing "trigger_signals".
-- Unrunnable validation steps.
-- Markdown code blocks wrapping JSON (FORBIDDEN).
+常见失败模式:
+- 影响半径超出。
+- 省略 Mutation 对象。
+- 将对象合并为一个 JSON。
+- 幻觉 "type": "Logic"。
+- "id": "mut_undefined"。
+- 缺少 "trigger_signals"。
+- 无法运行的验证步骤。
+- 用 markdown 代码块包装 JSON (禁止)。
 
-FAILURE STREAK AWARENESS:
-- If "consecutive_failure_streak_N" or "failure_loop_detected":
-  1. Change approach (do NOT repeat failed gene).
-  2. Pick SIMPLER fix.
-  3. Respect "ban_gene:<id>".
+失败连续性意识:
+- 如果出现 "consecutive_failure_streak_N" 或 "failure_loop_detected":
+  1. 改变方法 (不要重复失败的基因)。
+  2. 选择更简单的修复。
+  3. 遵守 "ban_gene:<id>"。
 
-Final Directive: Every cycle must leave the system measurably better.
-START IMMEDIATELY WITH RAW JSON (Mutation Object first).
-DO NOT WRITE ANY INTRODUCTORY TEXT.
+最终指令: 每个周期必须使系统变得更好。
+立即以原始 JSON 开始 (首先是 Mutation 对象)。
+不要写任何介绍性文本。
 
-Context [Signals]:
+上下文 [信号]:
 ${JSON.stringify(optimizedSignals)}
 
-Context [Env Fingerprint]:
+上下文 [环境指纹]:
 ${JSON.stringify(envFingerprint, null, 2)}
 ${innovationBlock}
-Context [Injection Hint]:
-${process.env.EVOLVE_HINT ? process.env.EVOLVE_HINT : '(none)'}
+上下文 [注入提示]:
+${process.env.EVOLVE_HINT ? process.env.EVOLVE_HINT : '(无)'}
 
-Context [Gene Preview] (Reference for Strategy):
+上下文 [基因预览] (策略参考):
 ${formattedGenes}
 
-Context [Capsule Preview] (Reference for Past Success):
+上下文 [胶囊预览] (过去成功的参考):
 ${formattedCapsules}
 
-Context [Capability Candidates]:
+上下文 [能力候选]:
 ${capsPreview}
 
-Context [Hub Matched Solution]:
-${hubMatchedBlock || '(no hub match)'}
+上下文 [Hub 匹配解决方案]:
+${hubMatchedBlock || '(无 Hub 匹配)'}
 
-Context [External Candidates]:
-${externalCandidatesPreview || '(none)'}
+上下文 [外部候选]:
+${externalCandidatesPreview || '(无)'}
 ${buildAntiPatternZone(failedCapsules, signals)}${buildLessonsBlock(hubLessons, signals)}
 ${historyBlock}
 ${buildNarrativeBlock()}
 ${buildPrinciplesBlock()}
-Context [Execution]:
+上下文 [执行]:
 ${executionContext}
 
 ━━━━━━━━━━━━━━━━━━━━━━
-MANDATORY POST-SOLIDIFY STEP (Wrapper Authority -- Cannot Be Skipped)
+固化后必须步骤 (包装器权限 -- 不可跳过)
 ━━━━━━━━━━━━━━━━━━━━━━
 
-After solidify, a status summary file MUST exist for this cycle.
-Preferred path: evolver core auto-writes it during solidify.
-The wrapper will handle reporting AFTER git push.
-If core write is unavailable for any reason, create fallback status JSON manually.
+固化后，此周期必须存在状态摘要文件。
+首选路径: evolver 核心在固化期间自动写入。
+包装器将在 git push 后处理报告。
+如果核心写入因任何原因不可用，手动创建后备状态 JSON。
 
-Write a JSON file with your status:
+写入包含状态的 JSON 文件:
 \`\`\`bash
 cat > ${process.env.WORKSPACE_DIR || '.'}/logs/status_${cycleId}.json << 'STATUSEOF'
 {
@@ -560,12 +575,12 @@ cat > ${process.env.WORKSPACE_DIR || '.'}/logs/status_${cycleId}.json << 'STATUS
 STATUSEOF
 \`\`\`
 
-Rules:
-- "en" field: English status. "zh" field: Chinese status. Content must match (different language).
-- Add "result" with value success or failed.
-- INTENT must be one of: INNOVATION, REPAIR, OPTIMIZE (or Chinese: 创新, 修复, 优化)
-- Do NOT use generic text like "Step Complete", "Cycle finished", "周期已完成". Describe the actual work.
-- Example:
+规则:
+- "en" 字段: 英文状态。"zh" 字段: 中文状态。内容必须匹配 (不同语言)。
+- 添加 "result"，值为 success 或 failed。
+- INTENT 必须是以下之一: INNOVATION, REPAIR, OPTIMIZE (或中文: 创新, 修复, 优化)
+- 不要使用通用文本如 "步骤完成", "周期完成", "Cycle finished"。描述实际工作。
+- 示例:
   {"result":"success","en":"Status: [INNOVATION] Created auto-scheduler that syncs calendar to HEARTBEAT.md","zh":"状态: [创新] 创建了自动调度器，将日历同步到 HEARTBEAT.md"}
 `.trim();
 

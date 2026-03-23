@@ -14,37 +14,37 @@ function isLlmReviewEnabled() {
 }
 
 function buildReviewPrompt({ diff, gene, signals, mutation }) {
-  const geneId = gene && gene.id ? gene.id : '(未知)';
-  const category = (mutation && mutation.category) || (gene && gene.category) || '未知';
-  const rationale = mutation && mutation.rationale ? String(mutation.rationale).slice(0, 500) : '(无)';
-  const signalsList = Array.isArray(signals) ? signals.slice(0, 8).join(', ') : '(无)';
+  const geneId = gene && gene.id ? gene.id : '(unknown)';
+  const category = (mutation && mutation.category) || (gene && gene.category) || 'unknown';
+  const rationale = mutation && mutation.rationale ? String(mutation.rationale).slice(0, 500) : '(none)';
+  const signalsList = Array.isArray(signals) ? signals.slice(0, 8).join(', ') : '(none)';
   const diffPreview = String(diff || '').slice(0, 6000);
 
-  return `您正在审查由自主进化引擎生成的代码变更。
+  return `You are reviewing a code change produced by an autonomous evolution engine.
 
-## 上下文
-- 基因: ${geneId} (${category})
-- 信号: [${signalsList}]
-- 理由: ${rationale}
+## Context
+- Gene: ${geneId} (${category})
+- Signals: [${signalsList}]
+- Rationale: ${rationale}
 
 ## Diff
 \`\`\`diff
 ${diffPreview}
 \`\`\`
 
-## 审查标准
-1. 此变更是否解决了声明的信号？
-2. 是否引入了明显的回归或错误？
-3. 影响半径是否与问题成比例？
-4. 是否存在安全或保障方面的顾虑？
+## Review Criteria
+1. Does this change address the stated signals?
+2. Are there any obvious regressions or bugs introduced?
+3. Is the blast radius proportionate to the problem?
+4. Are there any security or safety concerns?
 
-## 响应格式
-以 JSON 对象响应:
+## Response Format
+Respond with a JSON object:
 {
   "approved": true|false,
   "confidence": 0.0-1.0,
   "concerns": ["..."],
-  "summary": "一行审查摘要"
+  "summary": "one-line review summary"
 }`;
 }
 
@@ -84,8 +84,8 @@ function runLlmReview({ diff, gene, signals, mutation }) {
       try { fs.unlinkSync(tmpFile); } catch (_) {}
     }
   } catch (e) {
-    console.log('[LLM审查] 执行失败 (非致命): ' + (e && e.message ? e.message : e));
-    return { approved: true, confidence: 0.5, concerns: ['审查执行失败'], summary: '审查超时或错误' };
+    console.log('[LLMReview] Execution failed (non-fatal): ' + (e && e.message ? e.message : e));
+    return { approved: true, confidence: 0.5, concerns: ['review execution failed'], summary: 'review timeout or error' };
   }
 }
 
