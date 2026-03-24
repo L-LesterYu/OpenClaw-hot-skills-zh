@@ -7,7 +7,7 @@
 
 ## 📖 项目简介
 
-本项目为中文开发者提供 各个skills 平台上优质技能（Skills）的中文版本，共收录 **70 个**中文技能，覆盖搜索、Agent 增强、工具集成、设计、开发、文档处理、数据分析和安全防护等领域。
+本项目为中文开发者提供 各个skills 平台上优质技能（Skills）的中文版本，共收录 **71 个**中文技能，覆盖搜索、Agent 增强、工具集成、设计、开发、文档处理、数据分析和安全防护等领域。
 
 **每个 skill 的完整文档在其子目录的 `SKILL.md` 中，本 README 仅提供速览。**
 
@@ -96,6 +96,7 @@
 | [marketing-skills-zh](skills/marketing-skills-zh/SKILL.md) | 23 个营销模块实战参考库——覆盖 CRO、SEO、文案、付费广告、邮件序列、定价策略等全链路，提供即用检查清单与框架模板 | ✅ |
 | [admapix-zh](skills/admapix-zh/SKILL.md) | 竞品广告素材搜索引擎——按关键词/类型/地区/时间筛选，支持视频、图片与试玩广告，结果以 H5 可视化页面展示 | 💰📦 |
 | [xiaohongshu-mcp-zh](skills/xiaohongshu-mcp-zh/SKILL.md) | 小红书（RedNote）内容运营自动化——图文/视频发布、笔记搜索与趋势追踪、详情与评论分析、用户资料与信息流管理，需本地部署 MCP 服务器 | 📦 |
+| [ai-business-search-zh](skills/ai-business-search-zh/SKILL.md) | AI 商家搜索优化——引导本地商家完成 7 天 AI 搜索优化流程，生成媒体文章、选择发布渠道，确保商家出现在豆包/DeepSeek/通义千问等 AI 推荐中 | ✅ |
 
 ### 🛠️ 开发工具
 

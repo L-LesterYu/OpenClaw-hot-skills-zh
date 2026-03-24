@@ -1,0 +1,25 @@
+{
+  "name": "ai-business-search-zh",
+  "version": "1.0.0",
+  "description": "帮助本地商家通过战略媒体内容创建，优化在AI大模型搜索结果中的曝光与推荐",
+  "main": "SKILL.md",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ai-search",
+    "business-search",
+    "local-seo",
+    "media-content",
+    "chinese-local-business",
+    "clawhub"
+  ],
+  "author": "LiuYiHao",
+  "license": "MIT",
+  "openclaw": {
+    "skill": true,
+    "category": "business",
+    "tags": ["local-seo", "ai-search", "media-publishing", "chinese-market", "business-search"],
+    "requires": []
+  }
+}
