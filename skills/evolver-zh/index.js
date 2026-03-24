@@ -1,0 +1,728 @@
+#!/usr/bin/env node
+const evolve = require('./src/evolve');
+const { solidify } = require('./src/gep/solidify');
+const path = require('path');
+const { getRepoRoot } = require('./src/gep/paths');
+try { require('dotenv').config({ path: path.join(getRepoRoot(), '.env') }); } catch (e) { console.warn('[Evolver] 警告：dotenv 未找到或加载 .env 失败'); }
+const fs = require('fs');
+const { spawn } = require('child_process');
+
+function sleepMs(ms) {
+  const n = parseInt(String(ms), 10);
+  const t = Number.isFinite(n) ? Math.max(0, n) : 0;
+  return new Promise(resolve => setTimeout(resolve, t));
+}
+
+function readJsonSafe(p) {
+  try {
+    if (!fs.existsSync(p)) return null;
+    const raw = fs.readFileSync(p, 'utf8');
+    if (!raw.trim()) return null;
+    return JSON.parse(raw);
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * Mark a pending evolution run as rejected (state-only, no git rollback).
+ * @param {string} statePath - Path to evolution_solidify_state.json
+ * @returns {boolean} true if a pending run was found and rejected
+ */
+function rejectPendingRun(statePath) {
+  try {
+    const state = readJsonSafe(statePath);
+    if (state && state.last_run && state.last_run.run_id) {
+      state.last_solidify = {
+        run_id: state.last_run.run_id,
+        rejected: true,
+        reason: 'loop_bridge_disabled_autoreject_no_rollback',
+        timestamp: new Date().toISOString(),
+      };
+      const tmp = `${statePath}.tmp`;
+      fs.writeFileSync(tmp, JSON.stringify(state, null, 2) + '\n', 'utf8');
+      fs.renameSync(tmp, statePath);
+      return true;
+    }
+  } catch (e) {
+    console.warn('[Loop] Failed to clear pending run state: ' + (e.message || e));
+  }
+
+  return false;
+}
+
+function isPendingSolidify(state) {
+  const lastRun = state && state.last_run ? state.last_run : null;
+  const lastSolid = state && state.last_solidify ? state.last_solidify : null;
+  if (!lastRun || !lastRun.run_id) return false;
+  if (!lastSolid || !lastSolid.run_id) return true;
+  return String(lastSolid.run_id) !== String(lastRun.run_id);
+}
+
+function parseMs(v, fallback) {
+  const n = parseInt(String(v == null ? '' : v), 10);
+  if (Number.isFinite(n)) return Math.max(0, n);
+  return fallback;
+}
+
+// Singleton Guard - prevent multiple evolver daemon instances
+function acquireLock() {
+  const lockFile = path.join(__dirname, 'evolver.pid');
+  try {
+    if (fs.existsSync(lockFile)) {
+      const pid = parseInt(fs.readFileSync(lockFile, 'utf8').trim(), 10);
+      if (!Number.isFinite(pid) || pid <= 0) {
+        console.log('[Singleton] 锁文件损坏（无效 PID）。正在接管。');
+      } else {
+        try {
+          process.kill(pid, 0);
+          console.log(`[Singleton] Evolver 循环已在运行（PID ${pid}）。正在退出。`);
+          return false;
+        } catch (e) {
+          console.log(`[Singleton] 发现过期锁（PID ${pid}）。正在接管。`);
+        }
+      }
+    }
+    fs.writeFileSync(lockFile, String(process.pid));
+    return true;
+  } catch (err) {
+    console.error('[Singleton] 锁获取失败：', err);
+    return false;
+  }
+}
+
+function releaseLock() {
+  const lockFile = path.join(__dirname, 'evolver.pid');
+  try {
+    if (fs.existsSync(lockFile)) {
+       const pid = parseInt(fs.readFileSync(lockFile, 'utf8').trim(), 10);
+       if (pid === process.pid) fs.unlinkSync(lockFile);
+    }
+  } catch (e) { /* ignore */ }
+}
+
+async function main() {
+  const args = process.argv.slice(2);
+  const command = args[0];
+  const isLoop = args.includes('--loop') || args.includes('--mad-dog');
+  const isVerbose = args.includes('--verbose') || args.includes('-v') ||
+    String(process.env.EVOLVER_VERBOSE || '').toLowerCase() === 'true';
+  if (isVerbose) process.env.EVOLVER_VERBOSE = 'true';
+
+  if (!command || command === 'run' || command === '/evolve' || isLoop) {
+    if (isLoop) {
+        const originalLog = console.log;
+        const originalWarn = console.warn;
+        const originalError = console.error;
+        function ts() { return '[' + new Date().toISOString() + ']'; }
+        console.log = (...args) => { originalLog.call(console, ts(), ...args); };
+        console.warn = (...args) => { originalWarn.call(console, ts(), ...args); };
+        console.error = (...args) => { originalError.call(console, ts(), ...args); };
+    }
+
+    console.log('正在启动 evolver...');
+    
+    if (isLoop) {
+        // Internal daemon loop (no wrapper required).
+        if (!acquireLock()) process.exit(0);
+        process.on('exit', releaseLock);
+        process.on('SIGINT', () => { releaseLock(); process.exit(); });
+        process.on('SIGTERM', () => { releaseLock(); process.exit(); });
+
+        process.env.EVOLVE_LOOP = 'true';
+        if (!process.env.EVOLVE_BRIDGE) {
+          process.env.EVOLVE_BRIDGE = 'false';
+        }
+        console.log(`循环模式已启用（内部守护进程，bridge=${process.env.EVOLVE_BRIDGE}, verbose=${isVerbose}）。`);
+
+        const { getEvolutionDir } = require('./src/gep/paths');
+        const solidifyStatePath = path.join(getEvolutionDir(), 'evolution_solidify_state.json');
+
+        const minSleepMs = parseMs(process.env.EVOLVER_MIN_SLEEP_MS, 2000);
+        const maxSleepMs = parseMs(process.env.EVOLVER_MAX_SLEEP_MS, 300000);
+        const idleThresholdMs = parseMs(process.env.EVOLVER_IDLE_THRESHOLD_MS, 500);
+        const pendingSleepMs = parseMs(
+          process.env.EVOLVE_PENDING_SLEEP_MS ||
+            process.env.EVOLVE_MIN_INTERVAL ||
+            process.env.FEISHU_EVOLVER_INTERVAL,
+          120000
+        );
+
+        const maxCyclesPerProcess = parseMs(process.env.EVOLVER_MAX_CYCLES_PER_PROCESS, 100) || 100;
+        const maxRssMb = parseMs(process.env.EVOLVER_MAX_RSS_MB, 500) || 500;
+        const suicideEnabled = String(process.env.EVOLVER_SUICIDE || '').toLowerCase() !== 'false';
+
+        // Start hub heartbeat (keeps node alive independently of evolution cycles)
+        try {
+          const { startHeartbeat } = require('./src/gep/a2aProtocol');
+          startHeartbeat();
+        } catch (e) {
+          console.warn('[Heartbeat] 启动失败：' + (e.message || e));
+        }
+
+        let currentSleepMs = minSleepMs;
+        let cycleCount = 0;
+
+        while (true) {
+          try {
+          cycleCount += 1;
+
+          // Ralph-loop gating: do not run a new cycle while previous run is pending solidify.
+          const st0 = readJsonSafe(solidifyStatePath);
+          if (isPendingSolidify(st0)) {
+            await sleepMs(Math.max(pendingSleepMs, minSleepMs));
+            continue;
+          }
+
+          const t0 = Date.now();
+          let ok = false;
+          try {
+            await evolve.run();
+            ok = true;
+
+            if (String(process.env.EVOLVE_BRIDGE || '').toLowerCase() === 'false') {
+              const stAfterRun = readJsonSafe(solidifyStatePath);
+              if (isPendingSolidify(stAfterRun)) {
+                const cleared = rejectPendingRun(solidifyStatePath);
+                if (cleared) {
+                  console.warn('[Loop] 因循环模式下 bridge 已禁用，自动拒绝了待处理的运行（仅状态，无回滚）。');
+                }
+              }
+            }
+          } catch (error) {
+            const msg = error && error.message ? String(error.message) : String(error);
+            console.error(`进化周期失败：${msg}`);
+          }
+          const dt = Date.now() - t0;
+
+          // Adaptive sleep: treat very fast cycles as "idle", backoff; otherwise reset to min.
+          if (!ok || dt < idleThresholdMs) {
+            currentSleepMs = Math.min(maxSleepMs, Math.max(minSleepMs, currentSleepMs * 2));
+          } else {
+            currentSleepMs = minSleepMs;
+          }
+
+          // OMLS-inspired idle scheduling: adjust sleep and trigger aggressive
+          // operations (distillation, reflection) during detected idle windows.
+          let omlsMultiplier = 1;
+          try {
+            const { getScheduleRecommendation } = require('./src/gep/idleScheduler');
+            const schedule = getScheduleRecommendation();
+            if (schedule.enabled && schedule.sleep_multiplier > 0) {
+              omlsMultiplier = schedule.sleep_multiplier;
+              if (schedule.should_distill) {
+                try {
+                  const { shouldDistillFromFailures: shouldDF, autoDistillFromFailures: autoDF } = require('./src/gep/skillDistiller');
+                  if (shouldDF()) {
+                    const dfResult = autoDF();
+                    if (dfResult && dfResult.ok) {
+                      console.log('[OMLS] 空闲窗口失败蒸馏：' + dfResult.gene.id);
+                    }
+                  }
+                } catch (e) {}
+              }
+              if (isVerbose && schedule.idle_seconds >= 0) {
+                console.log(`[OMLS] idle=${schedule.idle_seconds}s intensity=${schedule.intensity} multiplier=${omlsMultiplier}`);
+              }
+            }
+          } catch (e) {}
+
+          // Suicide check (memory leak protection)
+          if (suicideEnabled) {
+            const memMb = process.memoryUsage().rss / 1024 / 1024;
+            if (cycleCount >= maxCyclesPerProcess || memMb > maxRssMb) {
+              console.log(`[Daemon] 正在重启自身（cycles=${cycleCount}, rssMb=${memMb.toFixed(0)}）`);
+              try {
+                const spawnOpts = {
+                  detached: true,
+                  stdio: 'ignore',
+                  env: process.env,
+                  windowsHide: true,
+                };
+                const child = spawn(process.execPath, [__filename, ...args], spawnOpts);
+                child.unref();
+                releaseLock();
+                process.exit(0);
+              } catch (spawnErr) {
+                console.error('[Daemon] 启动失败，继续当前进程：', spawnErr.message);
+              }
+            }
+          }
+
+          let saturationMultiplier = 1;
+          try {
+            const st1 = readJsonSafe(solidifyStatePath);
+            const lastSignals = st1 && st1.last_run && Array.isArray(st1.last_run.signals) ? st1.last_run.signals : [];
+            if (lastSignals.includes('force_steady_state')) {
+              saturationMultiplier = 10;
+              console.log('[Daemon] 检测到饱和。进入稳态模式（10 倍休眠）。');
+            } else if (lastSignals.includes('evolution_saturation')) {
+              saturationMultiplier = 5;
+              console.log('[Daemon] 接近饱和。降低进化频率（5 倍休眠）。');
+            }
+          } catch (e) {}
+
+          // Jitter to avoid lockstep restarts.
+          const jitter = Math.floor(Math.random() * 250);
+          const totalSleepMs = Math.max(minSleepMs, (currentSleepMs + jitter) * saturationMultiplier * omlsMultiplier);
+          if (isVerbose) {
+            const memMb = (process.memoryUsage().rss / 1024 / 1024).toFixed(1);
+            console.log(`[Verbose] cycle=${cycleCount} ok=${ok} dt=${dt}ms sleep=${totalSleepMs}ms (base=${currentSleepMs} jitter=${jitter} sat=${saturationMultiplier}x) rss=${memMb}MB signals=[${(function() { try { var st = readJsonSafe(solidifyStatePath); return st && st.last_run && Array.isArray(st.last_run.signals) ? st.last_run.signals.join(',') : ''; } catch(e) { return ''; } })()}]`);
+          }
+          await sleepMs(totalSleepMs);
+
+          } catch (loopErr) {
+            console.error('[Daemon] 意外的循环错误（正在恢复）：' + (loopErr && loopErr.message ? loopErr.message : String(loopErr)));
+            await sleepMs(Math.max(minSleepMs, 10000));
+          }
+        }
+    } else {
+        // Normal Single Run
+        try {
+            await evolve.run();
+        } catch (error) {
+            console.error('进化失败：', error);
+            process.exit(1);
+        }
+    }
+
+    // Post-run hint
+    console.log('\n' + '=======================================================');
+    console.log('Evolver 运行完成。如果你使用此项目，欢迎 star 上游仓库。');
+    console.log('上游：https://github.com/EvoMap/evolver');
+    console.log('=======================================================\n');
+    
+  } else if (command === 'solidify') {
+    const dryRun = args.includes('--dry-run');
+    const noRollback = args.includes('--no-rollback');
+    const intentFlag = args.find(a => typeof a === 'string' && a.startsWith('--intent='));
+    const summaryFlag = args.find(a => typeof a === 'string' && a.startsWith('--summary='));
+    const intent = intentFlag ? intentFlag.slice('--intent='.length) : null;
+    const summary = summaryFlag ? summaryFlag.slice('--summary='.length) : null;
+
+    try {
+      const res = solidify({
+        intent: intent || undefined,
+        summary: summary || undefined,
+        dryRun,
+        rollbackOnFailure: !noRollback,
+      });
+      const st = res && res.ok ? 'SUCCESS' : 'FAILED';
+      console.log(`[SOLIDIFY] ${st}`);
+      if (res && res.gene) console.log(JSON.stringify(res.gene, null, 2));
+      if (res && res.event) console.log(JSON.stringify(res.event, null, 2));
+      if (res && res.capsule) console.log(JSON.stringify(res.capsule, null, 2));
+
+      if (res && res.ok && !dryRun) {
+        try {
+          const { shouldDistill, prepareDistillation, autoDistill, shouldDistillFromFailures, autoDistillFromFailures } = require('./src/gep/skillDistiller');
+          const { readStateForSolidify } = require('./src/gep/solidify');
+          const solidifyState = readStateForSolidify();
+          const count = solidifyState.solidify_count || 0;
+          const autoDistillInterval = 5;
+          const autoTrigger = count > 0 && count % autoDistillInterval === 0;
+
+          if (autoTrigger || shouldDistill()) {
+            const auto = autoDistill();
+            if (auto && auto.ok && auto.gene) {
+              console.log('[Distiller] 自动蒸馏的基因：' + auto.gene.id);
+            } else {
+              const dr = prepareDistillation();
+              if (dr && dr.ok && dr.promptPath) {
+                const trigger = autoTrigger ? `自动（每 ${autoDistillInterval} 次固化，计数=${count})` : '阈值';
+                console.log('\n[蒸馏请求]');
+                console.log(`蒸馏已触发： ${trigger}`);
+                console.log('读取提示词文件，使用你的 LLM 处理，');
+                console.log('将 LLM 响应保存到文件，然后运行：');
+                console.log('  node index.js distill --response-file=<path_to_llm_response>');
+                console.log('提示词文件： ' + dr.promptPath);
+                console.log('[/蒸馏请求]');
+              }
+            }
+          }
+
+          if (shouldDistillFromFailures()) {
+            const failureResult = autoDistillFromFailures();
+            if (failureResult && failureResult.ok && failureResult.gene) {
+              console.log('[Distiller] 从失败中蒸馏的修复基因： ' + failureResult.gene.id);
+            }
+          }
+        } catch (e) {
+          console.warn('[Distiller] 初始化失败（非致命）： ' + (e.message || e));
+        }
+      }
+
+      if (res && res.hubReviewPromise) {
+        await res.hubReviewPromise;
+      }
+      process.exit(res && res.ok ? 0 : 2);
+    } catch (error) {
+      console.error('[SOLIDIFY] Error:', error);
+      process.exit(2);
+    }
+  } else if (command === 'distill') {
+    const responseFileFlag = args.find(a => typeof a === 'string' && a.startsWith('--response-file='));
+    if (!responseFileFlag) {
+      console.error('用法：node index.js distill --response-file=<路径>');
+      process.exit(1);
+    }
+    const responseFilePath = responseFileFlag.slice('--response-file='.length);
+    try {
+      const responseText = fs.readFileSync(responseFilePath, 'utf8');
+      const { completeDistillation } = require('./src/gep/skillDistiller');
+      const result = completeDistillation(responseText);
+      if (result && result.ok) {
+        console.log('[Distiller] 基因已生成： ' + result.gene.id);
+        console.log(JSON.stringify(result.gene, null, 2));
+      } else {
+        console.warn('[Distiller] 蒸馏未生成基因： ' + (result && result.reason || 'unknown'));
+      }
+      process.exit(result && result.ok ? 0 : 2);
+    } catch (error) {
+      console.error('[DISTILL] Error:', error);
+      process.exit(2);
+    }
+
+  } else if (command === 'review' || command === '--review') {
+    const { getEvolutionDir, getRepoRoot } = require('./src/gep/paths');
+    const { loadGenes } = require('./src/gep/assetStore');
+    const { execSync } = require('child_process');
+
+    const statePath = path.join(getEvolutionDir(), 'evolution_solidify_state.json');
+    const state = readJsonSafe(statePath);
+    const lastRun = state && state.last_run ? state.last_run : null;
+
+    if (!lastRun || !lastRun.run_id) {
+      console.log('[Review] 没有待审查的进化运行。');
+      console.log('请先运行 "node index.js run" 生成更改，然后在固化之前审查。');
+      process.exit(0);
+    }
+
+    const lastSolid = state && state.last_solidify ? state.last_solidify : null;
+    if (lastSolid && String(lastSolid.run_id) === String(lastRun.run_id)) {
+      console.log('[Review] 上次运行已固化。无需审查。');
+      process.exit(0);
+    }
+
+    const repoRoot = getRepoRoot();
+    let diff = '';
+    try {
+      const unstaged = execSync('git diff', { cwd: repoRoot, encoding: 'utf8', timeout: 30000 }).trim();
+      const staged = execSync('git diff --cached', { cwd: repoRoot, encoding: 'utf8', timeout: 30000 }).trim();
+      const untracked = execSync('git ls-files --others --exclude-standard', { cwd: repoRoot, encoding: 'utf8', timeout: 10000 }).trim();
+      if (staged) diff += '=== Staged Changes ===\n' + staged + '\n\n';
+      if (unstaged) diff += '=== Unstaged Changes ===\n' + unstaged + '\n\n';
+      if (untracked) diff += '=== Untracked Files ===\n' + untracked + '\n';
+    } catch (e) {
+      diff = '(failed to capture diff: ' + (e.message || e) + ')';
+    }
+
+    const genes = loadGenes();
+    const geneId = lastRun.selected_gene_id ? String(lastRun.selected_gene_id) : null;
+    const gene = geneId ? genes.find(g => g && g.type === 'Gene' && g.id === geneId) : null;
+    const signals = Array.isArray(lastRun.signals) ? lastRun.signals : [];
+    const mutation = lastRun.mutation || null;
+
+    console.log('\n' + '='.repeat(60));
+    console.log('[Review] Pending evolution run: ' + lastRun.run_id);
+    console.log('='.repeat(60));
+    console.log('\n--- Gene ---');
+    if (gene) {
+      console.log('  ID:       ' + gene.id);
+      console.log('  Category: ' + (gene.category || '?'));
+      console.log('  Summary:  ' + (gene.summary || '?'));
+      if (Array.isArray(gene.strategy) && gene.strategy.length > 0) {
+        console.log('  Strategy:');
+        gene.strategy.forEach((s, i) => console.log('    ' + (i + 1) + '. ' + s));
+      }
+    } else {
+      console.log('  (no gene selected or gene not found: ' + (geneId || 'none') + ')');
+    }
+
+    console.log('\n--- Signals ---');
+    if (signals.length > 0) {
+      signals.forEach(s => console.log('  - ' + s));
+    } else {
+      console.log('  (no signals)');
+    }
+
+    console.log('\n--- Mutation ---');
+    if (mutation) {
+      console.log('  Category:   ' + (mutation.category || '?'));
+      console.log('  Risk Level: ' + (mutation.risk_level || '?'));
+      if (mutation.rationale) console.log('  Rationale:  ' + mutation.rationale);
+    } else {
+      console.log('  (no mutation data)');
+    }
+
+    if (lastRun.blast_radius_estimate) {
+      console.log('\n--- Blast Radius Estimate ---');
+      const br = lastRun.blast_radius_estimate;
+      console.log('  Files changed: ' + (br.files_changed || '?'));
+      console.log('  Lines changed: ' + (br.lines_changed || '?'));
+    }
+
+    console.log('\n--- Diff ---');
+    if (diff.trim()) {
+      console.log(diff.length > 5000 ? diff.slice(0, 5000) + '\n... (truncated, ' + diff.length + ' chars total)' : diff);
+    } else {
+      console.log('  (no changes detected)');
+    }
+    console.log('='.repeat(60));
+
+    if (args.includes('--approve')) {
+      console.log('\n[Review] 已批准。正在执行固化...\n');
+      try {
+        const res = solidify({
+          intent: lastRun.intent || undefined,
+          rollbackOnFailure: true,
+        });
+        const st = res && res.ok ? 'SUCCESS' : 'FAILED';
+        console.log(`[SOLIDIFY] ${st}`);
+        if (res && res.gene) console.log(JSON.stringify(res.gene, null, 2));
+        if (res && res.hubReviewPromise) {
+          await res.hubReviewPromise;
+        }
+        process.exit(res && res.ok ? 0 : 2);
+      } catch (error) {
+        console.error('[SOLIDIFY] Error:', error);
+        process.exit(2);
+      }
+    } else if (args.includes('--reject')) {
+      console.log('\n[Review] 已拒绝。正在回滚更改...');
+      try {
+        execSync('git checkout -- .', { cwd: repoRoot, encoding: 'utf8', timeout: 30000 });
+        execSync('git clean -fd', { cwd: repoRoot, encoding: 'utf8', timeout: 30000 });
+        const evolDir = getEvolutionDir();
+        const sp = path.join(evolDir, 'evolution_solidify_state.json');
+        if (fs.existsSync(sp)) {
+          const s = readJsonSafe(sp);
+          if (s && s.last_run) {
+            s.last_solidify = { run_id: s.last_run.run_id, rejected: true, timestamp: new Date().toISOString() };
+            const tmpReject = `${sp}.tmp`;
+            fs.writeFileSync(tmpReject, JSON.stringify(s, null, 2) + '\n', 'utf8');
+            fs.renameSync(tmpReject, sp);
+          }
+        }
+        console.log('[Review] 更改已回滚。');
+      } catch (e) {
+        console.error('[Review] 回滚失败：', e.message || e);
+        process.exit(2);
+      }
+    } else {
+      console.log('\n批准并固化：  node index.js review --approve');
+      console.log('拒绝并回滚：   node index.js review --reject');
+    }
+
+  } else if (command === 'fetch') {
+    let skillId = null;
+    const eqFlag = args.find(a => typeof a === 'string' && (a.startsWith('--skill=') || a.startsWith('-s=')));
+    if (eqFlag) {
+      skillId = eqFlag.split('=').slice(1).join('=');
+    } else {
+      const sIdx = args.indexOf('-s');
+      const longIdx = args.indexOf('--skill');
+      const flagIdx = sIdx !== -1 ? sIdx : longIdx;
+      if (flagIdx !== -1 && args[flagIdx + 1] && !String(args[flagIdx + 1]).startsWith('-')) {
+        skillId = args[flagIdx + 1];
+      }
+    }
+    if (!skillId) {
+      const positional = args[1];
+      if (positional && !String(positional).startsWith('-')) skillId = positional;
+    }
+
+    if (!skillId) {
+      console.error('Usage: evolver fetch --skill <skill_id>');
+      console.error('       evolver fetch -s <skill_id>');
+      process.exit(1);
+    }
+
+    const { getHubUrl, getNodeId, buildHubHeaders, sendHelloToHub, getHubNodeSecret } = require('./src/gep/a2aProtocol');
+
+    const hubUrl = getHubUrl();
+    if (!hubUrl) {
+      console.error('[fetch] A2A_HUB_URL 未配置。');
+      console.error('通过环境变量或 .env 文件设置：');
+      console.error('  export A2A_HUB_URL=https://evomap.ai');
+      process.exit(1);
+    }
+
+    try {
+      if (!getHubNodeSecret()) {
+        console.log('[fetch] 未找到 node_secret。正在向 Hub 发送 hello 进行注册...');
+        const helloResult = await sendHelloToHub();
+        if (!helloResult || !helloResult.ok) {
+          console.error('[fetch] 注册 Hub 失败：', helloResult && helloResult.error || 'unknown');
+          process.exit(1);
+        }
+        console.log('[fetch] 已注册为 ' + getNodeId());
+      }
+
+      const endpoint = hubUrl.replace(/\/+$/, '') + '/a2a/skill/store/' + encodeURIComponent(skillId) + '/download';
+      const nodeId = getNodeId();
+
+      console.log('[fetch] 正在下载技能： ' + skillId);
+
+      const resp = await fetch(endpoint, {
+        method: 'POST',
+        headers: buildHubHeaders(),
+        body: JSON.stringify({ sender_id: nodeId }),
+        signal: AbortSignal.timeout(30000),
+      });
+
+      if (!resp.ok) {
+        const body = await resp.text().catch(() => '');
+        let errorDetail = '';
+        let errorCode = '';
+        try {
+          const j = JSON.parse(body);
+          errorDetail = j.detail || j.message || j.error || '';
+          errorCode = j.error || j.code || '';
+        } catch (_) {
+          errorDetail = body ? body.slice(0, 500) : '';
+        }
+        console.error('[fetch] 下载失败 (HTTP ' + resp.status + ')' + (errorCode ? ': ' + errorCode : ''));
+        if (errorDetail && errorDetail !== errorCode) {
+          console.error('  Detail: ' + errorDetail);
+        }
+        if (resp.status === 404) {
+          console.error('  Skill "' + skillId + '" not found or not publicly available.');
+          console.error('  请检查技能 ID 拼写，或浏览可用技能： https://evomap.ai');
+        } else if (resp.status === 401 || resp.status === 403) {
+          console.error('  认证失败。请尝试：');
+          console.error('    1. 删除 ~/.evomap/node_secret 并重试');
+          console.error('    2. 重新注册：设置 A2A_NODE_ID 并重新运行 fetch');
+        } else if (resp.status === 402) {
+          console.error('  积分不足。请查看余额： https://evomap.ai');
+        } else if (resp.status >= 500) {
+          console.error('  服务器错误。Hub 可能暂时不可用。');
+          console.error('  几分钟后重试。如果问题持续，请报告至：');
+          console.error('    https://github.com/autogame-17/evolver/issues');
+        }
+        if (isVerbose) {
+          console.error('[Verbose] Endpoint: ' + endpoint);
+          console.error('[Verbose] Status: ' + resp.status + ' ' + (resp.statusText || ''));
+          console.error('[Verbose] Response body: ' + (body || '(empty)').slice(0, 2000));
+        }
+        process.exit(1);
+      }
+
+      const data = await resp.json();
+      const outFlag = args.find(a => typeof a === 'string' && a.startsWith('--out='));
+      const safeId = String(data.skill_id || skillId).replace(/[^a-zA-Z0-9_\-\.]/g, '_');
+      const outDir = outFlag
+        ? outFlag.slice('--out='.length)
+        : path.join('.', 'skills', safeId);
+
+      if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
+
+      if (data.content) {
+        fs.writeFileSync(path.join(outDir, 'SKILL.md'), data.content, 'utf8');
+      }
+
+      const bundled = Array.isArray(data.bundled_files) ? data.bundled_files : [];
+      for (const file of bundled) {
+        if (!file || !file.name || typeof file.content !== 'string') continue;
+        const safeName = path.basename(file.name);
+        fs.writeFileSync(path.join(outDir, safeName), file.content, 'utf8');
+      }
+
+      console.log('[fetch] 技能已下载到： ' + outDir);
+      console.log('  Name:    ' + (data.name || skillId));
+      console.log('  Version: ' + (data.version || '?'));
+      console.log('  Files:   SKILL.md' + (bundled.length > 0 ? ', ' + bundled.map(f => f.name).join(', ') : ''));
+      if (data.already_purchased) {
+        console.log('  Cost:    免费（已购买）');
+      } else {
+        console.log('  Cost:    ' + (data.credit_cost || 0) + ' credits');
+      }
+    } catch (error) {
+      if (error && error.name === 'TimeoutError') {
+        console.error('[fetch] 请求超时（30 秒）。请检查网络和 A2A_HUB_URL。');
+        console.error('  Hub URL： ' + hubUrl);
+      } else {
+        console.error('[fetch] Error: ' + (error && error.message || error));
+        if (error && error.cause) console.error('  Cause: ' + (error.cause.message || error.cause.code || error.cause));
+        if (isVerbose && error && error.stack) console.error('[Verbose] Stack:\n' + error.stack);
+      }
+      process.exit(1);
+    }
+
+  } else if (command === 'asset-log') {
+    const { summarizeCallLog, readCallLog, getLogPath } = require('./src/gep/assetCallLog');
+
+    const runIdFlag = args.find(a => typeof a === 'string' && a.startsWith('--run='));
+    const actionFlag = args.find(a => typeof a === 'string' && a.startsWith('--action='));
+    const lastFlag = args.find(a => typeof a === 'string' && a.startsWith('--last='));
+    const sinceFlag = args.find(a => typeof a === 'string' && a.startsWith('--since='));
+    const jsonMode = args.includes('--json');
+
+    const opts = {};
+    if (runIdFlag) opts.run_id = runIdFlag.slice('--run='.length);
+    if (actionFlag) opts.action = actionFlag.slice('--action='.length);
+    if (lastFlag) opts.last = parseInt(lastFlag.slice('--last='.length), 10);
+    if (sinceFlag) opts.since = sinceFlag.slice('--since='.length);
+
+    if (jsonMode) {
+      const entries = readCallLog(opts);
+      console.log(JSON.stringify(entries, null, 2));
+    } else {
+      const summary = summarizeCallLog(opts);
+      console.log(`\n[Asset Call Log] ${getLogPath()}`);
+      console.log(`  总条目数： ${summary.total_entries}`);
+      console.log(`  唯一资源： ${summary.unique_assets}`);
+      console.log(`  唯一运行：   ${summary.unique_runs}`);
+      console.log(`  按操作：`);
+      for (const [action, count] of Object.entries(summary.by_action)) {
+        console.log(`    ${action}: ${count}`);
+      }
+      if (summary.entries.length > 0) {
+        console.log(`\n  最近条目：`);
+        const show = summary.entries.slice(-10);
+        for (const e of show) {
+          const ts = e.timestamp ? e.timestamp.slice(0, 19) : '?';
+          const assetShort = e.asset_id ? e.asset_id.slice(0, 20) + '...' : '(none)';
+          const sigPreview = Array.isArray(e.signals) ? e.signals.slice(0, 3).join(', ') : '';
+          console.log(`    [${ts}] ${e.action || '?'}  asset=${assetShort}  score=${e.score || '-'}  mode=${e.mode || '-'}  signals=[${sigPreview}]  run=${e.run_id || '-'}`);
+        }
+      } else {
+        console.log('\n  未找到条目。');
+      }
+      console.log('');
+    }
+
+  } else {
+    console.log(`Usage: node index.js [run|/evolve|solidify|review|distill|fetch|asset-log] [--loop]
+  - fetch flags:
+    - --skill=<id> | -s <id>   (skill ID to download)
+    - --out=<dir>              (output directory, default: ./skills/<skill_id>)
+  - solidify flags:
+    - --dry-run
+    - --no-rollback
+    - --intent=repair|optimize|innovate
+    - --summary=...
+  - review flags:
+    - --approve                (approve and solidify the pending changes)
+    - --reject                 (reject and rollback the pending changes)
+  - distill flags:
+    - --response-file=<path>  (LLM response file for skill distillation)
+  - asset-log flags:
+    - --run=<run_id>           (filter by run ID)
+    - --action=<action>        (filter: hub_search_hit, hub_search_miss, asset_reuse, asset_reference, asset_publish, asset_publish_skip)
+    - --last=<N>               (show last N entries)
+    - --since=<ISO_date>       (entries after date)
+    - --json                   (raw JSON output)`);
+  }
+}
+
+if (require.main === module) {
+  main();
+}
+
+module.exports = {
+  main,
+  readJsonSafe,
+  rejectPendingRun,
+  isPendingSolidify,
+};

@@ -7,7 +7,7 @@
 
 ## 📖 项目简介
 
-本项目为中文开发者提供 各个skills 平台上优质技能（Skills）的中文版本，共收录 **69 个**中文技能，覆盖搜索、Agent 增强、工具集成、设计、开发、文档处理、数据分析和安全防护等领域。
+本项目为中文开发者提供 各个skills 平台上优质技能（Skills）的中文版本，共收录 **70 个**中文技能，覆盖搜索、Agent 增强、工具集成、设计、开发、文档处理、数据分析和安全防护等领域。
 
 **每个 skill 的完整文档在其子目录的 `SKILL.md` 中，本 README 仅提供速览。**
 
@@ -65,6 +65,7 @@
 | [memory-setup-zh](skills/memory-setup-zh/SKILL.md) | 持久化记忆系统配置向导——启用 memorySearch 语义搜索（Voyage/OpenAI/Local 三种嵌入提供商），创建 MEMORY.md + 每日日志目录结构，配置 Agent 记忆指令，解决跨会话上下文丢失 | 📦💰 |
 | [ai-persona-os-zh](skills/ai-persona-os-zh/SKILL.md) | AI 人格操作系统——统一命令入口管理助手完整生命周期：设置向导（4 种预设模板）生成工作区文件、Never-Forget 检查点协议防止上下文丢失、心跳健康监控与记忆维护、结构化学习捕获与模式自动晋升（≥3 次晋升永久规则） | ✅ |
 | [capability-evolver-zh](skills/capability-evolver-zh/SKILL.md) | 基于 GEP 协议的 Agent 自进化引擎——自动分析运行时历史识别故障与低效，通过可复用基因和胶囊实现协议约束的可审计进化，支持 7 种策略、审查模式与自动回滚，需注册 EvoMap 节点 | 📦 |
+| [evolver-zh](skills/evolver-zh/SKILL.md) | AI 智能体自进化引擎——分析运行时历史记录，识别改进点，在协议约束下执行进化，支持 7 种策略、审查模式与自动回滚，需注册 EvoMap 节点 | 📦 |
 | [freeride-zh](skills/freeride-zh/SKILL.md) | 按 OpenRouter 免费模型质量自动排名并配置主模型与备用模型，限流时自动故障切换，零成本使用 AI | 💰📦 |
 | [auto-updater-zh](skills/auto-updater-zh/SKILL.md) | 通过 cron 每日自动更新 Clawdbot 核心与所有已安装技能，检查可用版本、应用更新并向用户发送变更摘要 | 📦 |
 | [ontology-zh](skills/ontology-zh/SKILL.md) | 类型化知识图谱——实体/关系建模、Schema 约束验证（属性/枚举/基数/无环）、CLI 增删改查与图变换规划，支持跨技能数据共享 | ✅ |
