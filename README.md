@@ -7,7 +7,7 @@
 
 ## 📖 项目简介
 
-本项目为中文开发者提供 各个skills 平台上优质技能（Skills）的中文版本，共收录 **76 个**中文技能，覆盖搜索、Agent 增强、工具集成、设计、开发、文档处理、数据分析和安全防护等领域。
+本项目为中文开发者提供 各个skills 平台上优质技能（Skills）的中文版本，共收录 **77 个**中文技能，覆盖搜索、Agent 增强、工具集成、设计、开发、文档处理、数据分析和安全防护等领域。
 
 **每个 skill 的完整文档在其子目录的 `SKILL.md` 中，本 README 仅提供速览。**
 
@@ -121,6 +121,7 @@
 | [qa-engineer-zh](skills/qa-engineer-zh/SKILL.md) | 软件测试与质量保证——发现 bug、执行测试、生成报告 | ✅ |
 | [model-usage-zh](skills/model-usage-zh/SKILL.md) | 通过 CodexBar CLI 从本地成本日志汇总 Codex/Claude 按模型使用量与成本，支持当前模型快照或全量明细，文本/JSON 双输出 | 📦 |
 | [filesystem-management-zh](skills/filesystem-management-zh/SKILL.md) | 高级文件系统操作工具——智能文件列表/搜索/批量复制/目录分析，支持 Glob/正则过滤、树形可视化与安全防护，专为 AI 智能体优化 | 📦 |
+| [opencode-controller-zh](skills/opencode-controller-zh/SKILL.md) | Opencode 编码工作流控制器——管理会话与模型选择、Plan/Build 智能体模式切换、协调编码任务的全流程，需安装 Opencode CLI | 📦 |
 | [api-gateway-zh](skills/api-gateway-zh/SKILL.md) | 通过 Maton.ai 代理统一访问 100+ 第三方 API（Slack、HubSpot、Google Workspace、Notion、Stripe 等），托管 OAuth 自动注入令牌，支持原生端点透传与多连接管理 | 💰 |
 
 ### 📄 文档与文件处理
