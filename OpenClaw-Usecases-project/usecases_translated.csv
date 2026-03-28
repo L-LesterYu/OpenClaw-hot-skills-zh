@@ -1,0 +1,16 @@
+name,translated_name,summary,version
+AI Earnings Tracker,财报追踪器,AI驱动的财报追踪与摘要推送，实时掌握科技和AI公司财报动态,unknown
+Pre-Build Idea Validator,预构建想法验证器,在开始构建新项目前自动验证想法竞争激烈度，避免重复开发，提高成功率,a864e4a5
+Local CRM Framework with DenchClaw,本地CRM框架,将OpenClaw转换为完全本地化的CRM系统，无需数据库搭建，一键安装，支持自然语言操作和多种视图显示,773e0b54
+Goal-Driven Autonomous Tasks,目标驱动自主任务,让AI智能体主动理解你的目标，每天生成并执行推进目标的任务，包括构建 surprise mini-apps，实现真正的自主工作流,839990a1
+Automated Meeting Notes & Action Items,自动化会议纪要与行动项,自动监听会议记录，提取关键决策和行动项，创建 Jira/Linear/Todoist 任务，并发布摘要到团队频道，实现会议管理自动化,c35f0641
+semantic-memory-search,语义记忆搜索,为OpenClaw的markdown记忆文件添加基于向量的语义搜索功能，支持按含义查找记忆而非仅关键词，使用memsearch工具实现智能记忆检索,unknown
+agent-security-scanning,智能体安全扫描,使用ClawGuard在安装前自动扫描技能和插件，保护智能体免受提示注入、隐私信息泄露和供应链攻击，完全本地运行，覆盖OWASP全部10大AI智能体安全风险类别,unknown
+ai-contract-signing,能签单的AI员工,将OpenClaw变成成交高手，能用Markdown起草合同、NDA或提案，并通过电子签名自动发送，双方签署后收到SHA-256认证的安全PDF，打造全自动销售机器,unknown
+daily-reddit-digest,每日Reddit摘要,每天运行摘要，为你提供来自喜爱子版块的热门帖子，支持浏览、搜索、提取评论线程等功能,unknown
+ai-video-editing,通过聊天完成AI视频编辑,通过聊天界面完成视频编辑任务，包括修剪片段、添加字幕、调色、批量处理等，无需复杂的时间线编辑器,unknown
+arxiv-paper-reader,arXiv论文阅读器,将智能体转变为研究阅读助手，支持arXiv论文获取、结构浏览、摘要扫描、章节分析等对话式研究功能,unknown
+autonomous-game-dev-pipeline,自主教育游戏开发流水线,自主管理教育游戏的创建和维护生命周期，采用"Bug优先"政策，每7分钟可生产1个新游戏或修复，支持0-15岁儿童的教育游戏开发,unknown
+content-factory,多智能体内容工厂,在Discord内搭建多智能体内容工厂，调研、写作、设计智能体各司其职，自动串联流水线产出内容，全程无需人工干预,659895e
+Daily YouTube Digest,每日YouTube摘要,每天获取喜爱频道的最新视频，提取关键洞察，推送个性化摘要，不再错过关注的内容,unknown
+dynamic-dashboard,动态仪表盘,动态仪表盘与子代理生成，实现多数据源实时监控、并行处理、聚合展示和警报功能,e8bb2f1e4c1d355151a2d638327c1609a2bcac5b
