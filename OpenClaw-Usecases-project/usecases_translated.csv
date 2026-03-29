@@ -12,4 +12,14 @@ phone-based-personal-assistant,基于电话的个人助手,基于电话的个人
 pre-build-idea-validator,开发前创意验证器,开发前创意验证器 - 在OpenClaw动手写代码之前，自动检查创意是否已存在，扫描GitHub、Hacker News、npm、PyPI和Product Hunt五大数据源，根据竞争程度决定下一步行动,unknown
 semantic-memory-search,语义记忆搜索,基于向量驱动的语义搜索为记忆文件提供按含义检索能力，结合混合搜索与自动索引确保记忆始终可查，支持多种嵌入提供商和智能去重功能,unknown
 arxiv-paper-reader,arXiv论文阅读器,通过对话方式阅读、分析和比较arXiv论文，支持LaTeX自动处理、选择性阅读、多论文比较和智能摘要,unknown
+earnings-tracker,财报追踪器,AI驱动的自动化财报追踪与摘要推送工具，帮助用户实时掌握科技和AI公司的财报动态，支持美股和A股市场的财报日历监控和智能推送,87d1762
 
+intelligent-meeting-notes-generator,智能会议纪要生成器,智能会议纪要生成器 - AI助手自动参加会议并生成可操作的会议纪要、提取行动项、提供会议洞察,unknown
+habit-tracker-accountability-coach,习惯追踪与督促教练,将OpenClaw变为主动督促伙伴，每天通过Telegram或短信定时签到，追踪习惯连续天数、自适应调整提醒语气，并提供周报模式分析,unknown
+agent-swarm-dev-team,Agent Swarm 一人开发团队,Agent Swarm 一人开发团队（全配置指南）- OpenClaw作为编排层，将业务上下文转化为精确Prompt分发给各个编码Agent，实现一人开发团队的高效协作,unknown
+daily-reddit-digest,每日Reddit摘要,每天运行一次摘要推送，为你精选最喜欢的子版块中表现最热门的帖子，支持浏览子版块、按主题搜索、拉取评论线程和构建帖子候选列表,2987947
+content-factory,内容工厂,多智能体内容工厂 - 在Discord内部建立多智能体内容工厂，自动化研究、写作和视觉资源生成，让创作者一觉醒来就能获得完整的内容,unknown
+aionui-cowork-desktop,OpenClaw桌面协作站,OpenClaw 作为桌面协作者（AionUi）——远程救援与多智能体中心，通过桌面协作用户界面使用 OpenClaw，支持远程救援和多智能体集成,unknown
+latex-paper-writing,LaTeX论文写作,LaTeX论文写作助手 - 通过对话方式协作编写LaTeX论文，支持即时编译为PDF，无需本地LaTeX环境设置,unknown
+opik-openclaw-observability,OpenClaw + Opik 可观测性追踪,OpenClaw + Opik 可观测性追踪 - 将 OpenClaw 运行过程接入 Opik，实现统一追踪、错误排查和成本监控，包含 LLM 请求、工具调用、子智能体生命周期的完整链路追踪,unknown
+custom-morning-brief,自定义早间简报,自定义早间简报 - 每天定时推送完全定制的早间报告，涵盖新闻、任务、创意和主动建议，通过智能体自动研究用户兴趣相关的隔夜新闻并审查待办清单,unknown
