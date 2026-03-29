@@ -23,3 +23,29 @@ aionui-cowork-desktop,OpenClaw桌面协作站,OpenClaw 作为桌面协作者（A
 latex-paper-writing,LaTeX论文写作,LaTeX论文写作助手 - 通过对话方式协作编写LaTeX论文，支持即时编译为PDF，无需本地LaTeX环境设置,unknown
 opik-openclaw-observability,OpenClaw + Opik 可观测性追踪,OpenClaw + Opik 可观测性追踪 - 将 OpenClaw 运行过程接入 Opik，实现统一追踪、错误排查和成本监控，包含 LLM 请求、工具调用、子智能体生命周期的完整链路追踪,unknown
 custom-morning-brief,自定义早间简报,自定义早间简报 - 每天定时推送完全定制的早间报告，涵盖新闻、任务、创意和主动建议，通过智能体自动研究用户兴趣相关的隔夜新闻并审查待办清单,unknown
+daily-youtube-digest,每日 YouTube 摘要,每天以你最喜欢的 YouTube 频道的新视频个性化摘要开始新的一天 — 再也不会错过你真正想关注的创作者的内容,unknown
+event-guest-confirmation,活动嘉宾确认,使用 SuperCall 逐一拨打嘉宾电话确认活动出席情况，收集备注信息并汇总摘要,unknown
+family-calendar-household-assistant,家庭日历聚合与家务助手,聚合多平台家庭日历生成早间简报，监控消息中的可操作事项，通过共享聊天界面管理家务后勤,unknown
+health-symptom-tracker,健康与症状追踪器,长期持续记录健康症状和饮食，通过提醒和分析发现食物敏感性和健康模式,unknown
+inbox-declutter,收件箱整理,自动整理收件箱中的新闻订阅邮件，批量处理堆积未读邮件,unknown
+knowledge-base-rag,个人知识库（RAG）,从保存的所有内容中构建可搜索的知识库，支持按含义检索,unknown
+market-research-product-factory,市场调研与产品工厂,从 Reddit 和 X 上挖掘真实用户痛点，让 AI 为这些问题构建解决方案,unknown
+meeting-notes-action-items,会议纪要与待办事项自动化,自动生成会议纪要、提取行动项并录入 Jira/Linear/待办清单,unknown
+multi-channel-assistant,多渠道个人助手,统一接口连接所有工具，跨应用管理任务、日程和消息,unknown
+multi-channel-customer-service,多渠道 AI 客户服务平台,同时处理 WhatsApp、Instagram、邮件和 Google 评价，实现全天候即时响应,unknown
+multi-source-tech-news-digest,多源科技新闻摘要,自动聚合 109+ 来源的科技新闻并通过自然语言管理和推送,unknown
+n8n-workflow-orchestration,OpenClaw + n8n 工作流编排,让 AI 智能体通过 n8n 安全管理 API 密钥和调用外部服务,unknown
+overnight-mini-app-builder,目标驱动的自主任务系统,AI 智能体了解你的目标并每天主动提出推进任务，无需你开口,unknown
+personal-crm,个人 CRM 与自动联系人发现,自动记录人脉关系、跟进事项，在重要会议前提供相关背景,unknown
+polymarket-autopilot,Polymarket 自动驾驶,自动监控预测市场套利机会并执行交易策略，支持模拟交易测试,unknown
+project-state-management,项目状态管理系统,事件驱动的项目状态追踪方案，替代传统看板的静态管理,unknown
+second-brain,第二大脑,像给朋友发短信一样简单地捕获想法、链接和待读内容,unknown
+self-healing-home-server,自愈式家庭服务器,AI 自动监控和修复家庭服务器基础设施问题，7x24 小时守护,unknown
+todoist-task-manager,Todoist 任务管理器,将智能体推理和进度日志同步到 Todoist，最大化工作流透明度,unknown
+x-account-analysis,X 账号分析,提供 X 账号的深度定性分析，超越平台自带分析数据,unknown
+youtube-content-pipeline,YouTube 内容管线,自动追踪网络和 X 上的视频创意，避免内容重复并保持趋势领先,unknown
+hf-papers-research-discovery,Hugging Face 论文研究发现,对话式发现、筛选和深度阅读 HF 热门论文，支持完整论文元数据和 LaTeX 源码,unknown
+local-crm-framework,本地 CRM 框架（DenchClaw）,一条命令将 OpenClaw 变为完全本地 CRM，支持自然语言操作和浏览器自动化,unknown
+phone-call-notifications,电话通知,让智能体通过电话通知紧急事项，支持双向实时对话,unknown
+x-twitter-automation,X/Twitter 自动化操作,通过自然语言实现完整 X/Twitter 自动化，包括发推、抽奖、数据提取和账号监控,unknown
+ai-video-editing,通过聊天完成 AI 视频编辑,将视频编辑转化为对话，支持修剪、字幕、调色和批量处理,unknown
