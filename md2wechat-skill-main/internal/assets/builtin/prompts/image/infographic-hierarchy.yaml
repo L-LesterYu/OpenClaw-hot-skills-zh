@@ -1,0 +1,38 @@
+name: infographic-hierarchy
+kind: image
+description: 层级、金字塔、优先级型信息图
+version: "1.0"
+archetype: infographic
+primary_use_case: infographic
+recommended_aspect_ratios:
+  - 3:4
+  - 16:9
+default_aspect_ratio: 3:4
+metadata:
+  author: geekjourneyx
+  provenance: original
+tags:
+  - infographic
+  - hierarchy
+  - pyramid
+examples:
+  - 优先级体系
+  - 能力框架
+variables:
+  - ARTICLE_TITLE
+  - ARTICLE_SUMMARY
+  - KEY_POINTS
+  - VISUAL_STYLE
+  - ASPECT_RATIO
+template: |
+  为文章生成层级结构型信息图提示词。
+  标题：{{ARTICLE_TITLE}}
+  摘要：{{ARTICLE_SUMMARY}}
+  核心要点：{{KEY_POINTS}}
+  风格：{{VISUAL_STYLE}}
+  画幅：{{ASPECT_RATIO}}
+
+  要求：
+  1. 用金字塔、分层台阶或纵向层级组织信息
+  2. 强调优先级、阶段、层次关系
+  3. 适合方法论、能力模型、战略分层内容

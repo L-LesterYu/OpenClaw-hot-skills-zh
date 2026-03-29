@@ -1,0 +1,38 @@
+name: infographic-timeline
+kind: image
+description: 时间线和里程碑型信息图
+version: "1.0"
+archetype: infographic
+primary_use_case: infographic
+recommended_aspect_ratios:
+  - 3:4
+  - 16:9
+default_aspect_ratio: 3:4
+metadata:
+  author: geekjourneyx
+  provenance: original
+tags:
+  - infographic
+  - timeline
+  - milestones
+examples:
+  - 发展历程
+  - 项目路线图
+variables:
+  - ARTICLE_TITLE
+  - ARTICLE_SUMMARY
+  - KEY_POINTS
+  - VISUAL_STYLE
+  - ASPECT_RATIO
+template: |
+  为文章生成时间线型信息图提示词。
+  标题：{{ARTICLE_TITLE}}
+  摘要：{{ARTICLE_SUMMARY}}
+  核心要点：{{KEY_POINTS}}
+  风格：{{VISUAL_STYLE}}
+  画幅：{{ASPECT_RATIO}}
+
+  要求：
+  1. 按时间或阶段推进组织内容
+  2. 关键节点和里程碑清晰可见
+  3. 适合历史脉络、发展路线、版本演进

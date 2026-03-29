@@ -1,0 +1,5 @@
+types:
+  Task:
+    required:
+    - title
+    - status

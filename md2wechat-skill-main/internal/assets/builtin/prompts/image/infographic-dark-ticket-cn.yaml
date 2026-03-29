@@ -1,0 +1,74 @@
+name: infographic-dark-ticket-cn
+kind: image
+description: 暗黑票券风的纯中文信息图总结卡
+version: "1.0"
+archetype: infographic
+primary_use_case: infographic
+compatible_use_cases:
+  - cover
+recommended_aspect_ratios:
+  - 21:9
+default_aspect_ratio: 21:9
+metadata:
+  author: geekjourneyx
+  provenance: original
+tags:
+  - infographic
+  - dark
+  - ticket
+  - chinese
+  - editorial
+  - summary
+examples:
+  - 段落总结卡
+  - 金句信息图
+  - 章节收束图
+variables:
+  - ARTICLE_TITLE
+  - ARTICLE_SUMMARY
+  - KEY_POINTS
+  - VISUAL_STYLE
+  - ASPECT_RATIO
+template: |
+  为文章生成一张暗黑票券风的信息图提示词，必须是纯黑色背景、白色文字、纯中文排版。
+
+  内容输入：
+  - 标题：{{ARTICLE_TITLE}}
+  - 摘要：{{ARTICLE_SUMMARY}}
+  - 核心要点：{{KEY_POINTS}}
+  - 风格补充：{{VISUAL_STYLE}}
+  - 画幅：{{ASPECT_RATIO}}
+
+  核心要求：
+  1. 图片比例必须是 21:9 的超宽横向构图
+  2. 纯黑背景，纯白文字，允许极少量灰白线条和符号辅助，不要彩色
+  3. 只使用中文内容，不要英文单词、不要英文标题、不要日期
+  4. 禁止出现二维码、条形码、照片、写实材质、渐变、3D 效果
+  5. 文字量必须克制，突出一句核心总结、一个金句或一个完美补充观点
+
+  设计风格：
+  1. 极简票券风、登机牌风、电子凭证风的信息图版式
+  2. 采用精确的几何分区和网格排版，像高级杂志与数字票据的结合
+  3. 黑白对比主导，形成强烈视觉冲击与秩序感
+  4. 大量有效留白，整体通透、优雅、克制
+  5. 结合中文排版气质与现代信息界面语言
+
+  文字排版：
+  1. 使用 3 到 4 种不同字号创造层次
+  2. 关键词必须使用最大字号
+  3. 主标题字号必须比副标题和说明文字大三倍以上
+  4. 排版要像高级杂志，阅读流向清晰，视觉引导明确
+  5. 可使用横排、竖排、斜排的组合，但整体必须有秩序
+  6. 可使用括号、下划线、箭头、星号等符号作为装饰与引导
+  7. 字距、行距必须精确，保持呼吸感
+
+  视觉元素：
+  1. 使用线框边界、分割线、箭头、星号、极简图形符号强化票券感
+  2. 用方向性元素建立从左到右、从上到下的阅读节奏
+  3. 让空白区域成为设计的一部分，而不是简单留空
+  4. 保持机械秩序感，同时用少量人文气质平衡冷感
+
+  版面目标：
+  1. 适合作为一段内容的总结图、金句图或章节补充图
+  2. 重点突出，不要堆砌大量说明文字
+  3. 信息结构清晰，读者一眼能抓到核心观点

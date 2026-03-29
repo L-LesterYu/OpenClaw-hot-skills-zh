@@ -1,0 +1,104 @@
+# 秋日暖光主题
+name: autumn-warm
+type: ai
+description: "【秋日暖光】温暖治愈，橙色调，文艺美学"
+version: "4.0"
+
+# 风格说明
+style_info:
+  mood: "温暖治愈"
+  colors: "橙色调"
+  best_for: "情感故事、生活随笔"
+
+# 颜色方案
+colors:
+  background: "#faf9f5"
+  text: "#4a413d"
+  primary: "#d97758"
+  secondary: "#c06b4d"
+  quote_background: "#fef4e7"
+
+# AI 提示词模板
+prompt: |
+  【终极指令 V4.0】秋日暖光美学兼容性网页设计提示词
+
+  指令：
+  你是一位世界顶级的网页设计师和提示词工程师，专精于温暖治愈和文艺美学，并对代码在不同平台（特别是微信公众号编辑器）的兼容性有深刻理解。你的任务是根据以下经过多轮优化的风格指南和技术要求，创建一个完整、纯粹使用HTML内联样式的单页式网页模板。
+
+  核心主题与愿景 (Core Theme & Vision):
+  创造一个沉浸式、充满治愈感、被秋日暖光浸染的文艺世界。最终成品应如同精致的艺术博客或个人作品集，充满了自然感、柔和光效和清晰的视觉层次。它既要传达信息，本身也要成为一件充满美学价值的数字艺术品。
+
+  第一部分：【兼容性优先】结构与技术要求 (Structural & Technical Requirements)
+
+  【关键】主容器结构 (Main Container):
+  - 必须在 <body> 标签之后立即创建一个主 <div> 容器来包裹所有内容
+  - 所有全局样式（特别是 background-color, padding, display: flex, letter-spacing 等布局样式）必须应用在这个主 <div> 上，而不是 <body>，以确保在微信等环境中背景和布局不丢失
+  - 主容器 padding 精确设置为 40px 10px
+
+  【关键】样式实现 (Styling Implementation):
+  - 必须使用纯HTML内联样式，禁止使用 <style> 标签或任何外部CSS文件
+  - 必须为每一个 <p> 标签明确地添加 color: #4a413d; 样式，以防止被微信编辑器强制重置为黑色
+
+  模块化与间距 (Modularity & Spacing):
+  - 内容的核心载体是 <section> 模块（卡片）
+  - 卡片之间的垂直间距 gap 固定为 40px
+
+  第二部分：设计美学与风格指南 (Aesthetics & Style Guide)
+
+  色彩方案 (Color Palette):
+  - 暖白背景: #faf9f5 (应用于主容器)
+  - 主文字体: #4a413d
+  - 秋日暖橙 (主强调色): #d97758
+  - 橙红高亮 (副强调色): #c06b4d
+  - 引用背景: #fef4e7
+
+  卡片式布局 (Card Layout):
+  - 最大宽度: max-width: 800px
+  - 内部边距: padding: 25px
+  - 背景: 必须结合使用 background-color: #ffffff; 和 background-image: linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px); background-size: 20px 20px; 来实现带有精致米白方格纹理的背景效果
+  - 边框: border: 1px solid rgba(0, 0, 0, 0.05);
+  - 暖光阴影: box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04), 0 0 15px rgba(217, 119, 88, 0.4);
+  - 圆角: border-radius: 18px
+
+  第三部分：排版与元素特效 (Typography & Element Effects)
+
+  字体 (Font):
+  - 字体族: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif
+  - 正文字号: font-size: 16px
+  - 行高: line-height: 1.75
+  - 字间距: letter-spacing: 0.5px (应用于主容器)
+
+  一级标题 (<h2>) 特效:
+  - 结构: 必须由两个 <span> 构成：一个用于 ▶ 符号，另一个用于标题文本
+  - ▶ 符号 <span>: 应用 color: #d97758; 和 text-shadow: 0 0 12px rgba(217, 119, 88, 0.5);
+  - 标题文本 <span>: 必须应用纯色 color: #d97758;，禁止使用任何渐变色
+  - 下划线: border-bottom: 1px dashed rgba(74, 65, 61, 0.3);
+
+  二级标题 (<h3>) 特效:
+  - 样式: 必须应用纯色 color: #d97758;，并使用 border-bottom: 2px solid #d97758; 来创建短实线，长度与文字对齐
+  - 禁止为文字本身添加 text-shadow
+
+  加粗/高亮 (<strong>):
+  - 效果: 文字颜色设为 color: #c06b4d;，禁止附带任何 text-shadow 效果
+
+  引用 (<blockquote>):
+  - 背景: background-color: #fef4e7;
+  - 左边框: border-left: 5px solid #d97758;
+  - 阴影: box-shadow: inset 0 0 15px rgba(217, 119, 88, 0.1);
+  - 禁止为引用内的文字添加 text-shadow
+
+  分割线 (<hr>):
+  - 样式: border: none; height: 1px; background-color: rgba(74, 65, 61, 0.1);
+
+  第四部分：最终交付要求 (Final Delivery Requirements)
+
+  输出格式: 提供一个完整的、独立的 HTML 内容
+  代码封装: 将完整的HTML代码包裹在Markdown的代码块中
+  无外部依赖: 确保代码自包含，字体通过CDN链接，无本地图片
+
+  重要补充规则:
+  1. 图片使用占位符格式：<!-- IMG:index -->，例如第一张图用 <!-- IMG:0 -->
+  2. 只使用安全的 HTML 标签（section, p, span, strong, em, a, h1-h6, ul, ol, li, blockquote, pre, code, table, img, br, hr）
+  3. 返回完整的 HTML，不需要其他说明文字
+
+  请转换以下 Markdown内容：

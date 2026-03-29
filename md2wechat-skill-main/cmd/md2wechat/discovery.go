@@ -1,0 +1,354 @@
+package main
+
+import (
+	"fmt"
+	"sort"
+	"strings"
+
+	"github.com/geekjourneyx/md2wechat-skill/internal/config"
+	"github.com/geekjourneyx/md2wechat-skill/internal/converter"
+	"github.com/geekjourneyx/md2wechat-skill/internal/image"
+	"github.com/geekjourneyx/md2wechat-skill/internal/promptcatalog"
+	"github.com/spf13/cobra"
+)
+
+const (
+	codeCapabilitiesShown = "CAPABILITIES_SHOWN"
+	codeProvidersShown    = "PROVIDERS_SHOWN"
+	codeThemesShown       = "THEMES_SHOWN"
+	codePromptsShown      = "PROMPTS_SHOWN"
+)
+
+type providerView struct {
+	Name           string   `json:"name"`
+	Aliases        []string `json:"aliases,omitempty"`
+	Description    string   `json:"description"`
+	RequiredConfig []string `json:"required_config,omitempty"`
+	OptionalConfig []string `json:"optional_config,omitempty"`
+	DefaultBaseURL string   `json:"default_base_url,omitempty"`
+	DefaultModel   string   `json:"default_model,omitempty"`
+	SupportsSize   bool     `json:"supports_size"`
+	Current        bool     `json:"current"`
+	Configured     bool     `json:"configured"`
+}
+
+var (
+	promptKind      string
+	promptArchetype string
+	promptTag       string
+	promptVars      []string
+)
+
+var capabilitiesCmd = &cobra.Command{
+	Use:   "capabilities",
+	Short: "Show machine-readable CLI capabilities",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		data, err := buildCapabilitiesData()
+		if err != nil {
+			return wrapCLIError(codeError, err, err.Error())
+		}
+		responseSuccessWith(codeCapabilitiesShown, "Capabilities shown", data)
+		return nil
+	},
+}
+
+var providersCmd = &cobra.Command{
+	Use:   "providers",
+	Short: "Inspect supported image providers",
+}
+
+var providersListCmd = &cobra.Command{
+	Use:   "list",
+	Short: "List supported image providers",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		providers, err := buildProviderViews()
+		if err != nil {
+			return wrapCLIError(codeError, err, err.Error())
+		}
+		responseSuccessWith(codeProvidersShown, "Providers shown", map[string]any{"providers": providers})
+		return nil
+	},
+}
+
+var providersShowCmd = &cobra.Command{
+	Use:   "show <name>",
+	Short: "Show provider details",
+	Args:  cobra.ExactArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		providers, err := buildProviderViews()
+		if err != nil {
+			return wrapCLIError(codeError, err, err.Error())
+		}
+		for _, provider := range providers {
+			if provider.Name == args[0] || contains(provider.Aliases, args[0]) {
+				responseSuccessWith(codeProvidersShown, "Provider shown", map[string]any{"provider": provider})
+				return nil
+			}
+		}
+		return newCLIError(codeConfigInvalid, fmt.Sprintf("unknown provider: %s", args[0]))
+	},
+}
+
+var themesCmd = &cobra.Command{
+	Use:   "themes",
+	Short: "Inspect available convert themes",
+}
+
+var themesListCmd = &cobra.Command{
+	Use:   "list",
+	Short: "List available themes",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		themes, err := listThemes()
+		if err != nil {
+			return wrapCLIError(codeError, err, err.Error())
+		}
+		responseSuccessWith(codeThemesShown, "Themes shown", map[string]any{"themes": themes})
+		return nil
+	},
+}
+
+var themesShowCmd = &cobra.Command{
+	Use:   "show <name>",
+	Short: "Show theme details",
+	Args:  cobra.ExactArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		tm := converter.NewThemeManager()
+		if err := tm.LoadThemes(); err != nil {
+			return wrapCLIError(codeError, err, err.Error())
+		}
+		theme, err := tm.GetTheme(args[0])
+		if err != nil {
+			return newCLIError(codeConfigInvalid, err.Error())
+		}
+		responseSuccessWith(codeThemesShown, "Theme shown", map[string]any{"theme": theme})
+		return nil
+	},
+}
+
+var promptsCmd = &cobra.Command{
+	Use:   "prompts",
+	Short: "Inspect bundled prompt assets",
+}
+
+var promptsListCmd = &cobra.Command{
+	Use:   "list",
+	Short: "List prompts in the catalog",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		cat, err := promptcatalog.DefaultCatalog()
+		if err != nil {
+			return wrapCLIError(codeError, err, err.Error())
+		}
+		prompts := cat.ListFiltered(promptcatalog.ListFilter{
+			Kind:      promptKind,
+			Archetype: promptArchetype,
+			Tag:       promptTag,
+		})
+		responseSuccessWith(codePromptsShown, "Prompts shown", map[string]any{
+			"kind":      promptKind,
+			"archetype": promptArchetype,
+			"tag":       promptTag,
+			"prompts":   prompts,
+		})
+		return nil
+	},
+}
+
+var promptsShowCmd = &cobra.Command{
+	Use:   "show <name>",
+	Short: "Show prompt details",
+	Args:  cobra.ExactArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		cat, err := promptcatalog.DefaultCatalog()
+		if err != nil {
+			return wrapCLIError(codeError, err, err.Error())
+		}
+		spec, err := cat.Get(promptKind, args[0])
+		if err != nil {
+			return newCLIError(codeConfigInvalid, err.Error())
+		}
+		if promptArchetype != "" && !strings.EqualFold(spec.Archetype, promptArchetype) {
+			return newCLIError(codeConfigInvalid, fmt.Sprintf("prompt %s archetype mismatch: expected %s, got %s", spec.Name, promptArchetype, spec.Archetype))
+		}
+		if promptTag != "" && !contains(spec.Tags, promptTag) {
+			return newCLIError(codeConfigInvalid, fmt.Sprintf("prompt %s does not have tag %s", spec.Name, promptTag))
+		}
+		responseSuccessWith(codePromptsShown, "Prompt shown", map[string]any{"prompt": spec})
+		return nil
+	},
+}
+
+var promptsRenderCmd = &cobra.Command{
+	Use:   "render <name>",
+	Short: "Render a prompt template with variables",
+	Args:  cobra.ExactArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		cat, err := promptcatalog.DefaultCatalog()
+		if err != nil {
+			return wrapCLIError(codeError, err, err.Error())
+		}
+		vars, err := parsePromptVars(promptVars)
+		if err != nil {
+			return newCLIError(codeConfigInvalid, err.Error())
+		}
+		rendered, spec, err := cat.Render(promptKind, args[0], vars)
+		if err != nil {
+			return newCLIError(codeConfigInvalid, err.Error())
+		}
+		responseSuccessWith(codePromptsShown, "Prompt rendered", map[string]any{
+			"prompt":   spec,
+			"vars":     vars,
+			"rendered": rendered,
+		})
+		return nil
+	},
+}
+
+func init() {
+	providersCmd.AddCommand(providersListCmd, providersShowCmd)
+	themesCmd.AddCommand(themesListCmd, themesShowCmd)
+	promptsListCmd.Flags().StringVar(&promptKind, "kind", "", "Prompt kind filter")
+	promptsListCmd.Flags().StringVar(&promptArchetype, "archetype", "", "Prompt archetype filter")
+	promptsListCmd.Flags().StringVar(&promptTag, "tag", "", "Prompt tag filter")
+	promptsShowCmd.Flags().StringVar(&promptKind, "kind", "", "Prompt kind")
+	promptsShowCmd.Flags().StringVar(&promptArchetype, "archetype", "", "Expected prompt archetype")
+	promptsShowCmd.Flags().StringVar(&promptTag, "tag", "", "Expected prompt tag")
+	promptsRenderCmd.Flags().StringVar(&promptKind, "kind", "", "Prompt kind")
+	promptsRenderCmd.Flags().StringArrayVar(&promptVars, "var", nil, "Prompt variable in KEY=VALUE form")
+	promptsCmd.AddCommand(promptsListCmd, promptsShowCmd, promptsRenderCmd)
+}
+
+func loadDiscoveryConfig() *config.Config {
+	if cfg != nil {
+		return cfg
+	}
+	config.SetQuiet(jsonOutput)
+	discoveryCfg, err := config.LoadWithDefaults("")
+	if err != nil {
+		return &config.Config{
+			DefaultConvertMode: "api",
+			DefaultTheme:       "default",
+			ImageProvider:      "openai",
+		}
+	}
+	return discoveryCfg
+}
+
+func buildProviderViews() ([]providerView, error) {
+	currentCfg := loadDiscoveryConfig()
+	result := make([]providerView, 0, len(image.SupportedProviders()))
+	for _, meta := range image.SupportedProviders() {
+		current := currentCfg.ImageProvider
+		if current == "" {
+			current = "openai"
+		}
+		configured := currentCfg.ImageAPIKey != ""
+		result = append(result, providerView{
+			Name:           meta.Name,
+			Aliases:        meta.Aliases,
+			Description:    meta.Description,
+			RequiredConfig: meta.RequiredConfig,
+			OptionalConfig: meta.OptionalConfig,
+			DefaultBaseURL: meta.DefaultBaseURL,
+			DefaultModel:   meta.DefaultModel,
+			SupportsSize:   meta.SupportsSize,
+			Current:        meta.Name == current || contains(meta.Aliases, current),
+			Configured:     configured,
+		})
+	}
+	return result, nil
+}
+
+func listThemes() ([]converter.Theme, error) {
+	tm := converter.NewThemeManager()
+	if err := tm.LoadThemes(); err != nil {
+		return nil, err
+	}
+	return tm.ListThemeDefinitions(), nil
+}
+
+func buildCapabilitiesData() (map[string]any, error) {
+	providers, err := buildProviderViews()
+	if err != nil {
+		return nil, err
+	}
+	themes, err := listThemes()
+	if err != nil {
+		return nil, err
+	}
+	cat, err := promptcatalog.DefaultCatalog()
+	if err != nil {
+		return nil, err
+	}
+	allPrompts := cat.List("")
+	currentCfg := loadDiscoveryConfig()
+	return map[string]any{
+		"commands": []string{
+			"convert", "inspect", "preview", "config", "write", "humanize", "upload_image",
+			"download_and_upload", "generate_image", "generate_cover", "generate_infographic", "create_draft",
+			"create_image_post", "test-draft", "providers", "themes",
+			"prompts", "capabilities", "version",
+		},
+		"convert": map[string]any{
+			"default_mode":     "api",
+			"supported_modes":  []string{"api", "ai"},
+			"font_sizes":       []string{"small", "medium", "large"},
+			"background_types": []string{"default", "grid", "none"},
+			"default_theme":    currentCfg.DefaultTheme,
+		},
+		"providers":         providers,
+		"themes":            themes,
+		"prompts":           allPrompts,
+		"prompt_kinds":      sortedPromptKinds(allPrompts),
+		"prompt_archetypes": sortedPromptArchetypes(allPrompts),
+	}, nil
+}
+
+func parsePromptVars(items []string) (map[string]string, error) {
+	vars := make(map[string]string, len(items))
+	for _, item := range items {
+		key, value, ok := strings.Cut(item, "=")
+		if !ok || strings.TrimSpace(key) == "" {
+			return nil, fmt.Errorf("invalid --var %q, expected KEY=VALUE", item)
+		}
+		vars[strings.TrimSpace(key)] = value
+	}
+	return vars, nil
+}
+
+func contains(items []string, target string) bool {
+	for _, item := range items {
+		if strings.EqualFold(item, target) {
+			return true
+		}
+	}
+	return false
+}
+
+func sortedPromptKinds(prompts []promptcatalog.PromptSpec) []string {
+	set := map[string]struct{}{}
+	for _, prompt := range prompts {
+		set[prompt.Kind] = struct{}{}
+	}
+	kinds := make([]string, 0, len(set))
+	for kind := range set {
+		kinds = append(kinds, kind)
+	}
+	sort.Strings(kinds)
+	return kinds
+}
+
+func sortedPromptArchetypes(prompts []promptcatalog.PromptSpec) []string {
+	set := map[string]struct{}{}
+	for _, prompt := range prompts {
+		if prompt.Archetype == "" {
+			continue
+		}
+		set[prompt.Archetype] = struct{}{}
+	}
+	archetypes := make([]string, 0, len(set))
+	for archetype := range set {
+		archetypes = append(archetypes, archetype)
+	}
+	sort.Strings(archetypes)
+	return archetypes
+}

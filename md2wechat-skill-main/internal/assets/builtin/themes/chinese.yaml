@@ -1,0 +1,8 @@
+# 中国风风格主题
+name: chinese
+type: api
+description: "中国风风格"
+version: "1.0"
+
+# API 模式使用的主题名
+api_theme: "chinese"

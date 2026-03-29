@@ -1,0 +1,71 @@
+name: infographic-flat-vector-panorama
+kind: image
+description: 扁平化矢量插画风格的横向全景信息图
+version: "1.0"
+archetype: infographic
+primary_use_case: infographic
+recommended_aspect_ratios:
+  - 21:9
+  - 16:9
+default_aspect_ratio: 21:9
+metadata:
+  author: geekjourneyx
+  inspired_by: op7418
+  provenance: adapted
+tags:
+  - infographic
+  - flat-vector
+  - panorama
+  - retro
+  - editorial
+  - monoline
+examples:
+  - 品牌故事总览信息图
+  - 城市主题横向信息图
+  - 方法论全景概览图
+variables:
+  - ARTICLE_TITLE
+  - ARTICLE_SUMMARY
+  - KEY_POINTS
+  - VISUAL_STYLE
+  - ASPECT_RATIO
+template: |
+  为文章生成一张高质量信息图提示词，风格必须是扁平化矢量插画（flat vector illustration）。
+
+  内容输入：
+  - 标题：{{ARTICLE_TITLE}}
+  - 摘要：{{ARTICLE_SUMMARY}}
+  - 核心要点：{{KEY_POINTS}}
+  - 风格补充：{{VISUAL_STYLE}}
+  - 画幅：{{ASPECT_RATIO}}
+
+  视觉风格与美术指导：
+  1. 扁平化矢量插画风格，使用清晰、统一粗细的黑色轮廓线（monoline / uniform stroke）
+  2. 所有物体必须有封闭的黑色轮廓，像高质量填色书线稿与复古编辑插画的结合
+  3. 色彩填涂简洁，只允许极少量阴影，禁止渐变、禁止 3D 渲染、禁止写实质感
+  4. 构图采用横向全景式（panoramic），主体插画占画面顶部约三分之一
+  5. 线条末端圆润，避免尖锐棱角，整体要有玩具模型般的可爱感和秩序感
+  6. 复杂物体要几何化简化：
+     - 树木像棒棒糖或三角形
+     - 建筑物是简洁矩形块面
+     - 窗户是整齐方格
+  7. 采用平视或轻微俯视的 2.5D 视角，通过前后遮挡表现空间，不使用大气透视，远近图层都保持同等清晰
+  8. 空白区域加入装饰性几何元素：
+     - 放射状线条
+     - 药丸形云朵
+     - 小圆点、星星、能量符号
+  9. 配色使用复古柔和色调：
+     - 背景为米色/奶油色纸张感底色
+     - 强调色包含珊瑚红、薄荷绿、芥末黄、赭石色、岩石蓝
+  10. 整体画面应像高质量杂志信息图与扁平插画的结合，清晰、优雅、可读
+
+  版式要求：
+  1. 保留明显主标题区域，具有巨大、加粗、复古衬线体的视觉气质
+  2. 保留副标题色块区域，体现全大写无衬线体标签风格
+  3. 保留清晰正文信息块，适合后续承载几何感无衬线体信息说明
+  4. 不要生成大段难以辨认的小字，优先保证版式结构正确、文本区域清晰
+
+  信息图要求：
+  1. 信息结构必须清楚，适合公众号长图或横向信息图
+  2. 画面在风格上统一、轻松、现代、复古并存
+  3. 适合全景概览、品牌故事、城市主题、方法论总览类内容

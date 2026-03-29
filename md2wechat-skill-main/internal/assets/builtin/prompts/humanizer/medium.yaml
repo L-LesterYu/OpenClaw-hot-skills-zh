@@ -1,0 +1,6 @@
+name: medium
+kind: humanizer
+description: 中等模式说明
+version: "1.0"
+template: |
+  **中等模式**（默认）：平衡处理。去除明显的 AI 痕迹，同时保留合理的表达。适合大多数场景。

@@ -1,0 +1,38 @@
+name: infographic-process
+kind: image
+description: 步骤流程型信息图
+version: "1.0"
+archetype: infographic
+primary_use_case: infographic
+recommended_aspect_ratios:
+  - 3:4
+  - 16:9
+default_aspect_ratio: 3:4
+metadata:
+  author: geekjourneyx
+  provenance: original
+tags:
+  - infographic
+  - process
+  - workflow
+examples:
+  - 操作流程
+  - 方法步骤
+variables:
+  - ARTICLE_TITLE
+  - ARTICLE_SUMMARY
+  - KEY_POINTS
+  - VISUAL_STYLE
+  - ASPECT_RATIO
+template: |
+  为文章生成步骤流程型信息图提示词。
+  标题：{{ARTICLE_TITLE}}
+  摘要：{{ARTICLE_SUMMARY}}
+  核心要点：{{KEY_POINTS}}
+  风格：{{VISUAL_STYLE}}
+  画幅：{{ASPECT_RATIO}}
+
+  要求：
+  1. 用路径、箭头、步骤编号组织信息
+  2. 阅读顺序明确，便于一眼理解先后关系
+  3. 适合教程、操作指南、工作流说明

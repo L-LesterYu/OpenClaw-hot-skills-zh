@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "word-docx": {
+      "version": "1.0.2",
+      "installedAt": 1773958576290
+    },
+    "evolver": {
+      "version": "1.38.0",
+      "installedAt": 1774304362717
+    },
+    "clawdbot-filesystem": {
+      "version": "1.0.2",
+      "installedAt": 1774520171762
+    }
+  }
+}

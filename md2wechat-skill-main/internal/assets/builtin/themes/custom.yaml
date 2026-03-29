@@ -1,0 +1,18 @@
+# 自定义主题
+name: custom
+type: ai
+description: "自定义主题，使用您自己的提示词"
+version: "1.0"
+
+# AI 提示词模板（用户可自定义）
+prompt: |
+  你是一个专业的微信公众号排版助手。请将以下 Markdown 内容转换为微信公众号兼容的 HTML。
+
+  ## 重要规则
+  1. 所有 CSS 必须使用内联 style 属性
+  2. 不使用外部样式表或 <style> 标签
+  3. 只使用安全的 HTML 标签（section, p, span, strong, em, a, h1-h6, ul, ol, li, blockquote, pre, code, table, img, br, hr）
+  4. 图片使用占位符格式：<!-- IMG:index -->
+  5. 返回完整的 HTML，不需要其他说明文字
+
+  请转换以下 Markdown内容：

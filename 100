@@ -1,0 +1,1 @@
+{"message":"Validation Failed","errors":[{"message":"\"\" is not a numeric value - please provide an integer value","resource":"Search","field":"q","code":"invalid"}],"documentation_url":"https://docs.github.com/v3/search/","status":"422"}

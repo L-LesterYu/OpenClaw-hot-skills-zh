@@ -1,0 +1,61 @@
+name: infographic-handdrawn-sketchnote
+kind: image
+description: 图文并茂的手绘 sketchnote 风格信息图
+version: "1.0"
+archetype: infographic
+primary_use_case: infographic
+recommended_aspect_ratios:
+  - 3:4
+  - 4:5
+default_aspect_ratio: 3:4
+metadata:
+  author: geekjourneyx
+  provenance: original
+tags:
+  - infographic
+  - sketchnote
+  - handdrawn
+  - summary
+  - educational
+examples:
+  - 方法论总结图
+  - 教程步骤图
+  - 文章核心观点概览图
+variables:
+  - ARTICLE_TITLE
+  - ARTICLE_SUMMARY
+  - KEY_POINTS
+  - VISUAL_STYLE
+  - ASPECT_RATIO
+template: |
+  为文章生成一张 Hand-Drawn Sketchnote 风格的信息图提示词。
+
+  内容输入：
+  - 标题：{{ARTICLE_TITLE}}
+  - 摘要：{{ARTICLE_SUMMARY}}
+  - 核心要点：{{KEY_POINTS}}
+  - 风格补充：{{VISUAL_STYLE}}
+  - 画幅：{{ASPECT_RATIO}}
+
+  风格要求：
+  1. 采用 hand-drawn sketchnote 风格，像高质量手绘笔记与视觉总结图的结合
+  2. 图文并茂，不能只有文字排版，必须配合简洁的小图标、箭头、边框、手绘符号和解释性插图
+  3. 画面应像一页精心整理的视觉笔记，有明显的信息分组和阅读路径
+  4. 线条自然但清晰，允许轻微不规则感，体现手绘温度
+  5. 适合白底纸面、浅米色纸张或轻微笔记本质感背景
+  6. 可以使用少量强调色，但整体保持克制、清爽、易读
+  7. 不要写实插画，不要 3D，不要复杂阴影，不要照片拼贴
+
+  排版要求：
+  1. 主标题必须醒目，像手写标题或 marker 笔标题
+  2. 信息以多个模块分区组织，每个区块围绕一个核心点
+  3. 使用箭头、连线、圈注、便签框、手绘边框来建立信息关系
+  4. 视觉流向清晰，让读者顺着图文结构自然阅读
+  5. 图和文必须互相解释，不能只是装饰性小图
+  6. 文字量适中，突出重点，不要把整篇文章搬进图里
+
+  适用场景：
+  1. 文章总结图
+  2. 教程流程图
+  3. 方法论拆解图
+  4. 知识点概览图

@@ -1,0 +1,358 @@
+{
+  "tips": [
+    {
+      "title": "使用多个聊天通道实现并行任务处理",
+      "content": "创建2-5个专用的聊天通道（如Telegram群组），每个通道作为一个独立的工作流（如'SEO任务'、'基建调试'、'内容撰写'）。一个通道=一个目标，可以同时运行多个长任务而不会混合上下文。个人DM作为'控制室'，群组作为执行通道。",
+      "source_url": "https://openclaw-setup.me/blog/usage-tips/run-multiple-openclaw-sessions-concurrently/",
+      "source_platform": "Blog",
+      "found_date": "2026-03-23",
+      "tags": ["并发", "工作流", "Telegram", "生产力"]
+    },
+    {
+      "title": "用Outbox/Approval/Send模式实现分层审批",
+      "content": "任何有现实后果的agent操作（发邮件、发帖、修改外部记录）都应经过审批步骤。实现方式：agent将草稿放入outbox，审核者（另一个agent或人类）审批或拒绝，确定性cron脚本发送已批准的项目。建议初始全部启用审批，随着对agent行为信心增长逐步放权。",
+      "source_url": "https://github.com/cecat/OpenClaw-Tutorial/blob/main/OpenClaw-Tutorial-Outline.md",
+      "source_platform": "GitHub",
+      "found_date": "2026-03-23",
+      "tags": ["安全", "审批", "工作流", "最佳实践"]
+    },
+    {
+      "title": "用确定性脚本替代心跳调度，节省推理预算",
+      "content": "OpenClaw原生心跳是粗粒度的：每隔固定时间触发，无论是否有工作要做。15分钟间隔下，一个每周只需执行一次的任务会产生672次心跳。解决方案：用bash脚本、CALENDAR.md和TODO.md构建调度层，将调度决策完全从LLM移到确定性代码中。代码处理程序性任务，LLM处理需要判断的任务。",
+      "source_url": "https://github.com/cecat/OpenClaw-Tutorial/blob/main/OpenClaw-Tutorial-Outline.md",
+      "source_platform": "GitHub",
+      "found_date": "2026-03-23",
+      "tags": ["调度", "成本优化", "心跳", "最佳实践"]
+    },
+    {
+      "title": "分离职责：代码处理确定性操作，LLM处理判断",
+      "content": "模型擅长判断、组合和自然语言理解，不适合确定性操作（从API获取结构化数据、计数、路由文件、判断时间是否匹配计划）。混合这些关注点会产生非确定性行为并浪费推理预算。使用runbook和脚本明确分离：代码处理任何程序性任务，LLM处理任何需要判断的任务。",
+      "source_url": "https://github.com/cecat/OpenClaw-Tutorial/blob/main/OpenClaw-Tutorial-Outline.md",
+      "source_platform": "GitHub",
+      "found_date": "2026-03-23",
+      "tags": ["架构", "最佳实践", "成本优化"]
+    },
+    {
+      "title": "用YAML + apply-config.sh管理配置，避免直接编辑JSON",
+      "content": "OpenClaw将全部配置存储在单个大型JSON文件(openclaw.json)中，直接编辑容易出错。解决方案：创建config.yaml作为人类可读的抽象层，用apply-config.sh脚本将YAML变更patch到运行中的JSON并重启gateway。这种方式可读性好、不易出错，且适合版本控制。",
+      "source_url": "https://github.com/cecat/OpenClaw-Tutorial/blob/main/OpenClaw-Tutorial-Outline.md",
+      "source_platform": "GitHub",
+      "found_date": "2026-03-23",
+      "tags": ["配置管理", "运维", "最佳实践"]
+    },
+    {
+      "title": "Telegram群组权限控制最佳实践",
+      "content": "关键配置：1) channels.telegram.groups 定义允许的群组（ID或通配符'*'）；2) channels.telegram.groupPolicy 控制群内发送行为（open/allowlist/disabled）；3) groupAllowFrom 限制群内谁可触发bot；4) requireMention 要求@提及才回复。注意：groupAllowFrom放用户ID，groups放群组ID（负数），不要混淆。",
+      "source_url": "https://docs.openclaw.ai/channels/telegram",
+      "source_platform": "官方文档",
+      "found_date": "2026-03-23",
+      "tags": ["Telegram", "权限", "配置", "安全"]
+    },
+    {
+      "title": "使用Opus 4.6防御提示注入攻击",
+      "content": "在连接邮件等高风险集成时，使用Opus 4.6等高抗性模型可以有效防御提示注入攻击。Klaus团队的经验表明，Kimi K2.5和Mimimax M2.5等模型非常擅长'产生新的方式来破坏openclaw.json'。建议高风险操作使用更强的模型。",
+      "source_url": "https://news.ycombinator.com/item?id=47337249",
+      "source_platform": "Hacker News",
+      "found_date": "2026-03-23",
+      "tags": ["安全", "提示注入", "模型选择"]
+    },
+    {
+      "title": "OpenClaw安全加固清单要点",
+      "content": "自托管部署安全要点：1) Docker端口不暴露到公网；2) 使用防火墙规则限制访问；3) 证书监控；4) 依赖管理；5) 运行在私有子网；6) 自动更新OpenClaw版本。安全应在部署的第一小时就设计好，而不是事后补救。agent以你的名义行动，每封邮件都来自你。",
+      "source_url": "https://openclaw-setup.me/blog/usage-tips/openclaw-self-hosted-security-hardening-checklist-2026/",
+      "source_platform": "Blog",
+      "found_date": "2026-03-23",
+      "tags": ["安全", "自托管", "Docker", "加固"]
+    },
+    {
+      "title": "升级前备份OpenClaw以确保快速恢复",
+      "content": "升级前必须备份，验证恢复就绪状态。当发布破坏线上工作流时，可以快速恢复。建议建立升级前的备份流程和恢复演练。",
+      "source_url": "https://openclaw-setup.me/blog/usage-tips/openclaw-backup-before-upgrades-recovery-guide/",
+      "source_platform": "Blog",
+      "found_date": "2026-03-23",
+      "tags": ["运维", "备份", "升级", "恢复"]
+    },
+    {
+      "title": "构建免烧毁的Always-On OpenClaw运行模型",
+      "content": "建立可持续的always-on agent运行模式：设置实用的护栏、审批循环和反烧毁可靠性实践。避免让agent全自主运行，采用渐进式放权策略。",
+      "source_url": "https://openclaw-setup.me/blog/usage-tips/openclaw-always-on-agent-stack-without-burnout/",
+      "source_platform": "Blog",
+      "found_date": "2026-03-23",
+      "tags": ["运维", "可靠性", "always-on", "最佳实践"]
+    },
+    {
+      "title": "使用ClawHub安装和管理技能",
+      "content": "ClawHub (clawhub.ai) 是OpenClaw的技能注册中心，支持版本管理和回滚。安装方式：npx clawhub@latest install <skill-name>。技能可像npm包一样上传、版本化、可搜索。",
+      "source_url": "https://clawhub.ai/",
+      "source_platform": "ClawHub",
+      "found_date": "2026-03-23",
+      "tags": ["技能", "ClawHub", "安装"]
+    },
+    {
+      "title": "不同agent可使用不同模型，匹配能力和成本",
+      "content": "同一gateway可运行多个agent，每个agent可使用不同模型。简单任务使用低成本模型，重要任务（如审核其他agent工作）使用前沿模型。可混合使用本地GPU模型和云API模型。",
+      "source_url": "https://github.com/cecat/OpenClaw-Tutorial/blob/main/OpenClaw-Tutorial-Outline.md",
+      "source_platform": "GitHub",
+      "found_date": "2026-03-23",
+      "tags": ["模型选择", "成本优化", "多agent"]
+    },
+    {
+      "title": "OpenClaw Business Accounts：团队共享计费与容量",
+      "content": "Business Accounts 于2026-03-16上线，支持一个计费owner管理多个团队成员。核心特性：owner管理Stripe订阅和计划，通过邮件邀请成员加入，成员用各自Google账号登录，实例按创建者归属但共享计划容量。适合2-10人团队。注意：成员间不可互见实例；成员离场前需规划实例移交。",
+      "source_url": "https://openclaw-setup.me/blog/usage-tips/openclaw-business-accounts-shared-billing-guide/",
+      "source_platform": "Blog",
+      "found_date": "2026-03-24",
+      "tags": ["团队", "计费", "Business Accounts", "管理"]
+    },
+    {
+      "title": "Chrome Relay安全模型：托管实例连接本地浏览器",
+      "content": "托管OpenClaw通过Chrome Relay安全连接本地浏览器。核心安全设计：1) Gateway保持私有，Relay作为唯一公开面；2) 短期JWT令牌(10分钟TTL)绑定用户+实例；3) 实例子域名避免双重认证冲突。常见错误：混淆relay token与gateway token（relay token给node host，gateway token给Chrome扩展）。",
+      "source_url": "https://openclaw-setup.me/blog/usage-tips/secure-hosted-openclaw-browser-access-guide-2026/",
+      "source_platform": "Blog",
+      "found_date": "2026-03-24",
+      "tags": ["安全", "浏览器", "Chrome Relay", "托管"]
+    },
+    {
+      "title": "Cron创建验证失败的诊断与修复",
+      "content": "cron add验证错误的常见原因：1) payload类型与sessionTarget不匹配（main需systemEvent，isolated需agentTurn）；2) schedule格式错误（at需ISO时间戳，every需everyMs，cron需expr）；3) 字段层级错误。修复方法：先用最小有效payload测试，再逐步添加字段。注意时间戳必须包含时区。",
+      "source_url": "https://openclaw-setup.me/blog/usage-tips/openclaw-cron-validation-fix/",
+      "source_platform": "Blog",
+      "found_date": "2026-03-24",
+      "tags": ["cron", "调试", "配置", "故障排除"]
+    },
+    {
+      "title": "Raspberry Pi等低内存设备OOM修复指南",
+      "content": "Pi 4 (2GB RAM)升级后易出现JS heap OOM。修复步骤：1) 设置NODE_OPTIONS='--max-old-space-size=1800'（不要设满物理RAM）；2) 归档旧会话和memory文件减少上下文；3) 临时禁用内存密集功能；4) 必要时回退版本(npm install -g openclaw@版本号)。注意：SD卡swap会严重拖慢性能并加速磨损。",
+      "source_url": "https://openclaw-setup.me/blog/usage-tips/openclaw-raspberry-pi-memory-oom-fix-guide/",
+      "source_platform": "Blog",
+      "found_date": "2026-03-24",
+      "tags": ["树莓派", "内存", "OOM", "硬件"]
+    },
+    {
+      "title": "Cron WebSocket断连但status正常的排查方法",
+      "content": "当cron的WebSocket连接断开但openclaw status显示一切正常时，问题出在transport层而非应用层。排查重点：检查gateway-close事件日志、WebSocket连接状态、网络代理配置。建议：先确认cron scheduler本身运行正常，再检查WebSocket transport。",
+      "source_url": "https://openclaw-setup.me/blog/usage-tips/openclaw-cron-websocket-status-works-fix/",
+      "source_platform": "Blog",
+      "found_date": "2026-03-24",
+      "tags": ["cron", "WebSocket", "调试", "故障排除"]
+    },
+    {
+      "title": "ClawHub技能安全风险与审查建议",
+      "content": "Composio安全分析指出：OpenClaw依赖ClawHub社区技能，但技能上传无人负责安全审计，存在供应链攻击风险。建议：1) 安装前审查技能代码；2) 不要盲目信任技能权限请求；3) 使用skill-vetter等工具进行安全预检；4) 优先选择有声誉的技能作者。技能可访问文件系统、网络、shell等敏感资源。",
+      "source_url": "https://composio.dev/content/openclaw-security-and-vulnerabilities",
+      "source_platform": "Blog",
+      "found_date": "2026-03-24",
+      "tags": ["安全", "ClawHub", "技能", "供应链"]
+    },
+    {
+      "title": "Prompt注入防御实操检查清单",
+      "content": "防御agent被伪造系统消息操控：1) 验证所有外部输入来源（邮件、网页抓取等）；2) 对高风险集成使用高抗性模型(Opus 4.6)；3) 在SOUL.md中明确agent行为边界；4) 限制agent对外操作的权限范围；5) 对敏感操作保持人类审批。Federico Viticci案例：agent累计消耗1.8亿token，提醒控制token成本。",
+      "source_url": "https://composio.dev/content/openclaw-security-and-vulnerabilities",
+      "source_platform": "Blog",
+      "found_date": "2026-03-24",
+      "tags": ["安全", "提示注入", "防御", "最佳实践"]
+    },
+    {
+      "title": "用OpenClaw实现复杂价格监控（含AI视觉判断）",
+      "content": "Brandon Wang实测：OpenClaw可监控30+价格提醒，包括复杂推理规则如'无折叠床的房间可接受'。它实际浏览房源照片确认是否符合条件。还可监控包裹物流（自动跟踪USPS进度，卡件时标记提醒），替代Flighty/Parcel等付费App。方法：直接粘贴URL给OpenClaw并设置cron定时检查。",
+      "source_url": "https://brandon.wang/2026/clawdbot",
+      "source_platform": "Blog",
+      "found_date": "2026-03-24",
+      "tags": ["自动化", "价格监控", "浏览器", "cron"]
+    },
+    {
+      "title": "用Standing Orders实现常驻授权自主执行",
+      "content": "官方Standing Orders机制：在AGENTS.md中定义程序（Scope/Trigger/Approval Gate/Escalation），agent在定义边界内自主执行。每个程序明确指定：授权范围、触发条件、需审批的操作、何时上报。核心模式：Execute-Verify-Report（执行-验证-汇报）。建议从窄权限开始，随信任增长逐步扩大。结合cron job实现定时触发。",
+      "source_url": "https://docs.openclaw.ai/automation/standing-orders",
+      "source_platform": "官方文档",
+      "found_date": "2026-03-24",
+      "tags": ["自动化", "Standing Orders", "权限", "最佳实践"]
+    },
+    {
+      "title": "Cron vs Heartbeat决策指南：精确调度用Cron，批量检查用心跳",
+      "content": "官方推荐：需要精确时间（每天9点报告）→ Cron isolated；需要批量检查（每30分钟查邮箱+日历+通知）→ Heartbeat；需要不同模型/思考级别 → Cron isolated with --model；一次性提醒 → Cron with --at。Cron支持5字段或6字段（秒）cron表达式+时区，top-of-hour调度自动错峰（0-5分钟）。最佳实践：两者配合使用。",
+      "source_url": "https://docs.openclaw.ai/automation/cron-vs-heartbeat",
+      "source_platform": "官方文档",
+      "found_date": "2026-03-24",
+      "tags": ["cron", "心跳", "调度", "自动化"]
+    },
+    {
+      "title": "Memory自动刷新：压缩前自动保存记忆防丢失",
+      "content": "OpenClaw在会话接近自动压缩时，会触发一个静默的agentic turn提醒模型保存持久记忆。通过agents.defaults.compaction.memoryFlush配置：enabled=true开启，softThresholdTokens控制触发阈值。注意：如果会话以只读模式运行sandboxed workspaceAccess=ro，刷新会被跳过。",
+      "source_url": "https://docs.openclaw.ai/concepts/memory",
+      "source_platform": "官方文档",
+      "found_date": "2026-03-24",
+      "tags": ["记忆", "压缩", "数据持久化", "配置"]
+    },
+    {
+      "title": "Model Failover机制：多Profile轮换+指数退避冷却",
+      "content": "OpenClaw支持多auth profile自动轮换：同一provider的多个profile按OAuth优先于API Key、最久未用优先的顺序轮换。会话内profile会被pin住保持缓存友好。失败时指数退避冷却（1分钟→5分钟→25分钟→1小时封顶），余额不足则标记disabled（5小时起翻倍至24小时封顶）。所有profile失败后回退到fallbacks列表中的下一个模型。",
+      "source_url": "https://docs.openclaw.ai/concepts/model-failover",
+      "source_platform": "官方文档",
+      "found_date": "2026-03-24",
+      "tags": ["模型", "Failover", "高可用", "成本优化"]
+    },
+    {
+      "title": "Hooks系统：用小脚本自动化Agent生命周期事件",
+      "content": "OpenClaw内置4个bundled hooks：session-memory（/new时保存上下文到memory/）、bootstrap-extra-files（注入额外workspace文件）、command-logger（日志记录所有命令到commands.log）、boot-md（gateway启动时运行BOOT.md）。可用openclaw hooks enable/disable管理。支持workspace hooks（<workspace>/hooks/）和plugin hooks。注意workspace hooks需显式启用才加载。",
+      "source_url": "https://docs.openclaw.ai/automation/hooks",
+      "source_platform": "官方文档",
+      "found_date": "2026-03-24",
+      "tags": ["Hooks", "自动化", "生命周期", "扩展"]
+    },
+    {
+      "title": "用OpenClaw管理日常琐事：日历、短信承诺追踪、冰箱库存",
+      "content": "Brandon Wang深度使用案例：1) 每15分钟扫描新短信，检测承诺和约会计划，自动创建日历事件或hold时段；2) 每晚8点发送次日会议摘要帮助准备；3) 拍冰箱照片自动生成Notion库存清单，智能去重并更新购物清单；4) 截图食谱自动解析食材到Apple Reminders购物清单。核心思路：让OpenClaw处理需要记忆和提醒的事务。",
+      "source_url": "https://brandon.wang/2026/clawdbot",
+      "source_platform": "Blog",
+      "found_date": "2026-03-24",
+      "tags": ["生活自动化", "日历", "短信", "库存管理"]
+    },
+    {
+      "title": "Auth Profile Session粘性：避免Profile频繁切换导致行为不一致",
+      "content": "OpenClaw在会话内pin住选定的auth profile以保持provider缓存热度。Pin在以下情况重置：/new或/reset、compaction完成、profile进入冷却/禁用状态。用户通过/model命令手动选择的profile会被锁定，失败时直接回退到下一个模型而非切换profile。建议：混合使用OAuth和API Key时，用auth.order固定profile顺序。",
+      "source_url": "https://docs.openclaw.ai/concepts/model-failover",
+      "source_platform": "官方文档",
+      "found_date": "2026-03-24",
+      "tags": ["模型", "Auth", "Profile", "缓存"]
+    },
+    {
+      "title": "用n8n Webhook代理外部API调用，实现凭证隔离",
+      "content": "让OpenClaw直接管理API Key是安全隐患。解决方案：OpenClaw设计n8n工作流并调用webhook触发，API凭证只存储在n8n的credential store中。流程：agent构建工作流→人工添加凭证并锁定→agent通过webhook URL调用。优势：可观测性（n8n可视化UI）、安全性（凭证隔离）、性能（确定性工作流不消耗LLM token）。有现成Docker Compose方案(openclaw-n8n-stack)。",
+      "source_url": "https://github.com/hesamsheikh/awesome-openclaw-usecases/blob/main/usecases/n8n-workflow-orchestration.md",
+      "source_platform": "GitHub",
+      "found_date": "2026-03-25",
+      "tags": ["安全", "n8n", "凭证管理", "集成"]
+    },
+    {
+      "title": "STATE.yaml去中心化项目管理：Subagent并行无需编排器",
+      "content": "传统编排器模式造成瓶颈，替代方案：用共享STATE.yaml文件作为单一事实来源，subagent自主读取任务、执行并更新状态，其他agent轮询STATE.yaml获取未阻塞工作。主会话保持精简（只做spawn/send）。关键实践：Git提交STATE.yaml变更作为审计日志、使用pm-{project}-{scope}标签命名、所有状态变更提交到git。",
+      "source_url": "https://github.com/hesamsheikh/awesome-openclaw-usecases/blob/main/usecases/autonomous-project-management.md",
+      "source_platform": "GitHub",
+      "found_date": "2026-03-25",
+      "tags": ["项目管理", "subagent", "并行", "最佳实践"]
+    },
+    {
+      "title": "自愈式Home Server：Cron定时健康检查+自主修复",
+      "content": "将OpenClaw变为持久化基础设施agent。关键设计：15分钟检查任务板、每小时监控服务健康(Gatus/ArgoCD)、每6小时自检(openclaw doctor)、每日生成早间简报(天气+日历+系统状态+任务板)。核心教训：1) AI会硬编码密钥（#1安全风险），必须安装TruffleHog pre-push hooks；2) 永远不让agent直接推送到public repo，用本地Gitea做暂存；3) Cron jobs才是真正的价值所在，比临时命令更有效；4) 知识提取会随时间复合增值。",
+      "source_url": "https://github.com/hesamsheikh/awesome-openclaw-usecases/blob/main/usecases/self-healing-home-server.md",
+      "source_platform": "GitHub",
+      "found_date": "2026-03-25",
+      "tags": ["运维", "自愈", "cron", "基础设施", "安全"]
+    },
+    {
+      "title": "QMD语义记忆搜索：为Markdown记忆文件添加向量检索能力",
+      "content": "社区项目Paperclip参考OpenClaw模式实现了QMD混合记忆系统：共享文件(GOALS.md/DECISIONS.md)+每个agent私有记忆+QMD索引(混合BM25+向量+LLM重排序)。三种搜索模式：BM25(~200ms)、向量(~1s)、混合+重排(~5s)。agent运行后自动索引，唤醒时注入上下文。如果QMD不可用则优雅降级为无记忆搜索。模型仅~2GB(embeddinggemma-300M+qwen3-reranker)。",
+      "source_url": "https://github.com/emilixs/paperclip/issues/2",
+      "source_platform": "GitHub",
+      "found_date": "2026-03-25",
+      "tags": ["记忆", "语义搜索", "QMD", "向量检索"]
+    },
+    {
+      "title": "OpenClaw技能系统性测试：8级冒险框架",
+      "content": "社区提出的技能探索方法论：将每个技能视为一个关卡，系统性测试并记录体验。8个级别覆盖：天气预报(Goal/Query)、GitHub协作(Issue/PR管理)、语音合成(TTS)、文档处理(摘要)、智能设备(Hue/Sonos控制)、创意工具(图像生成/GIF)、开发工具(Tmux/编码agent)、信息管理(邮件/Obsidian)。规则：每个级别独立探索，记录使用体验和问题，最终整理成技能手册。",
+      "source_url": "https://github.com/underwatercolors/openclaw-collaboration/issues/5",
+      "source_platform": "GitHub",
+      "found_date": "2026-03-25",
+      "tags": ["技能", "测试", "方法论", "学习"]
+    },
+    {
+      "title": "Pre-Build验证：开发前自动扫描避免重复造轮子",
+      "content": "awesome-openclaw-usecases收录的实用模式：在开始任何新项目前，让OpenClaw自动扫描GitHub、HN、npm、PyPI和Product Hunt。如果该领域已拥挤则停止，如果是开放领域则继续。结合Market Research & Product Factory模式，先用Last 30 Days skill在Reddit/X上挖掘真实痛点，再让OpenClaw构建MVP解决它们。",
+      "source_url": "https://github.com/hesamsheikh/awesome-openclaw-usecases",
+      "source_platform": "GitHub",
+      "found_date": "2026-03-25",
+      "tags": ["开发", "市场调研", "自动化", "最佳实践"]
+    },
+    {
+      "title": "AI Agent工作流最佳实践：从单Agent开始逐步扩展",
+      "content": "社区讨论总结的Agent架构建议：1) 从单agent设置开始，逐步添加复杂性，每个组件扩展前先测试；2) 使用缓存减少API成本；3) 实现适当的错误处理；4) 监控token使用量。OpenClaw适合多平台集成，Flowise适合无代码工作流，LangChain适合需要高级控制的开发者。速率限制处理和成本优化是社区最关心的问题。",
+      "source_url": "https://github.com/mergisi/awesome-openclaw-agents/issues/16",
+      "source_platform": "GitHub",
+      "found_date": "2026-03-25",
+      "tags": ["架构", "最佳实践", "成本优化", "入门"]
+    },
+    {
+      "title": "智能消息检测与日历集成",
+      "content": "每15分钟扫描新短信，检测承诺和约会计划，自动创建日历事件或hold时段。当检测到具体承诺（'让我明天复习这个'）时，自动为次日创建日历事件；当检测到会议安排时，自动在日历中预留时段防止双重预订。可忽略用户未参与的线程，专注于有价值的承诺。",
+      "source_url": "https://brandon.wang/2026/clawdbot",
+      "source_platform": "Blog",
+      "found_date": "2026-03-29",
+      "tags": ["自动化", "日历", "短信", "承诺跟踪"]
+    },
+    {
+      "title": "复杂价格监控与AI视觉判断",
+      "content": "设置30+价格提醒，包含复杂推理规则如'Lake Tahoe的酒店，如果折叠床不在同一个房间里是可以接受的'。OpenClaw实际浏览房源照片确认是否符合条件，可监控物流进度，卡件时标记提醒。替代Flighty/Parcel等付费App，通过URL粘贴即可设置监控。",
+      "source_url": "https://brandon.wang/2026/clawdbot",
+      "source_platform": "Blog",
+      "found_date": "2026-03-29",
+      "tags": ["价格监控", "AI视觉", "物流跟踪", "自动化"]
+    },
+    {
+      "title": "冰箱库存智能管理",
+      "content": "拍冰箱照片自动生成Notion库存清单，智能去重并更新购物清单。截图食谱自动解析食材到Apple Reminders购物清单，自动合并已有食材（食谱需要2根胡萝卜→已1根→总共3根）。可识别冷冻食品剩余数量，避免重复购买。",
+      "source_url": "https://brandon.wang/2026/clawdbot",
+      "source_platform": "Blog",
+      "found_date": "2026-03-29",
+      "tags": ["家庭管理", "图像识别", "库存", "购物清单"]
+    },
+    {
+      "title": "多模型流水线架构",
+      "content": "不同任务阶段使用不同模型优化输出：Prototype→Summarize→Optimize→Implement的流水线模式，在不同阶段使用最合适的模型。如Codex用于编码，Gemini用于营销研究等。避免在简单任务上使用昂贵模型，提高效率的同时降低成本。",
+      "source_url": "https://openclaw.ai/showcase",
+      "source_platform": "官方展示",
+      "found_date": "2026-03-29",
+      "tags": ["架构", "模型选择", "流水线", "成本优化"]
+    },
+    {
+      "title": "自定义晨间摘要系统",
+      "content": "个性化晨间摘要包含天气、周目标、健康数据、会议议程、关键提醒、相关话题、应读书籍推荐、励志语录等。基于用户目标生成个性化阅读推荐，自动过滤无关信息。帮助用户提前准备一天的重要事项。",
+      "source_url": "https://openclaw.ai/showcase",
+      "source_platform": "官方展示",
+      "found_date": "2026-03-29",
+      "tags": ["自动化", "个性化", "晨间摘要", "时间管理"]
+    },
+    {
+      "title": "智能会议准备与任务分配",
+      "content": "会议前研究相关人员并准备简报文档，会议转录后创建结构化摘要，自动在Jira、Linear或Todoist中创建任务并分配给正确人员。识别会议中的行动项，确保不遗漏重要任务。",
+      "source_url": "https://openclaw.ai/showcase",
+      "source_platform": "官方展示",
+      "found_date": "2026-03-29",
+      "tags": ["会议管理", "任务分配", "转录", "自动化"]
+    },
+    {
+      "title": "家庭共享系统",
+      "content": "整合所有家庭成员日历生成晨间摘要，监控消息中的约会，管理家庭库存（冰箱、购物清单），基于天气自动调整用餐计划。协调家庭成员的日程安排，避免冲突。",
+      "source_url": "https://openclaw.ai/showcase",
+      "source_platform": "官方展示",
+      "found_date": "2026-03-29",
+      "tags": ["家庭管理", "共享日历", "协调", "库存管理"]
+    },
+    {
+      "title": "语音交互与复杂操作执行",
+      "content": "通过语音交互进行复杂操作，如遛狗时通过语音检查部署状态、审查日志、识别问题根源、修复配置、重新部署、验证修复效果。将语音指令转化为实际系统操作，实现真正的'用手不摸键盘'的体验。",
+      "source_url": "https://openclaw.ai/showcase",
+      "source_platform": "官方展示",
+      "found_date": "2026-03-29",
+      "tags": ["语音交互", "复杂操作", "运维", "手-free"]
+    },
+    {
+      "title": "专业技能生态集成",
+      "content": "集成专业工具如1Password密码管理、WHOOP健康数据、Google Places同步、X书签管理等，通过单一聊天界面管理多个专业系统。智能处理专业数据的获取、更新和分析。",
+      "source_url": "https://openclaw.ai/showcase",
+      "source_platform": "官方展示",
+      "found_date": "2026-03-29",
+      "tags": ["集成", "专业工具", "1Password", "健康数据"]
+    },
+    {
+      "title": "大规模多agent协作系统",
+      "content": "15+个agent在3台机器上通过Discord统一协作，每个agent有专门职责，共享项目记忆但保持独立上下文。每日roll call，自动协调任务分配，实现真正的'AI团队'体验。",
+      "source_url": "https://openclaw.ai/showcase",
+      "source_platform": "官方展示",
+      "found_date": "2026-03-29",
+      "tags": ["多agent", "大规模", "协作", "团队"]
+    }
+  ],
+  "last_updated": "2026-03-29",
+  "total_count": 44
+}

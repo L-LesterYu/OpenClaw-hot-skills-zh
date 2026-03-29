@@ -1,0 +1,20 @@
+name: default
+kind: refine
+description: 默认润色提示词模板
+version: "1.0"
+variables:
+  - STYLE_PROMPT
+  - CONTENT
+  - FEEDBACK_BLOCK
+template: |
+  {{STYLE_PROMPT}}
+
+  ## 润色任务
+  请将以下内容用该风格重新润色：
+
+  ### 原文
+  {{CONTENT}}{{FEEDBACK_BLOCK}}
+
+  ---
+
+  请输出润色后的内容，保持原意，用该风格重新表达。

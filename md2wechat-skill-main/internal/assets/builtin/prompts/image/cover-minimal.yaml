@@ -1,0 +1,37 @@
+name: cover-minimal
+kind: image
+description: 极简留白风格的文章封面
+version: "1.0"
+archetype: cover
+primary_use_case: cover
+recommended_aspect_ratios:
+  - 16:9
+default_aspect_ratio: 16:9
+metadata:
+  author: geekjourneyx
+  provenance: original
+tags:
+  - cover
+  - minimal
+  - calm
+examples:
+  - 个人成长文章
+  - 品牌与理念文章
+variables:
+  - ARTICLE_TITLE
+  - ARTICLE_SUMMARY
+  - KEYWORDS
+  - VISUAL_STYLE
+  - ASPECT_RATIO
+template: |
+  为公众号文章生成极简留白风格的封面图提示词。
+  标题：{{ARTICLE_TITLE}}
+  摘要：{{ARTICLE_SUMMARY}}
+  关键词：{{KEYWORDS}}
+  风格：{{VISUAL_STYLE}}
+  画幅：{{ASPECT_RATIO}}
+
+  要求：
+  1. 元素极少，留白明显
+  2. 颜色控制克制，避免杂乱
+  3. 视觉上安静、克制、现代

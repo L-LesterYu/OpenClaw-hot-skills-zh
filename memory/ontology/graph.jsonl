@@ -1,0 +1,5 @@
+{"op": "create", "entity": {"id": "pers_36eb1903", "type": "Person", "properties": {"name": "\u5f20\u4e09", "email": "zhangsan@example.com"}, "created": "2026-03-25T10:19:58.100295+00:00", "updated": "2026-03-25T10:19:58.100295+00:00"}, "timestamp": "2026-03-25T10:19:58.100295+00:00"}
+{"op": "create", "entity": {"id": "proj_bd6b0cae", "type": "Project", "properties": {"name": "\u7f51\u7ad9\u91cd\u6784", "status": "active"}, "created": "2026-03-25T10:19:58.171289+00:00", "updated": "2026-03-25T10:19:58.171289+00:00"}, "timestamp": "2026-03-25T10:19:58.171289+00:00"}
+{"op": "relate", "from": "proj_bd6b0cae", "rel": "has_owner", "to": "pers_36eb1903", "properties": {}, "timestamp": "2026-03-25T10:19:58.356210+00:00"}
+{"op": "update", "id": "pers_36eb1903", "properties": {"phone": "13800138000"}, "timestamp": "2026-03-25T10:19:58.735290+00:00"}
+{"op": "delete", "id": "pers_36eb1903", "timestamp": "2026-03-25T10:19:58.807904+00:00"}

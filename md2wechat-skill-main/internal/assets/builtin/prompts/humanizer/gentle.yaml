@@ -1,0 +1,6 @@
+name: gentle
+kind: humanizer
+description: 温和模式说明
+version: "1.0"
+template: |
+  **温和模式**：只处理最明显、最确定的问题。保留大部分原文结构，只修改明显的 AI 痕迹如填充短语、过度强调的连接词等。适合已经比较自然的文本。

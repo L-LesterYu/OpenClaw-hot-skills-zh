@@ -1,0 +1,104 @@
+# 预构建想法验证器
+
+在 OpenClaw 开始构建任何新东西之前，它会自动检查该想法是否已在 GitHub、Hacker News、npm、PyPI 和 Product Hunt 上存在，并根据发现的情况调整其方法。
+
+## 功能描述
+
+- 在编写任何代码之前扫描 5 个真实数据源（GitHub、Hacker News、npm、PyPI、Product Hunt）
+- 返回一个 `reality_signal` 评分（0-100），表明该领域的竞争激烈程度
+- 显示主要竞争对手的星标数量和描述
+- 当领域饱和时建议调整方向
+- 作为预构建关卡：高信号 = 停止并讨论，低信号 = 继续进行
+
+## 痛点
+
+你告诉你的智能体"为我构建一个AI代码审查工具"，它很高兴地花了6小时编写代码。与此同时，GitHub 上已经存在 143,000+ 个相关仓库——排名第一的拥有 53,000 个星标。智能体从未检查过，因为你从未要求，它也不知道要查看。只有在投入大量时间后才发现竞争者。这个模式在每个新项目想法中都会重复出现。
+
+## 所需技能
+
+- [idea-reality-mcp](https://github.com/mnemox-ai/idea-reality-mcp) — 扫描真实数据源并返回竞争评分的 MCP 服务器
+
+## 如何设置
+
+1. 安装 idea-reality-mcp：
+
+```bash
+uvx idea-reality-mcp
+```
+
+2. 将 MCP 服务器添加到你的 OpenClaw 配置中：
+
+```json
+{
+  "mcpServers": {
+    "idea-reality": {
+      "command": "uvx",
+      "args": ["idea-reality-mcp"]
+    }
+  }
+}
+```
+
+3. 将以下内容添加到你的 OpenClaw 智能体指令中：
+
+```text
+在开始任何新项目、功能或工具之前，总是先运行 idea_check。
+
+规则：
+- 如果 reality_signal > 70：停止。报告前 3 个竞争对手的星标数量。
+  问我是否要继续、调整方向或放弃。
+- 如果 reality_signal 在 30-70 之间：向我展示结果和 pivot_hints。
+  建议现有项目未涵盖的利基角度。
+- 如果 reality_signal < 30：继续构建。
+  提该领域是开放的。
+- 在编写任何代码之前，总是显示 reality_signal 评分和主要竞争对手。
+```
+
+## 实际应用示例
+
+**你：**"给我构建一个用于AI代码审查的CLI工具"
+
+OpenClaw 运行 `idea_check("AI代码审查工具")` 并回应：
+
+> **reality_signal: 90/100（非常高）**
+>
+> 主要竞争对手：
+> 1. Gitea — 53,940 个星标
+> 2. reviewdog — 9,104 个星标  
+> 3. Danger (Ruby) — 5,649 个星标
+>
+> 这个领域有 143,000+ 个相关仓库。主要参与者都是成熟且资金充足的。
+>
+> **调整方向建议：**
+> - 专注于特定语言（仅限 Rust/Go 的AI代码审查）
+> - 目标特定框架（React/Vue 组件审查）
+> - 目标特定行业（金融/医疗代码合规审查）
+>
+> 我应该以差异化角度继续，还是调整到其他方向？
+
+**你：**"那用于预构建想法验证的MCP服务器怎么样？"
+
+> **reality_signal: 8/100（非常低）**
+>
+> 在 PyPI 或 npm 上未发现直接竞争对手。GitHub 有一些相关仓库，但没有一个能解决这个确切问题。
+>
+> 这个领域完全开放。继续构建。
+
+## 变体用法
+
+- **深度模式（用于重要决策）**：使用 `depth="deep` 并行扫描所有 5 个源（GitHub + HN + npm + PyPI + Product Hunt），用于重大项目决策。
+- **批量验证**：在黑客马拉松之前，给 OpenClaw 10 个想法列表，让它按 `reality_signal` 排序——最低分数 = 最原始的机会。
+- **网页演示先行**：无需安装即可在 [mnemox.ai/check](https://mnemox.ai/check) 尝试，看看该流程是否符合你的需求。
+
+## 关键洞察
+
+- 这能防止构建中最昂贵的错误：**解决一个已经解决的问题**。
+- `reality_signal` 基于真实数据（仓库数量、星标分布、HN 讨论量），而不是 LLM 猜测。
+- 高分不代表"不要构建"，而是"差异化或别费劲"。
+- 低分意味着存在真正的空白市场。这是个人开发者最有机会的地方。
+
+## 相关链接
+
+- [idea-reality-mcp GitHub](https://github.com/mnemox-ai/idea-reality-mcp)
+- [网页演示](https://mnemox.ai/check)（无需安装即可尝试）
+- [PyPI](https://pypi.org/project/idea-reality-mcp/)

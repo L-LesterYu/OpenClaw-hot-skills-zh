@@ -1,0 +1,36 @@
+{
+  "description": "OpenClaw(小龙虾)已推送应用场景记录",
+  "scenes": [
+    {
+      "name": "多源科技新闻聚合",
+      "description": "从 109+ 源自动聚合科技新闻，按质量评分筛选并投递",
+      "date": "2026-03-21",
+      "source": "https://github.com/hesamsheikh/awesome-openclaw-usecases/blob/main/usecases/multi-source-tech-news-digest.md"
+    },
+    {
+      "name": "目标驱动的自主任务系统",
+      "description": "自动拆解目标为每日任务并调度执行，夜间可自主构建小型应用",
+      "date": "2026-03-21",
+      "source": "https://github.com/hesamsheikh/awesome-openclaw-usecases/blob/main/usecases/overnight-mini-app-builder.md"
+    },
+    {
+      "name": "多 Agent 内容工厂",
+      "description": "在 Discord 中运行多 Agent 内容流水线，研究/写作/缩略图各司其职",
+      "date": "2026-03-21",
+      "source": "https://github.com/hesamsheikh/awesome-openclaw-usecases/blob/main/usecases/content-factory.md"
+    },
+    {
+      "name": "自愈式家庭服务器",
+      "description": "全天候基础设施 Agent，SSH 管理家庭网络，定时巡检+自动修复",
+      "date": "2026-03-21",
+      "source": "https://github.com/hesamsheikh/awesome-openclaw-usecases/blob/main/usecases/self-healing-home-server.md"
+    },
+    {
+      "name": "个性化晨间简报",
+      "description": "每天早晨自动推送定制简报——新闻、待办、内容草稿和 AI 推荐行动",
+      "date": "2026-03-21",
+      "source": "https://github.com/hesamsheikh/awesome-openclaw-usecases/blob/main/usecases/custom-morning-brief.md"
+    }
+  ],
+  "lastUpdate": "2026-03-21"
+}

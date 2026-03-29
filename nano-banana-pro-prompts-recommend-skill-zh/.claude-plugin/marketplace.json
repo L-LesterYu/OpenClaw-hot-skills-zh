@@ -1,0 +1,22 @@
+{
+  "name": "nano-banana-pro-prompts-recommend-skill",
+  "owner": {
+    "name": "Jared Liu",
+    "email": "jaredliu.ai@gmail.com"
+  },
+  "metadata": {
+    "description": "Recommend from 6000+ Nano Banana Pro image generation prompts based on user needs",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "nano-banana-pro-prompts",
+      "description": "AI skill for recommending image generation prompts",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./"
+      ]
+    }
+  ]
+}

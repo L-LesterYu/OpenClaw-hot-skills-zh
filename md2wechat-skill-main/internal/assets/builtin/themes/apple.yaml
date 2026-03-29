@@ -1,0 +1,8 @@
+# 苹果风格主题
+name: apple
+type: api
+description: "Apple 极简风格"
+version: "1.0"
+
+# API 模式使用的主题名
+api_theme: "apple"

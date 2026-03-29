@@ -1,0 +1,78 @@
+name: infographic-victorian-engraving-banner
+kind: image
+description: 维多利亚版画风的超宽横向信息图，也可兼作封面
+version: "1.0"
+archetype: infographic
+primary_use_case: infographic
+compatible_use_cases:
+  - cover
+recommended_aspect_ratios:
+  - 21:9
+default_aspect_ratio: 21:9
+metadata:
+  author: geekjourneyx
+  provenance: original
+tags:
+  - infographic
+  - cover
+  - victorian
+  - engraving
+  - woodcut
+  - etching
+  - banner
+  - black-and-white
+examples:
+  - 抽象观点的哲学式信息图
+  - 黑白叙事封面
+  - 文章总结横幅图
+variables:
+  - ARTICLE_TITLE
+  - ARTICLE_SUMMARY
+  - KEY_POINTS
+  - VISUAL_STYLE
+  - ASPECT_RATIO
+template: |
+  为文章生成一张维多利亚时代版画美学的黑白横向信息图提示词，也可以兼作文章封面。
+
+  先分析内容：
+  - 核心主题：从标题、摘要、核心要点中提炼 1 个名词
+  - 核心观点：提炼 1 句话
+  - 情绪基调：在 inspirational、mysterious、protective、breakthrough、contemplative、rebellious 中选 1 个最合适的
+  - 关键视觉锚点：提炼最有象征性的具体物体或场景
+
+  再设计隐喻方案：
+  - 确定一个与主题强关联的前景主体物
+  - 用超现实转化表达核心观点
+  - 加入 2 到 3 个象征性辅助细节
+
+  内容输入：
+  - 标题：{{ARTICLE_TITLE}}
+  - 摘要：{{ARTICLE_SUMMARY}}
+  - 核心要点：{{KEY_POINTS}}
+  - 风格补充：{{VISUAL_STYLE}}
+  - 画幅：{{ASPECT_RATIO}}
+
+  风格严格要求：
+  1. 必须是纯黑白木刻或蚀刻风格，black and white woodcut or etching
+  2. 必须使用 Gustave Doré 式的交叉影线和点画技法
+  3. 必须是 21:9 的超宽横向 banner 构图
+  4. 适合作为文章段落总结图、金句图、补充图，也能兼作封面图
+  5. 预留明显纯黑文字区，用于后期叠加标题，不要对称居中
+
+  提示词输出风格：
+  1. 前景主体必须具体、清晰、与主题强关联
+  2. 必须包含超现实隐喻转化，而不是字面翻译
+  3. 主要元素不超过 3 个，避免过度复杂
+  4. 背景使用纯黑虚空或极简黑色空间承托主体
+  5. 通过负空间与光线方向增强戏剧性和哲学感
+
+  负向约束：
+  1. 不要彩色、不要渐变、不要灰度照片、不要扁平化、不要 3D 渲染
+  2. 不要水彩、不要油画、不要卡通、不要可爱风、不要广告感
+  3. 不要模糊、光晕、滤镜感、平涂大黑块
+  4. 不要竖版、不要方形、不要非 21:9
+  5. 不要字面翻译、不要无关装饰、不要超过 3 个主要元素
+  6. 不要添加文字、不要照片拼贴、不要低分辨率
+
+  输出时请遵循这种英文提示词骨架，并根据文章内容替换具体元素：
+  A horizontal black and white woodcut or etching banner (21:9 ratio), depicting a symbolic foreground object strongly tied to the article theme, but transformed in a surreal way to visualize the core argument. The subject rendered in dense cross-hatching showing dramatic texture, with symbolic supporting elements in lighter stippling creating philosophical depth. Focused directional light against a pure black void. Decorative details in the negative space. Reserve a pure black area for text overlay. Victorian illustration, Gustave Doré style.

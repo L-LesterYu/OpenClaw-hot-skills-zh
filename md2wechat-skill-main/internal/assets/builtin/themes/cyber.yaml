@@ -1,0 +1,8 @@
+# 赛博朋克风格主题
+name: cyber
+type: api
+description: "赛博朋克风格"
+version: "1.0"
+
+# API 模式使用的主题名
+api_theme: "cyber"

@@ -1,0 +1,6 @@
+name: aggressive
+kind: humanizer
+description: 激进模式说明
+version: "1.0"
+template: |
+  **激进模式**：深度审查，最大化去除 AI 痕迹。大幅改写句式结构，注入更强的个性和观点。适合 AI 味很重的文本。

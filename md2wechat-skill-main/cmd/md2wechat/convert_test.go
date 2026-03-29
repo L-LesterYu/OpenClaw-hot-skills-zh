@@ -1,0 +1,968 @@
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
+	"testing"
+
+	"github.com/geekjourneyx/md2wechat-skill/internal/config"
+	"github.com/geekjourneyx/md2wechat-skill/internal/converter"
+	"github.com/geekjourneyx/md2wechat-skill/internal/image"
+	"github.com/geekjourneyx/md2wechat-skill/internal/publish"
+	"go.uber.org/zap"
+)
+
+type fakeConverter struct {
+	result *converter.ConvertResult
+	reqs   []*converter.ConvertRequest
+}
+
+func (f *fakeConverter) Convert(req *converter.ConvertRequest) *converter.ConvertResult {
+	f.reqs = append(f.reqs, req)
+	return f.result
+}
+
+func (f *fakeConverter) ExtractImages(markdown string) []converter.ImageRef {
+	return nil
+}
+
+type fakeImageProcessor struct {
+	localCalls    []string
+	onlineCalls   []string
+	generateCalls []string
+
+	localResults    map[string]*image.UploadResult
+	onlineResults   map[string]*image.UploadResult
+	generateResults map[string]*image.GenerateAndUploadResult
+
+	localErrs    map[string]error
+	onlineErrs   map[string]error
+	generateErrs map[string]error
+}
+
+func (f *fakeImageProcessor) UploadLocalImage(filePath string) (*image.UploadResult, error) {
+	f.localCalls = append(f.localCalls, filePath)
+	if err := f.localErrs[filePath]; err != nil {
+		return nil, err
+	}
+	if result, ok := f.localResults[filePath]; ok {
+		return result, nil
+	}
+	return nil, fmt.Errorf("unexpected local path: %s", filePath)
+}
+
+func (f *fakeImageProcessor) DownloadAndUpload(url string) (*image.UploadResult, error) {
+	f.onlineCalls = append(f.onlineCalls, url)
+	if err := f.onlineErrs[url]; err != nil {
+		return nil, err
+	}
+	if result, ok := f.onlineResults[url]; ok {
+		return result, nil
+	}
+	return nil, fmt.Errorf("unexpected online url: %s", url)
+}
+
+func (f *fakeImageProcessor) GenerateAndUpload(prompt string) (*image.GenerateAndUploadResult, error) {
+	f.generateCalls = append(f.generateCalls, prompt)
+	if err := f.generateErrs[prompt]; err != nil {
+		return nil, err
+	}
+	if result, ok := f.generateResults[prompt]; ok {
+		return result, nil
+	}
+	return nil, fmt.Errorf("unexpected prompt: %s", prompt)
+}
+
+func (f *fakeImageProcessor) GenerateAndUploadWithSize(prompt string, size string) (*image.GenerateAndUploadResult, error) {
+	return f.GenerateAndUpload(prompt)
+}
+
+type fakeDraftCreator struct {
+	artifacts []publish.Artifact
+	result    *publish.DraftResult
+	err       error
+}
+
+func (f *fakeDraftCreator) CreateDraft(artifact publish.Artifact) (*publish.DraftResult, error) {
+	f.artifacts = append(f.artifacts, artifact)
+	if f.err != nil {
+		return nil, f.err
+	}
+	if f.result != nil {
+		return f.result, nil
+	}
+	return &publish.DraftResult{MediaID: "draft-media-id"}, nil
+}
+
+func TestRunConvertDraftPipelineReplacesMixedImagesAndUsesMarkdownTitle(t *testing.T) {
+	oldCfg, oldLog := cfg, log
+	oldMode, oldTheme, oldAPIKey := convertMode, convertTheme, convertAPIKey
+	oldFontSize, oldBackground := convertFontSize, convertBackgroundType
+	oldCustomPrompt, oldOutput := convertCustomPrompt, convertOutput
+	oldPreview, oldUpload, oldDraft := convertPreview, convertUpload, convertDraft
+	oldSaveDraft, oldCover := convertSaveDraft, convertCoverImage
+	oldTitle, oldAuthor, oldDigest := convertTitle, convertAuthor, convertDigest
+	oldNewConverter, oldNewProcessor := newMarkdownConverter, newImageProcessor
+	oldNewDraftCreator, oldUploadCoverImageFn := newDraftCreator, uploadCoverImageFn
+	t.Cleanup(func() {
+		cfg, log = oldCfg, oldLog
+		convertMode, convertTheme, convertAPIKey = oldMode, oldTheme, oldAPIKey
+		convertFontSize, convertBackgroundType = oldFontSize, oldBackground
+		convertCustomPrompt, convertOutput = oldCustomPrompt, oldOutput
+		convertPreview, convertUpload, convertDraft = oldPreview, oldUpload, oldDraft
+		convertSaveDraft, convertCoverImage = oldSaveDraft, oldCover
+		convertTitle, convertAuthor, convertDigest = oldTitle, oldAuthor, oldDigest
+		newMarkdownConverter, newImageProcessor = oldNewConverter, oldNewProcessor
+		newDraftCreator, uploadCoverImageFn = oldNewDraftCreator, oldUploadCoverImageFn
+	})
+
+	cfg = &config.Config{
+		WechatAppID:        "appid",
+		WechatSecret:       "secret",
+		MD2WechatAPIKey:    "api-key",
+		DefaultConvertMode: "api",
+		MaxImageWidth:      1920,
+		MaxImageSize:       5 * 1024 * 1024,
+		HTTPTimeout:        30,
+	}
+	log = zap.NewNop()
+
+	convertMode = "api"
+	convertTheme = "default"
+	convertPreview = false
+	convertUpload = false
+	convertDraft = true
+	convertSaveDraft = ""
+	convertCoverImage = "/tmp/cover.jpg"
+	convertAPIKey = ""
+	convertFontSize = "medium"
+	convertBackgroundType = "default"
+	convertCustomPrompt = ""
+	convertOutput = ""
+	convertTitle = ""
+	convertAuthor = ""
+	convertDigest = ""
+
+	dir := t.TempDir()
+	markdownPath := filepath.Join(dir, "article.md")
+	localRelative := filepath.Join("images", "local.png")
+	markdown := strings.Join([]string{
+		"---",
+		"title: Frontmatter 标题",
+		"author: 张三",
+		"digest: 来自 frontmatter 的摘要",
+		"---",
+		"",
+		"# 发布标题",
+		"",
+		"![local](images/local.png)",
+		"![online](https://example.com/remote.png)",
+		"![ai](__generate:draw a fox__)",
+	}, "\n")
+	if err := os.WriteFile(markdownPath, []byte(markdown), 0600); err != nil {
+		t.Fatalf("write markdown: %v", err)
+	}
+
+	conv := &fakeConverter{
+		result: &converter.ConvertResult{
+			Success: true,
+			Mode:    converter.ModeAPI,
+			Theme:   "default",
+			HTML:    `<p>a</p><img src="https://cdn.example.com/1"><p>b</p><img src="https://cdn.example.com/2"><p>c</p><img src="https://cdn.example.com/3">`,
+			Images: []converter.ImageRef{
+				{Index: 0, Type: converter.ImageTypeLocal, Original: localRelative, Placeholder: "<!-- IMG:0 -->"},
+				{Index: 1, Type: converter.ImageTypeOnline, Original: "https://example.com/remote.png", Placeholder: "<!-- IMG:1 -->"},
+				{Index: 2, Type: converter.ImageTypeAI, Original: "draw a fox", AIPrompt: "draw a fox", Placeholder: "<!-- IMG:2 -->"},
+			},
+		},
+	}
+	processor := &fakeImageProcessor{
+		localResults: map[string]*image.UploadResult{
+			filepath.Join(dir, localRelative): {MediaID: "m-local", WechatURL: "https://wechat.local/local"},
+		},
+		onlineResults: map[string]*image.UploadResult{
+			"https://example.com/remote.png": {MediaID: "m-online", WechatURL: "https://wechat.local/remote"},
+		},
+		generateResults: map[string]*image.GenerateAndUploadResult{
+			"draw a fox": {MediaID: "m-ai", WechatURL: "https://wechat.local/ai"},
+		},
+	}
+	drafter := &fakeDraftCreator{result: &publish.DraftResult{MediaID: "draft-1"}}
+
+	newMarkdownConverter = func() converter.Converter { return conv }
+	newImageProcessor = func() imageProcessor { return processor }
+	newDraftCreator = func() publish.DraftCreator { return drafter }
+	uploadCoverImageFn = func(imagePath string) (string, error) {
+		if imagePath != convertCoverImage {
+			t.Fatalf("cover image path = %q, want %q", imagePath, convertCoverImage)
+		}
+		return "cover-media-id", nil
+	}
+
+	if err := runConvert(nil, []string{markdownPath}); err != nil {
+		t.Fatalf("runConvert() error = %v", err)
+	}
+
+	if len(processor.localCalls) != 1 || processor.localCalls[0] != filepath.Join(dir, localRelative) {
+		t.Fatalf("local upload calls = %#v", processor.localCalls)
+	}
+	if len(processor.onlineCalls) != 1 || processor.onlineCalls[0] != "https://example.com/remote.png" {
+		t.Fatalf("online upload calls = %#v", processor.onlineCalls)
+	}
+	if len(processor.generateCalls) != 1 || processor.generateCalls[0] != "draw a fox" {
+		t.Fatalf("generate calls = %#v", processor.generateCalls)
+	}
+	if len(drafter.artifacts) != 1 {
+		t.Fatalf("draft artifacts = %#v", drafter.artifacts)
+	}
+
+	artifact := drafter.artifacts[0]
+	if artifact.Metadata.Title != "Frontmatter 标题" {
+		t.Fatalf("article title = %q, want %q", artifact.Metadata.Title, "Frontmatter 标题")
+	}
+	if artifact.Metadata.Author != "张三" {
+		t.Fatalf("article author = %q, want %q", artifact.Metadata.Author, "张三")
+	}
+	if artifact.Metadata.Digest != "来自 frontmatter 的摘要" {
+		t.Fatalf("article digest = %q, want %q", artifact.Metadata.Digest, "来自 frontmatter 的摘要")
+	}
+	if artifact.CoverMediaID != "cover-media-id" {
+		t.Fatalf("thumb media id = %q", artifact.CoverMediaID)
+	}
+	for _, expected := range []string{
+		"https://wechat.local/local",
+		"https://wechat.local/remote",
+		"https://wechat.local/ai",
+	} {
+		if !strings.Contains(artifact.HTML, expected) {
+			t.Fatalf("article content missing %q: %s", expected, artifact.HTML)
+		}
+	}
+	if strings.Contains(artifact.HTML, "cdn.example.com") {
+		t.Fatalf("article content still contains rewritten original URLs: %s", artifact.HTML)
+	}
+}
+
+func TestSaveDraftWritesMetadataFromFrontMatter(t *testing.T) {
+	oldCfg, oldLog := cfg, log
+	oldMode, oldTheme, oldAPIKey := convertMode, convertTheme, convertAPIKey
+	oldFontSize, oldBackground := convertFontSize, convertBackgroundType
+	oldCustomPrompt, oldOutput := convertCustomPrompt, convertOutput
+	oldPreview, oldUpload, oldDraft := convertPreview, convertUpload, convertDraft
+	oldSaveDraftPath, oldCover := convertSaveDraft, convertCoverImage
+	oldTitle, oldAuthor, oldDigest := convertTitle, convertAuthor, convertDigest
+	oldNewConverter := newMarkdownConverter
+	t.Cleanup(func() {
+		cfg, log = oldCfg, oldLog
+		convertMode, convertTheme, convertAPIKey = oldMode, oldTheme, oldAPIKey
+		convertFontSize, convertBackgroundType = oldFontSize, oldBackground
+		convertCustomPrompt, convertOutput = oldCustomPrompt, oldOutput
+		convertPreview, convertUpload, convertDraft = oldPreview, oldUpload, oldDraft
+		convertSaveDraft, convertCoverImage = oldSaveDraftPath, oldCover
+		convertTitle, convertAuthor, convertDigest = oldTitle, oldAuthor, oldDigest
+		newMarkdownConverter = oldNewConverter
+	})
+
+	cfg = &config.Config{MD2WechatAPIKey: "api-key"}
+	log = zap.NewNop()
+	convertMode = "api"
+	convertTheme = "default"
+	convertAPIKey = ""
+	convertFontSize = "medium"
+	convertBackgroundType = "default"
+	convertCustomPrompt = ""
+	convertOutput = ""
+	convertPreview = false
+	convertUpload = false
+	convertDraft = false
+	convertTitle = ""
+	convertAuthor = ""
+	convertDigest = ""
+
+	outputPath := filepath.Join(t.TempDir(), "draft.json")
+	convertSaveDraft = outputPath
+	markdownPath := filepath.Join(t.TempDir(), "article.md")
+	markdown := strings.Join([]string{
+		"---",
+		"title: 文章标题",
+		"author: 作者名",
+		"digest: 文章摘要",
+		"---",
+		"",
+		"正文",
+	}, "\n")
+	if err := os.WriteFile(markdownPath, []byte(markdown), 0600); err != nil {
+		t.Fatalf("write markdown: %v", err)
+	}
+
+	newMarkdownConverter = func() converter.Converter {
+		return &fakeConverter{
+			result: &converter.ConvertResult{
+				Success: true,
+				Mode:    converter.ModeAPI,
+				Theme:   "default",
+				HTML:    "<p>content</p>",
+			},
+		}
+	}
+
+	if err := runConvert(nil, []string{markdownPath}); err != nil {
+		t.Fatalf("runConvert() error = %v", err)
+	}
+
+	data, err := os.ReadFile(outputPath)
+	if err != nil {
+		t.Fatalf("read saved draft: %v", err)
+	}
+	content := string(data)
+	for _, expected := range []string{`"title": "文章标题"`, `"author": "作者名"`, `"digest": "文章摘要"`} {
+		if !strings.Contains(content, expected) {
+			t.Fatalf("saved draft missing %q: %s", expected, content)
+		}
+	}
+}
+
+func TestRunConvertCommandLineMetadataOverridesMarkdown(t *testing.T) {
+	oldCfg, oldLog := cfg, log
+	oldMode, oldTheme, oldAPIKey := convertMode, convertTheme, convertAPIKey
+	oldFontSize, oldBackground := convertFontSize, convertBackgroundType
+	oldCustomPrompt, oldOutput := convertCustomPrompt, convertOutput
+	oldPreview, oldUpload, oldDraft := convertPreview, convertUpload, convertDraft
+	oldSaveDraftPath, oldCover := convertSaveDraft, convertCoverImage
+	oldTitle, oldAuthor, oldDigest := convertTitle, convertAuthor, convertDigest
+	oldNewConverter := newMarkdownConverter
+	t.Cleanup(func() {
+		cfg, log = oldCfg, oldLog
+		convertMode, convertTheme, convertAPIKey = oldMode, oldTheme, oldAPIKey
+		convertFontSize, convertBackgroundType = oldFontSize, oldBackground
+		convertCustomPrompt, convertOutput = oldCustomPrompt, oldOutput
+		convertPreview, convertUpload, convertDraft = oldPreview, oldUpload, oldDraft
+		convertSaveDraft, convertCoverImage = oldSaveDraftPath, oldCover
+		convertTitle, convertAuthor, convertDigest = oldTitle, oldAuthor, oldDigest
+		newMarkdownConverter = oldNewConverter
+	})
+
+	cfg = &config.Config{MD2WechatAPIKey: "api-key"}
+	log = zap.NewNop()
+	convertMode = "api"
+	convertTheme = "default"
+	convertAPIKey = ""
+	convertFontSize = "medium"
+	convertBackgroundType = "default"
+	convertCustomPrompt = ""
+	convertOutput = ""
+	convertPreview = false
+	convertUpload = false
+	convertDraft = false
+	convertSaveDraft = ""
+	convertCoverImage = ""
+	convertTitle = "命令行标题"
+	convertAuthor = "命令行作者"
+	convertDigest = "命令行摘要"
+
+	markdownPath := filepath.Join(t.TempDir(), "article.md")
+	markdown := strings.Join([]string{
+		"---",
+		"title: Frontmatter 标题",
+		"author: Frontmatter 作者",
+		"digest: Frontmatter 摘要",
+		"---",
+		"",
+		"# 正文标题",
+		"",
+		"正文",
+	}, "\n")
+	if err := os.WriteFile(markdownPath, []byte(markdown), 0600); err != nil {
+		t.Fatalf("write markdown: %v", err)
+	}
+
+	newMarkdownConverter = func() converter.Converter {
+		return &fakeConverter{
+			result: &converter.ConvertResult{
+				Success: true,
+				Mode:    converter.ModeAPI,
+				Theme:   "default",
+				HTML:    "<p>content</p>",
+			},
+		}
+	}
+
+	outputPath := filepath.Join(t.TempDir(), "draft.json")
+	convertSaveDraft = outputPath
+
+	if err := runConvert(nil, []string{markdownPath}); err != nil {
+		t.Fatalf("runConvert() error = %v", err)
+	}
+
+	data, err := os.ReadFile(outputPath)
+	if err != nil {
+		t.Fatalf("read saved draft: %v", err)
+	}
+	content := string(data)
+	for _, expected := range []string{`"title": "命令行标题"`, `"author": "命令行作者"`, `"digest": "命令行摘要"`} {
+		if !strings.Contains(content, expected) {
+			t.Fatalf("saved draft missing %q: %s", expected, content)
+		}
+	}
+}
+
+func TestRunConvertPassesResolvedMetadataIntoAIRequest(t *testing.T) {
+	oldCfg, oldLog := cfg, log
+	oldMode, oldTheme, oldAPIKey := convertMode, convertTheme, convertAPIKey
+	oldFontSize, oldBackground := convertFontSize, convertBackgroundType
+	oldCustomPrompt, oldOutput := convertCustomPrompt, convertOutput
+	oldPreview, oldUpload, oldDraft := convertPreview, convertUpload, convertDraft
+	oldSaveDraftPath, oldCover := convertSaveDraft, convertCoverImage
+	oldTitle, oldAuthor, oldDigest := convertTitle, convertAuthor, convertDigest
+	oldNewConverter := newMarkdownConverter
+	t.Cleanup(func() {
+		cfg, log = oldCfg, oldLog
+		convertMode, convertTheme, convertAPIKey = oldMode, oldTheme, oldAPIKey
+		convertFontSize, convertBackgroundType = oldFontSize, oldBackground
+		convertCustomPrompt, convertOutput = oldCustomPrompt, oldOutput
+		convertPreview, convertUpload, convertDraft = oldPreview, oldUpload, oldDraft
+		convertSaveDraft, convertCoverImage = oldSaveDraftPath, oldCover
+		convertTitle, convertAuthor, convertDigest = oldTitle, oldAuthor, oldDigest
+		newMarkdownConverter = oldNewConverter
+	})
+
+	cfg = &config.Config{MD2WechatAPIKey: "api-key"}
+	log = zap.NewNop()
+	convertMode = "ai"
+	convertTheme = "autumn-warm"
+	convertAPIKey = ""
+	convertFontSize = "medium"
+	convertBackgroundType = "default"
+	convertCustomPrompt = ""
+	convertOutput = ""
+	convertPreview = false
+	convertUpload = false
+	convertDraft = false
+	convertSaveDraft = ""
+	convertCoverImage = ""
+	convertTitle = "命令行标题"
+	convertAuthor = "命令行作者"
+	convertDigest = "命令行摘要"
+
+	markdownPath := filepath.Join(t.TempDir(), "article.md")
+	markdown := strings.Join([]string{
+		"---",
+		"title: Frontmatter 标题",
+		"author: Frontmatter 作者",
+		"digest: Frontmatter 摘要",
+		"---",
+		"",
+		"# 正文标题",
+		"",
+		"正文",
+	}, "\n")
+	if err := os.WriteFile(markdownPath, []byte(markdown), 0600); err != nil {
+		t.Fatalf("write markdown: %v", err)
+	}
+
+	conv := &fakeConverter{
+		result: &converter.ConvertResult{
+			Success: true,
+			Mode:    converter.ModeAI,
+			Theme:   "autumn-warm",
+			Status:  "action_required",
+			Action:  "convert",
+			Prompt:  "prompt",
+		},
+	}
+	newMarkdownConverter = func() converter.Converter { return conv }
+
+	if err := runConvert(nil, []string{markdownPath}); err != nil {
+		t.Fatalf("runConvert() error = %v", err)
+	}
+
+	if len(conv.reqs) != 1 {
+		t.Fatalf("converter requests = %#v", conv.reqs)
+	}
+	if conv.reqs[0].Metadata.Title != "命令行标题" {
+		t.Fatalf("request title = %q", conv.reqs[0].Metadata.Title)
+	}
+	if conv.reqs[0].Metadata.Author != "命令行作者" {
+		t.Fatalf("request author = %q", conv.reqs[0].Metadata.Author)
+	}
+	if conv.reqs[0].Metadata.Digest != "命令行摘要" {
+		t.Fatalf("request digest = %q", conv.reqs[0].Metadata.Digest)
+	}
+}
+
+func TestRunConvertStripsFrontMatterBeforeCallingConverter(t *testing.T) {
+	oldCfg, oldLog := cfg, log
+	oldMode, oldTheme, oldAPIKey := convertMode, convertTheme, convertAPIKey
+	oldFontSize, oldBackground := convertFontSize, convertBackgroundType
+	oldCustomPrompt, oldOutput := convertCustomPrompt, convertOutput
+	oldPreview, oldUpload, oldDraft := convertPreview, convertUpload, convertDraft
+	oldSaveDraftPath, oldCover := convertSaveDraft, convertCoverImage
+	oldTitle, oldAuthor, oldDigest := convertTitle, convertAuthor, convertDigest
+	oldNewConverter := newMarkdownConverter
+	t.Cleanup(func() {
+		cfg, log = oldCfg, oldLog
+		convertMode, convertTheme, convertAPIKey = oldMode, oldTheme, oldAPIKey
+		convertFontSize, convertBackgroundType = oldFontSize, oldBackground
+		convertCustomPrompt, convertOutput = oldCustomPrompt, oldOutput
+		convertPreview, convertUpload, convertDraft = oldPreview, oldUpload, oldDraft
+		convertSaveDraft, convertCoverImage = oldSaveDraftPath, oldCover
+		convertTitle, convertAuthor, convertDigest = oldTitle, oldAuthor, oldDigest
+		newMarkdownConverter = oldNewConverter
+	})
+
+	cfg = &config.Config{MD2WechatAPIKey: "api-key"}
+	log = zap.NewNop()
+	convertMode = "api"
+	convertTheme = "default"
+	convertAPIKey = ""
+	convertFontSize = "medium"
+	convertBackgroundType = "default"
+	convertCustomPrompt = ""
+	convertOutput = ""
+	convertPreview = false
+	convertUpload = false
+	convertDraft = false
+	convertSaveDraft = ""
+	convertCoverImage = ""
+	convertTitle = ""
+	convertAuthor = ""
+	convertDigest = ""
+
+	markdownPath := filepath.Join(t.TempDir(), "article.md")
+	markdown := strings.Join([]string{
+		"---",
+		"title: Frontmatter 标题",
+		"author: Frontmatter 作者",
+		"---",
+		"",
+		"# 正文标题",
+		"",
+		"正文",
+	}, "\n")
+	if err := os.WriteFile(markdownPath, []byte(markdown), 0600); err != nil {
+		t.Fatalf("write markdown: %v", err)
+	}
+
+	conv := &fakeConverter{
+		result: &converter.ConvertResult{
+			Success: true,
+			Mode:    converter.ModeAPI,
+			Theme:   "default",
+			HTML:    "<p>content</p>",
+		},
+	}
+	newMarkdownConverter = func() converter.Converter { return conv }
+
+	if err := runConvert(nil, []string{markdownPath}); err != nil {
+		t.Fatalf("runConvert() error = %v", err)
+	}
+
+	if len(conv.reqs) != 1 {
+		t.Fatalf("converter requests = %#v", conv.reqs)
+	}
+	if strings.Contains(conv.reqs[0].Markdown, "title: Frontmatter 标题") {
+		t.Fatalf("converter markdown should not contain frontmatter: %q", conv.reqs[0].Markdown)
+	}
+	if !strings.Contains(conv.reqs[0].Markdown, "# 正文标题") {
+		t.Fatalf("converter markdown missing body heading: %q", conv.reqs[0].Markdown)
+	}
+}
+
+func TestRunConvertRejectsMetadataThatExceedsLimits(t *testing.T) {
+	oldCfg, oldLog := cfg, log
+	oldMode, oldTheme, oldAPIKey := convertMode, convertTheme, convertAPIKey
+	oldFontSize, oldBackground := convertFontSize, convertBackgroundType
+	oldCustomPrompt, oldOutput := convertCustomPrompt, convertOutput
+	oldPreview, oldUpload, oldDraft := convertPreview, convertUpload, convertDraft
+	oldSaveDraftPath, oldCover := convertSaveDraft, convertCoverImage
+	oldTitle, oldAuthor, oldDigest := convertTitle, convertAuthor, convertDigest
+	t.Cleanup(func() {
+		cfg, log = oldCfg, oldLog
+		convertMode, convertTheme, convertAPIKey = oldMode, oldTheme, oldAPIKey
+		convertFontSize, convertBackgroundType = oldFontSize, oldBackground
+		convertCustomPrompt, convertOutput = oldCustomPrompt, oldOutput
+		convertPreview, convertUpload, convertDraft = oldPreview, oldUpload, oldDraft
+		convertSaveDraft, convertCoverImage = oldSaveDraftPath, oldCover
+		convertTitle, convertAuthor, convertDigest = oldTitle, oldAuthor, oldDigest
+	})
+
+	cfg = &config.Config{MD2WechatAPIKey: "api-key"}
+	log = zap.NewNop()
+	convertMode = "api"
+	convertTheme = "default"
+	convertAPIKey = ""
+	convertFontSize = "medium"
+	convertBackgroundType = "default"
+	convertCustomPrompt = ""
+	convertOutput = ""
+	convertPreview = false
+	convertUpload = false
+	convertDraft = false
+	convertSaveDraft = ""
+	convertCoverImage = ""
+	convertTitle = strings.Repeat("标", 33)
+	convertAuthor = ""
+	convertDigest = ""
+
+	markdownPath := filepath.Join(t.TempDir(), "article.md")
+	if err := os.WriteFile(markdownPath, []byte("# 正文标题\n"), 0600); err != nil {
+		t.Fatalf("write markdown: %v", err)
+	}
+
+	err := runConvert(nil, []string{markdownPath})
+	if err == nil {
+		t.Fatal("expected runConvert to fail")
+	}
+	if !strings.Contains(err.Error(), "--title exceeds 32 characters") {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestRunConvertImageFailureBlocksDraftCreation(t *testing.T) {
+	oldCfg, oldLog := cfg, log
+	oldMode, oldTheme, oldAPIKey := convertMode, convertTheme, convertAPIKey
+	oldFontSize, oldBackground := convertFontSize, convertBackgroundType
+	oldCustomPrompt, oldOutput := convertCustomPrompt, convertOutput
+	oldPreview, oldUpload, oldDraft := convertPreview, convertUpload, convertDraft
+	oldSaveDraft, oldCover := convertSaveDraft, convertCoverImage
+	oldNewConverter, oldNewProcessor := newMarkdownConverter, newImageProcessor
+	oldNewDraftCreator, oldUploadCoverImageFn := newDraftCreator, uploadCoverImageFn
+	t.Cleanup(func() {
+		cfg, log = oldCfg, oldLog
+		convertMode, convertTheme, convertAPIKey = oldMode, oldTheme, oldAPIKey
+		convertFontSize, convertBackgroundType = oldFontSize, oldBackground
+		convertCustomPrompt, convertOutput = oldCustomPrompt, oldOutput
+		convertPreview, convertUpload, convertDraft = oldPreview, oldUpload, oldDraft
+		convertSaveDraft, convertCoverImage = oldSaveDraft, oldCover
+		newMarkdownConverter, newImageProcessor = oldNewConverter, oldNewProcessor
+		newDraftCreator, uploadCoverImageFn = oldNewDraftCreator, oldUploadCoverImageFn
+	})
+
+	cfg = &config.Config{
+		WechatAppID:        "appid",
+		WechatSecret:       "secret",
+		MD2WechatAPIKey:    "api-key",
+		DefaultConvertMode: "api",
+		MaxImageWidth:      1920,
+		MaxImageSize:       5 * 1024 * 1024,
+		HTTPTimeout:        30,
+	}
+	log = zap.NewNop()
+
+	convertMode = "api"
+	convertTheme = "default"
+	convertPreview = false
+	convertUpload = false
+	convertDraft = true
+	convertSaveDraft = ""
+	convertCoverImage = "/tmp/cover.jpg"
+	convertAPIKey = ""
+	convertFontSize = "medium"
+	convertBackgroundType = "default"
+	convertCustomPrompt = ""
+	convertOutput = ""
+
+	dir := t.TempDir()
+	markdownPath := filepath.Join(dir, "article.md")
+	if err := os.WriteFile(markdownPath, []byte("# Title\n\n![local](images/local.png)\n"), 0600); err != nil {
+		t.Fatalf("write markdown: %v", err)
+	}
+
+	newMarkdownConverter = func() converter.Converter {
+		return &fakeConverter{
+			result: &converter.ConvertResult{
+				Success: true,
+				Mode:    converter.ModeAPI,
+				Theme:   "default",
+				HTML:    `<img src="images/local.png">`,
+				Images: []converter.ImageRef{
+					{Index: 0, Type: converter.ImageTypeLocal, Original: "images/local.png", Placeholder: "<!-- IMG:0 -->"},
+				},
+			},
+		}
+	}
+
+	processor := &fakeImageProcessor{
+		localResults: map[string]*image.UploadResult{},
+		localErrs: map[string]error{
+			filepath.Join(dir, "images/local.png"): fmt.Errorf("upload failed"),
+		},
+	}
+	newImageProcessor = func() imageProcessor { return processor }
+
+	drafter := &fakeDraftCreator{}
+	newDraftCreator = func() publish.DraftCreator { return drafter }
+	uploadCoverImageFn = func(imagePath string) (string, error) {
+		t.Fatalf("uploadCoverImageFn should not be called when image processing fails")
+		return "", nil
+	}
+
+	err := runConvert(nil, []string{markdownPath})
+	if err == nil {
+		t.Fatalf("expected runConvert to fail")
+	}
+	cliErr, ok := err.(*cliError)
+	if !ok {
+		t.Fatalf("error type = %T, want *cliError", err)
+	}
+	if cliErr.Code != codeConvertImageFailed || !strings.Contains(cliErr.Error(), "upload failed") {
+		t.Fatalf("unexpected error: %#v", cliErr)
+	}
+	if len(drafter.artifacts) != 0 {
+		t.Fatalf("draft creator should not be called on image failure: %#v", drafter.artifacts)
+	}
+}
+
+func TestHandleAIResultUsesStableJSONEnvelopeWhenRequested(t *testing.T) {
+	oldLog := log
+	oldJSON := jsonOutput
+	oldOutput := convertOutput
+	t.Cleanup(func() {
+		log = oldLog
+		jsonOutput = oldJSON
+		convertOutput = oldOutput
+	})
+	log = zap.NewNop()
+	jsonOutput = true
+	convertOutput = ""
+
+	result := &converter.ConvertResult{
+		Error: "AI_MODE_REQUEST:prompt body",
+		Images: []converter.ImageRef{
+			{Index: 0, Original: "./a.png"},
+		},
+	}
+
+	stdout := captureStdout(t, func() {
+		if err := handleAIResult(result, "article.md"); err != nil {
+			t.Fatalf("handleAIResult() error = %v", err)
+		}
+	})
+
+	var response map[string]any
+	if err := json.Unmarshal(stdout, &response); err != nil {
+		t.Fatalf("unmarshal response: %v\n%s", err, stdout)
+	}
+	if response["success"] != true || response["code"] != codeConvertAIRequestReady {
+		t.Fatalf("unexpected response: %#v", response)
+	}
+	if response["schema_version"] != "v1" || response["status"] != "action_required" || response["retryable"] != false {
+		t.Fatalf("unexpected envelope: %#v", response)
+	}
+	data, _ := response["data"].(map[string]any)
+	if data["markdown_file"] != "article.md" || data["mode"] != "ai" || data["action"] != "ai_request" {
+		t.Fatalf("unexpected data payload: %#v", data)
+	}
+	if data["prompt"] != "prompt body" {
+		t.Fatalf("prompt = %#v", data["prompt"])
+	}
+}
+
+func TestHandleAIResultWritesPromptToPromptFileInsteadOfHTML(t *testing.T) {
+	oldLog := log
+	oldJSON := jsonOutput
+	oldOutput := convertOutput
+	t.Cleanup(func() {
+		log = oldLog
+		jsonOutput = oldJSON
+		convertOutput = oldOutput
+	})
+	log = zap.NewNop()
+	jsonOutput = true
+
+	dir := t.TempDir()
+	convertOutput = filepath.Join(dir, "result.html")
+	result := &converter.ConvertResult{
+		Error:  "AI_MODE_REQUEST:prompt body",
+		Images: []converter.ImageRef{{Index: 0, Original: "./a.png"}},
+	}
+
+	stdout := captureStdout(t, func() {
+		if err := handleAIResult(result, "article.md"); err != nil {
+			t.Fatalf("handleAIResult() error = %v", err)
+		}
+	})
+
+	if _, err := os.Stat(convertOutput); !os.IsNotExist(err) {
+		t.Fatalf("expected no html output file, got err=%v", err)
+	}
+
+	promptPath := filepath.Join(dir, "result.prompt.txt")
+	data, err := os.ReadFile(promptPath)
+	if err != nil {
+		t.Fatalf("read prompt file: %v", err)
+	}
+	if string(data) != "prompt body" {
+		t.Fatalf("prompt file = %q", data)
+	}
+
+	var response map[string]any
+	if err := json.Unmarshal(stdout, &response); err != nil {
+		t.Fatalf("unmarshal response: %v\n%s", err, stdout)
+	}
+	payload, _ := response["data"].(map[string]any)
+	if payload["prompt_file"] != promptPath {
+		t.Fatalf("prompt_file = %#v, want %q", payload["prompt_file"], promptPath)
+	}
+	if payload["requested_output_file"] != convertOutput {
+		t.Fatalf("requested_output_file = %#v, want %q", payload["requested_output_file"], convertOutput)
+	}
+}
+
+func TestRunConvertOutputsStableJSONEnvelopeWhenRequested(t *testing.T) {
+	oldCfg, oldLog := cfg, log
+	oldMode, oldTheme, oldAPIKey := convertMode, convertTheme, convertAPIKey
+	oldFontSize, oldBackground := convertFontSize, convertBackgroundType
+	oldCustomPrompt, oldOutput := convertCustomPrompt, convertOutput
+	oldPreview, oldUpload, oldDraft := convertPreview, convertUpload, convertDraft
+	oldSaveDraft, oldCover := convertSaveDraft, convertCoverImage
+	oldNewConverter := newMarkdownConverter
+	oldJSON := jsonOutput
+	t.Cleanup(func() {
+		cfg, log = oldCfg, oldLog
+		convertMode, convertTheme, convertAPIKey = oldMode, oldTheme, oldAPIKey
+		convertFontSize, convertBackgroundType = oldFontSize, oldBackground
+		convertCustomPrompt, convertOutput = oldCustomPrompt, oldOutput
+		convertPreview, convertUpload, convertDraft = oldPreview, oldUpload, oldDraft
+		convertSaveDraft, convertCoverImage = oldSaveDraft, oldCover
+		newMarkdownConverter = oldNewConverter
+		jsonOutput = oldJSON
+	})
+
+	cfg = &config.Config{MD2WechatAPIKey: "api-key"}
+	log = zap.NewNop()
+	jsonOutput = true
+	convertMode = "api"
+	convertTheme = "default"
+	convertAPIKey = ""
+	convertFontSize = "medium"
+	convertBackgroundType = "default"
+	convertCustomPrompt = ""
+	convertOutput = ""
+	convertPreview = false
+	convertUpload = false
+	convertDraft = false
+	convertSaveDraft = ""
+	convertCoverImage = ""
+
+	dir := t.TempDir()
+	markdownPath := filepath.Join(dir, "article.md")
+	markdown := "# 标题\n\n正文"
+	if err := os.WriteFile(markdownPath, []byte(markdown), 0600); err != nil {
+		t.Fatalf("write markdown: %v", err)
+	}
+
+	newMarkdownConverter = func() converter.Converter {
+		return &fakeConverter{
+			result: &converter.ConvertResult{
+				Success: true,
+				Mode:    converter.ModeAPI,
+				Theme:   "default",
+				HTML:    "<p>正文</p>",
+				Images:  nil,
+			},
+		}
+	}
+
+	stdout := captureStdout(t, func() {
+		if err := runConvert(nil, []string{markdownPath}); err != nil {
+			t.Fatalf("runConvert() error = %v", err)
+		}
+	})
+
+	var response map[string]any
+	if err := json.Unmarshal(stdout, &response); err != nil {
+		t.Fatalf("unmarshal response: %v\n%s", err, stdout)
+	}
+	if response["success"] != true || response["code"] != codeConvertCompleted {
+		t.Fatalf("unexpected response: %#v", response)
+	}
+	if response["schema_version"] != "v1" || response["status"] != "completed" || response["retryable"] != false {
+		t.Fatalf("unexpected envelope: %#v", response)
+	}
+	data, _ := response["data"].(map[string]any)
+	if data["html"] != "<p>正文</p>" || data["mode"] != "api" || data["title"] != "标题" {
+		t.Fatalf("unexpected data payload: %#v", data)
+	}
+}
+
+func TestRunConvertJSONStillWritesOutputFileWhenRequested(t *testing.T) {
+	oldCfg, oldLog := cfg, log
+	oldMode, oldTheme, oldAPIKey := convertMode, convertTheme, convertAPIKey
+	oldFontSize, oldBackground := convertFontSize, convertBackgroundType
+	oldCustomPrompt, oldOutput := convertCustomPrompt, convertOutput
+	oldPreview, oldUpload, oldDraft := convertPreview, convertUpload, convertDraft
+	oldSaveDraft, oldCover := convertSaveDraft, convertCoverImage
+	oldNewConverter := newMarkdownConverter
+	oldJSON := jsonOutput
+	t.Cleanup(func() {
+		cfg, log = oldCfg, oldLog
+		convertMode, convertTheme, convertAPIKey = oldMode, oldTheme, oldAPIKey
+		convertFontSize, convertBackgroundType = oldFontSize, oldBackground
+		convertCustomPrompt, convertOutput = oldCustomPrompt, oldOutput
+		convertPreview, convertUpload, convertDraft = oldPreview, oldUpload, oldDraft
+		convertSaveDraft, convertCoverImage = oldSaveDraft, oldCover
+		newMarkdownConverter = oldNewConverter
+		jsonOutput = oldJSON
+	})
+
+	cfg = &config.Config{MD2WechatAPIKey: "api-key"}
+	log = zap.NewNop()
+	jsonOutput = true
+	convertMode = "api"
+	convertTheme = "default"
+	convertAPIKey = ""
+	convertFontSize = "medium"
+	convertBackgroundType = "default"
+	convertCustomPrompt = ""
+	convertPreview = false
+	convertUpload = false
+	convertDraft = false
+	convertSaveDraft = ""
+	convertCoverImage = ""
+
+	dir := t.TempDir()
+	markdownPath := filepath.Join(dir, "article.md")
+	outputPath := filepath.Join(dir, "article.html")
+	convertOutput = outputPath
+	if err := os.WriteFile(markdownPath, []byte("# 标题\n\n正文"), 0600); err != nil {
+		t.Fatalf("write markdown: %v", err)
+	}
+
+	newMarkdownConverter = func() converter.Converter {
+		return &fakeConverter{
+			result: &converter.ConvertResult{
+				Success: true,
+				Mode:    converter.ModeAPI,
+				Theme:   "default",
+				HTML:    "<p>正文</p>",
+			},
+		}
+	}
+
+	stdout := captureStdout(t, func() {
+		if err := runConvert(nil, []string{markdownPath}); err != nil {
+			t.Fatalf("runConvert() error = %v", err)
+		}
+	})
+
+	data, err := os.ReadFile(outputPath)
+	if err != nil {
+		t.Fatalf("read output file: %v", err)
+	}
+	if string(data) != "<p>正文</p>" {
+		t.Fatalf("output file content = %q", string(data))
+	}
+
+	var response map[string]any
+	if err := json.Unmarshal(stdout, &response); err != nil {
+		t.Fatalf("unmarshal response: %v\n%s", err, stdout)
+	}
+	payload, _ := response["data"].(map[string]any)
+	if payload["output_file"] != outputPath {
+		t.Fatalf("output_file = %#v, want %q", payload["output_file"], outputPath)
+	}
+}

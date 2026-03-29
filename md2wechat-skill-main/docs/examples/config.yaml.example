@@ -1,0 +1,21 @@
+wechat:
+  appid: "your_wechat_appid"
+  secret: "your_wechat_secret"
+
+api:
+  md2wechat_key: "your_md2wechat_api_key"
+  md2wechat_base_url: "https://www.md2wechat.cn"
+  image_key: "your_image_api_key"
+  image_base_url: "https://api.openai.com/v1"
+  image_provider: "openai"
+  image_model: "gpt-image-1.5"
+  image_size: "1024x1024"
+  convert_mode: "api"
+  default_theme: "default"
+  background_type: "none"
+  http_timeout: 30
+
+image:
+  compress: true
+  max_width: 1920
+  max_size_mb: 5

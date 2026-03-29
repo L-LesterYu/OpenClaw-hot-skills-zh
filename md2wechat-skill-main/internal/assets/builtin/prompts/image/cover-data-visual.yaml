@@ -1,0 +1,38 @@
+name: cover-data-visual
+kind: image
+description: 数据感和分析感较强的文章封面
+version: "1.0"
+archetype: cover
+primary_use_case: cover
+recommended_aspect_ratios:
+  - 16:9
+default_aspect_ratio: 16:9
+metadata:
+  author: geekjourneyx
+  provenance: original
+tags:
+  - cover
+  - data
+  - analysis
+  - business
+examples:
+  - 行业分析
+  - AI 趋势报告
+variables:
+  - ARTICLE_TITLE
+  - ARTICLE_SUMMARY
+  - KEYWORDS
+  - VISUAL_STYLE
+  - ASPECT_RATIO
+template: |
+  为公众号文章生成带有数据分析氛围的封面图提示词。
+  标题：{{ARTICLE_TITLE}}
+  摘要：{{ARTICLE_SUMMARY}}
+  关键词：{{KEYWORDS}}
+  风格：{{VISUAL_STYLE}}
+  画幅：{{ASPECT_RATIO}}
+
+  要求：
+  1. 体现图表、指标、趋势或结构化信息的气质
+  2. 视觉上专业、简洁、可信
+  3. 不要塞满真实文字内容，只保留标题安全区

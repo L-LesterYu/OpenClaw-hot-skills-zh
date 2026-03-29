@@ -1,0 +1,23 @@
+{
+  "name": "md2wechat-tools",
+  "owner": {
+    "name": "geekjourneyx",
+    "email": "zlisreallyli@outlook.com"
+  },
+  "plugins": [
+    {
+      "name": "md2wechat",
+      "source": "./",
+      "description": "Convert Markdown articles to WeChat Official Account HTML, inspect resolved metadata and publish readiness, generate local preview artifacts, and optionally upload drafts.",
+      "version": "2.0.5",
+      "author": {
+        "name": "geekjourneyx"
+      },
+      "homepage": "https://github.com/geekjourneyx/md2wechat-skill",
+      "repository": "https://github.com/geekjourneyx/md2wechat-skill",
+      "license": "MIT",
+      "keywords": ["wechat", "markdown", "blog", "publishing", "html", "converter", "official account", "公众号", "排版"],
+      "strict": false
+    }
+  ]
+}

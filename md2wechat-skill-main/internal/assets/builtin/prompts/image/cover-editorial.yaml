@@ -1,0 +1,37 @@
+name: cover-editorial
+kind: image
+description: 杂志感、评论感较强的文章封面
+version: "1.0"
+archetype: cover
+primary_use_case: cover
+recommended_aspect_ratios:
+  - 16:9
+default_aspect_ratio: 16:9
+metadata:
+  author: geekjourneyx
+  provenance: original
+tags:
+  - cover
+  - editorial
+  - magazine
+examples:
+  - 深度评论
+  - 人物与行业观察
+variables:
+  - ARTICLE_TITLE
+  - ARTICLE_SUMMARY
+  - KEYWORDS
+  - VISUAL_STYLE
+  - ASPECT_RATIO
+template: |
+  为公众号文章生成带有杂志封面感的封面图提示词。
+  标题：{{ARTICLE_TITLE}}
+  摘要：{{ARTICLE_SUMMARY}}
+  关键词：{{KEYWORDS}}
+  风格：{{VISUAL_STYLE}}
+  画幅：{{ASPECT_RATIO}}
+
+  要求：
+  1. 强调整体版式感与高级感
+  2. 视觉留白明确，中心元素突出
+  3. 适合评论、观点、深度文章
