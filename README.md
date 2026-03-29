@@ -132,6 +132,7 @@
 | 技能 | 描述 | 标记 |
 |------|------|------|
 | [word-docx-zh](skills/word-docx-zh/SKILL.md) | OOXML 感知的 Word 文档精准编辑——样式/编号/修订/批注/域/节完整支持，往返编辑格式不漂移 | ✅ |
+| [md2wechat-skill-zh](skills/md2wechat-skill-zh/SKILL.md) | Markdown转公众号工具——一键将Markdown转换为精美排版并自动上传到微信草稿箱，支持15种AI主题样式和批量发布 | 📦 |
 | [gongwen-zh](skills/gongwen-zh/SKILL.md) | 按党政机关公文格式标准自动排版 | ✅ |
 | [gongwen-writing-zh](skills/gongwen-writing-zh/SKILL.md) | 政府公文写作助手——按标准模板起草公文，包含完整的写作流程、结构模板、风险分析等，支持多种公文类型 | ✅ |
 | [nano-pdf-zh](skills/nano-pdf-zh/SKILL.md) | 通过 nano-pdf CLI 用自然语言指令编辑 PDF 特定页面，支持标题修改、内容更正等精准操作 | 📦 |
