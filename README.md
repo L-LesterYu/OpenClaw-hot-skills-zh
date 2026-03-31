@@ -21,7 +21,7 @@
 
 ---
 
-## ⭐ 推荐技能（新手推荐）
+## ⭐ 新手推荐 Top 10
 
 | 技能 | 推荐理由 |
 |------|---------|
@@ -33,6 +33,8 @@
 | [markdown-converter-zh](skills/markdown-converter-zh/SKILL.md) | 15+ 格式一键转 Markdown——PDF/Office/图片(OCR)/音频转录/YouTube 字幕，喂给 AI 的万能适配器 |
 | [nano-banana-pro-prompts-recommend-skill-zh](skills/nano-banana-pro-prompts-recommend-skill-zh/SKILL.md) | **10,000+ 经过验证的图像生成提示词库**——附带示例图片，适用于 Nano Banana Pro、Gemini、GPT Image、Midjourney、DALL-E 等多种AI模型 |
 | [skill-vetter-zh](skills/skill-vetter-zh/SKILL.md) | 安装任何技能前先过一遍安全扫描，保护你的系统 |
+| [humanizer-zh](skills/humanizer-zh/SKILL.md) | 检测并移除 AI 写作痕迹，让文本更自然，写作场景必备 |
+| [gongwen-zh](skills/gongwen-zh/SKILL.md) | 按党政机关公文格式标准自动排版，体制内用户刚需 |
 
 ---
 
@@ -48,7 +50,7 @@
 | [brave-search-zh](skills/brave-search-zh/SKILL.md) | Brave Search API 轻量搜索 CLI——网页搜索 + 可选页面内容提取（Markdown），无需浏览器 | 💰📦 |
 | [brave-web-search-zh](skills/brave-web-search-zh/SKILL.md) | Brave Search API 双模式搜索：排序网页结果 + AI 摘要答案，支持时间筛选 | 💰📦 |
 | [answer-overflow-zh](skills/answer-overflow-zh/SKILL.md) | 搜索已索引的 Discord 社区讨论，获取编程问题、库问题和社区问答的解决方案，支持 MCP 服务器搜索与线程内容 Markdown 抓取 | ✅ |
-| [news-summary-zh](skills/news-summary-zh/SKILL.md) | 通过 RSS 订阅 BBC/路透社/NPR/半岛电视台等国际新闻源，按地区与主题分类输出摘要，支持文字与语音（OpenAI TTS）双模式 | ✅ |
+| [news-summary-zh](skills/news-summary-zh/SKILL.md) | 通过 RSS 订阅 BBC/路透社/NPR/半岛电视台等国际新闻源，按地区与主题分类输出摘要，支持文字与语音（OpenAI TTS）双模式 | ✅💰 |
 | [youtube-zh](skills/youtube-zh/SKILL.md) | 基于 YouTube Data API v3 的视频研究工具——通过 MCP 服务器实现视频搜索、频道信息查询、视频详情获取与带时间戳字幕提取，yt-dlp 作为字幕提取备用方案 | 💰📦 |
 | [youtube-watcher-zh](skills/youtube-watcher-zh/SKILL.md) | 通过 yt-dlp 提取 YouTube 视频字幕，支持视频摘要、问答和内容提取，仅适用于有字幕的视频 | 📦 |
 | [web-search-plus-zh](skills/web-search-plus-zh/SKILL.md) | 智能自动路由的统一搜索——连接 7 个搜索提供商（Serper/Tavily/Querit/Exa/Perplexity/You.com/SearXNG），通过多信号分析自动选择最佳引擎，附带置信度评分 | 💰📦 |
@@ -151,7 +153,7 @@
 |------|------|------|
 | [stock-analysis-zh](skills/stock-analysis-zh/SKILL.md) | 基于 Yahoo Finance API 的全面股票研究——公司概览、技术指标与估值、多股对比、内部人士交易追踪及 SEC 监管文件，支持美股与国际市场 | 💰 |
 | [stock-market-pro-zh](skills/stock-market-pro-zh/SKILL.md) | 基于 Yahoo Finance 的本地股票分析——实时报价、基本面数据、ASCII 趋势图与高分辨率技术图表（RSI/MACD/BB/VWAP/ATR），一键综合报告，可选新闻与期权扩展 | 📦 |
-| [stock-watcher-zh](skills/stock-watcher-zh/SKILL.md) | A股自选股管理与监控——添加/删除/查看自选股列表，基于同花顺数据源获取实时行情摘要与技术指标，支持沪深A股及科创板市场 | 📦 |
+| [stock-watcher-zh](skills/stock-watcher-zh/SKILL.md) | A股自选股管理与监控——添加/删除/查看自选股列表，基于同花顺数据源获取实时行情摘要与技术指标，支持沪深A股及科创板市场 | 📦💰 |
 
 ### 🔒 安全与防护
 
@@ -159,7 +161,7 @@
 |------|------|------|
 | [moltguard-zh](skills/moltguard-zh/SKILL.md) | OpenClaw 原生安全插件——通过 MoltGuard API 检测工具结果与消息中的提示注入，可选本地净化网关在发送前脱敏 PII（银行卡/密码等），首次使用自动注册 API 密钥 | 💰 |
 | [skill-vetter-zh](skills/skill-vetter-zh/SKILL.md) | 技能安装前安全审查协议——来源验证、14项危险信号检测、权限范围评估与四级风险分类，输出结构化审查报告 | ✅ |
-| [edgeone-clawscan-zh](skills/edgeone-clawscan-zh/SKILL.md) | 腾讯朱雀实验室 A.I.G 驱动的 OpenClaw 安全扫描——全环境 4 步体检（配置审计/供应链风险/CVE 漏洞/隐私泄露）与单技能深度安全审查，云端情报+本地审计双引擎 | ✅ |
+| [edgeone-clawscan-zh](skills/edgeone-clawscan-zh/SKILL.md) | 腾讯朱雀实验室 A.I.G 驱动的 OpenClaw 安全扫描——全环境 4 步体检（配置审计/供应链风险/CVE 漏洞/隐私泄露）与单技能深度安全审查，云端情报+本地审计双引擎 | ✅💰 |
 | [clawsec-suite-zh](skills/clawsec-suite-zh/SKILL.md) | AI代理安全技能套件——提供统一的安全监控、完整性验证和威胁情报，保护代理架构免受提示注入和恶意指令攻击，包含文件完整性保护、实时安全公告和安全审计功能 | 📦💰 |
 
 ---
