@@ -1,7 +1,7 @@
 {
   "name": "nano-banana-pro-prompts-recommend-skill",
   "version": "1.5.5",
-  "description": "AI skill: 10,000+ Nano Banana Pro (Gemini) image generation prompts. Also works with Nano Banana 2, Seedream 5.0, GPT Image 1.5, Midjourney, DALL-E, Flux, Stable Diffusion. Auto-downloads library on install. Works with OpenClaw, Claude Code, Cursor and more.",
+  "description": "AI技能：10,000+ Nano Banana Pro (Gemini) 图像生成提示词。也适用于 Nano Banana 2、Seedream 5.0、GPT Image 1.5、Midjourney、DALL-E、Flux、Stable Diffusion。自动下载提示词库。支持 OpenClaw、Claude Code、Cursor 等。",
   "type": "module",
   "scripts": {
     "generate": "npx tsx scripts/generate-references.ts",

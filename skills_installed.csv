@@ -7,7 +7,7 @@ tavily-search-zh,tavily-search-zh,Tavily搜索引擎,1.0
 proactive-self-improving-agent-zh,proactive-self-improving-agent-zh,自进化智能体引擎,1.0
 word-docx-zh,word-docx-zh,Word文档处理工具,1.0
 markdown-converter-zh,markdown-converter-zh,Markdown格式转换器,1.0
-skill-vetter-zh,skill-vetter-zh,技能安全审查工具,1.0
+skill-vetter-zh-localized,skill-vetter-zh-localized,技能安全审查工具（汉化版）,1.0
 github-zh,github-zh,GitHub管理工具,1.0
-nano-banana-pro-prompts-recommend-skill-zh,nano-banana-pro-prompts-recommend-skill-zh,Nano Banana Pro提示词推荐 - 10,000+精选图像生成提示词,1.5.5
-md2wechat-skill-zh,md2wechat-skill-zh,用 Markdown 写公众号文章，一键转换为精美排版并自动上传到微信草稿箱。支持 AI 多主题样式和批量发布，让公众号写作像发朋友圈一样简单,2.0.5
+nano-banana-pro-prompts-recommend-skill-zh,nano-banana-pro-prompts-recommend-skill-zh,Nano Banana Pro提示词推荐（汉化版）- 10,000+精选图像生成提示词,1.5.5
+md2wechat-skill-zh,md2wechat-skill-zh,用 Markdown 写公众号文章，一键转换为精美排版并自动上传到微信草稿箱。支持 AI 多主题样式和批量发布，让公众号写作像发朋友圈一样简单,2.0.5skill-vetter-zh,skill-vetter-zh,AI 智能体技能的安全优先审查工具。在从 ClawHub、GitHub 或其他来源安装任何技能之前使用。检查危险信号、权限范围和可疑模式。,1.0.0,是

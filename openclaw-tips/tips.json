@@ -351,8 +351,40 @@
       "source_platform": "官方展示",
       "found_date": "2026-03-29",
       "tags": ["多agent", "大规模", "协作", "团队"]
+    },
+    {
+      "title": "智能消息扫描与承诺自动提取",
+      "content": "每15分钟扫描新短信，识别具体承诺（'让我明天复习这个'）和会议安排，自动创建日历事件或hold时段。忽略未参与线程，专注于有价值的承诺。当检测到完整会议计划（时间、地点、相互确认）时，自动创建日历邀请并确认。",
+      "source_url": "https://brandon.wang/2026/clawdbot",
+      "source_platform": "Blog",
+      "found_date": "2026-03-31",
+      "tags": ["自动化", "日历", "短信", "承诺跟踪", "时间管理"]
+    },
+    {
+      "title": "高级群组聊天摘要系统",
+      "content": "针对高容量群组（100+消息/天）的自动化摘要系统。OpenClaw每日扫描WhatsApp和Signal群组，智能识别有趣话题和对话，生成结构化摘要。特别适合活跃的社区群组，让用户保持参与而不会被信息过载淹没。",
+      "source_url": "https://brandon.wang/2026/clawdbot",
+      "source_platform": "Blog",
+      "found_date": "2026-03-31",
+      "tags": ["自动化", "群组管理", "摘要", "信息过滤", "社区"]
+    },
+    {
+      "title": "复杂条件价格监控与AI视觉验证",
+      "content": "设置30+价格监控，支持复杂推理规则如'Lake Tahoe酒店，如果折叠床不在同一个房间里是可以接受的'。OpenClaw实际浏览房源照片验证条件，替代Flighty/Parcel等付费App。支持物流跟踪，遇到卡件时自动标记提醒。通过简单URL粘贴即可设置监控。",
+      "source_url": "https://brandon.wang/2026/clawdbot",
+      "source_platform": "Blog",
+      "found_date": "2026-03-31",
+      "tags": ["价格监控", "AI视觉", "物流跟踪", "自动化", "条件判断"]
+    },
+    {
+      "title": "通过对话构建复杂自动化系统",
+      "content": "通过纯对话方式构建复杂自动化系统。用户只需口头描述需求（如'帮我构建一个系统管理日程和提醒'），OpenClaw会自动设计架构、实施功能、测试效果。从基础功能开始，逐步扩展到复杂的日历管理、消息处理、价格监控等多功能集成系统。核心优势：零配置，通过自然语言交互完成所有设置。",
+      "source_url": "https://brandon.wang/2026/clawdbot",
+      "source_platform": "Blog",
+      "found_date": "2026-03-31",
+      "tags": ["对话式构建", "自动化", "零配置", "复杂系统", "自然语言"]
     }
   ],
-  "last_updated": "2026-03-29",
-  "total_count": 44
+  "last_updated": "2026-03-31",
+  "total_count": 48
 }
